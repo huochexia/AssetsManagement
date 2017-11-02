@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background">
+
+    <include layout="@layout/include_navi" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2">
+
+        <ImageView
+            android:id="@+id/iv_single_asset_image"
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/assets_image_default" />
+    </RelativeLayout>
+
+    <include layout="@layout/view_line_between"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="2dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="管  理  员："
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_asset_single_manager_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="登记日期："
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_asset_single_register_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="状        态："
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_asset_single_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <include layout="@layout/view_line_between" />
+
+    <LinearLayout
+        android:id="@+id/ll_asset_single_management"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="5dp"
+        android:layout_weight="2">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/btn_single_asset_change"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="移  交" />
+
+            <Button
+                android:id="@+id/btn_single_asset_cancel_change"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="取消移交"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/btn_single_asset_maintain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="维  修" />
+
+            <Button
+                android:id="@+id/btn_single_asset_cancel_maintain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="修  好"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/btn_single_asset_lose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="丢  失" />
+
+            <Button
+                android:id="@+id/btn_single_asset_cancel_lose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="找  回"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/btn_single_asset_scrap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="报  废" />
+
+            <Button
+                android:id="@+id/btn_single_asset_cancel_scrap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="取消报废"
+                android:visibility="gone" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_asset_single_receive"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="5dp"
+        android:layout_weight="2"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/btn_single_asset_receive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="10dp"
+                android:text="接  收" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/btn_single_asset_return"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="退   回" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</LinearLayout>
