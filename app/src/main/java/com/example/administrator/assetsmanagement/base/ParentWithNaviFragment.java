@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
 
 /**
@@ -11,16 +12,9 @@ import com.example.administrator.assetsmanagement.R;
  */
 
 public abstract class ParentWithNaviFragment extends BaseFragment {
-    /**
-     * 点击事件接口
-     */
-    public interface ToolbarListener {
-        void clickLeft();
 
-        void clickRight();
-    }
     protected View rootview= null;
-    private ParentWithNaviActivity.ToolbarListener listener;
+    private ToolbarClickListener listener;
     private TextView title;
     private ImageView left;
     private ImageView right;
@@ -50,7 +44,7 @@ public abstract class ParentWithNaviFragment extends BaseFragment {
      * 实现左右图标的点击事件时，需要改写些方法，返回实现具体处理方法的事件接口
      * @return
      */
-    public ParentWithNaviActivity.ToolbarListener getToolbarListener() {
+    public ToolbarClickListener getToolbarListener() {
         return null;
     }
 
@@ -58,7 +52,7 @@ public abstract class ParentWithNaviFragment extends BaseFragment {
         return  (T) rootview.findViewById(id);
     }
 
-    private void setToolbarListener(ParentWithNaviActivity.ToolbarListener listener) {
+    private void setToolbarListener(ToolbarClickListener listener) {
         this.listener = listener;
     }
     protected View.OnClickListener clickListener = new View.OnClickListener() {

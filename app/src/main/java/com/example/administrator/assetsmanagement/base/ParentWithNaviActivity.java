@@ -1,9 +1,11 @@
 package com.example.administrator.assetsmanagement.base;
 
+import android.graphics.Typeface;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
 
 /**
@@ -11,15 +13,8 @@ import com.example.administrator.assetsmanagement.R;
  */
 
 public abstract class ParentWithNaviActivity extends BaseActivity {
-    /**
-     * 点击事件接口
-     */
-    public interface ToolbarListener {
-        void clickLeft();
 
-        void clickRight();
-    }
-    private ToolbarListener listener;
+    private ToolbarClickListener listener;
     private TextView title;
     private ImageView left;
     private ImageView right;
@@ -49,7 +44,7 @@ public abstract class ParentWithNaviActivity extends BaseActivity {
      * 实现左右图标的点击事件时，需要改写些方法，返回实现具体处理方法的事件接口
      * @return
      */
-    public ToolbarListener getToolbarListener() {
+    public ToolbarClickListener getToolbarListener() {
         return null;
     }
 
@@ -57,7 +52,7 @@ public abstract class ParentWithNaviActivity extends BaseActivity {
         return  (T) findViewById(id);
     }
 
-    private void setToolbarListener(ToolbarListener listener) {
+    private void setToolbarListener(ToolbarClickListener listener) {
         this.listener = listener;
     }
     protected View.OnClickListener clickListener = new View.OnClickListener() {
@@ -77,8 +72,11 @@ public abstract class ParentWithNaviActivity extends BaseActivity {
     };
     public void initNaviView() {
         title = getView(R.id.tv_toolbar_title);
+        Typeface type = Typeface.createFromAsset(getAssets(), "fonts/方正硬笔行书.TTF");
+        title.setTypeface(type);
         left = getView(R.id.iv_left_navi);
         right = getView(R.id.iv_right_navi);
+
         setToolbarListener(getToolbarListener());
         left.setOnClickListener(clickListener);
         right.setOnClickListener(clickListener);

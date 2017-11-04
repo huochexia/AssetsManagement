@@ -27,5 +27,6 @@
     <dimen name="margin_18">18dp</dimen>
     <dimen name="margin_30">30dp</dimen>
     <dimen name="margin_40">40dp</dimen>
+    <dimen name="title_text_size">27sp</dimen>
 
 </resources>
