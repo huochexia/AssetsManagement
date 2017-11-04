@@ -18,6 +18,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.RegisterAssetsActivity"/>
+        <activity android:name=".activity.SearchAssetsActivity"/>
+        <activity android:name=".activity.ManageAssetsActivity"/>
     </application>
 
 </manifest>

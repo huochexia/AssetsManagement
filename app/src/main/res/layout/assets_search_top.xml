@@ -24,47 +24,44 @@
         android:orientation="horizontal">
 
         <RadioGroup
+            android:id="@+id/rg_assets_search"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <RadioButton
-                    android:textSize="16sp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="位    置" />
 
                 <RadioButton
+                    android:id="@+id/rb_assets_search_location"
                     android:textSize="16sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="类   别" />
-                <RadioButton
-                    android:textSize="16sp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="名   称" />
-            </LinearLayout>
+                    android:text="位     置" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
                 <RadioButton
+                    android:id="@+id/rb_assets_search_category"
+                    android:textSize="16sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="类     别" />
+                <RadioButton
+                    android:id="@+id/rb_assets_search_name"
+                    android:textSize="16sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="名     称" />
+
+                <RadioButton
+                    android:id="@+id/rb_assets_search_manager"
                     android:textSize="16sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="管理员" />
 
                 <RadioButton
+                    android:id="@+id/rb_assets_search_scrap"
                     android:textSize="16sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="报   废" />
-            </LinearLayout>
+                    android:text="报     废" />
 
         </RadioGroup>
     </LinearLayout>
