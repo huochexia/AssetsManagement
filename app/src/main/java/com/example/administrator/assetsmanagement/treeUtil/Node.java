@@ -7,8 +7,9 @@ import com.example.administrator.assetsmanagement.R;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
- * Created by HQOCSHheqing on 2016/8/2.
+ *
  *
  * @description  节点抽象类（泛型T主要是考虑到ID和parentID有可能是int型也有可能是String型
  * 即这里可以传入Integer或者String，具体什么类型由子类指定

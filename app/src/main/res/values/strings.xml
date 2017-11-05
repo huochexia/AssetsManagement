@@ -8,4 +8,6 @@
     <string name="login">登录</string>
     <string name="logout">退出</string>
     <string name="repair_password">修改密码</string>
+    <string name="icon_like">&#xf087;</string>
+    <string name="icon_user"><![CDATA[&#xf007;]]></string>
 </resources>
