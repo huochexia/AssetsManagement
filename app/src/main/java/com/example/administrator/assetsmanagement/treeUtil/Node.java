@@ -7,6 +7,8 @@ import com.example.administrator.assetsmanagement.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.bmob.v3.BmobObject;
+
 
 /**
  *
@@ -15,7 +17,7 @@ import java.util.List;
  * 即这里可以传入Integer或者String，具体什么类型由子类指定
 ，因为这两种类型比较是否相等的方式不同：一个是用 “==”，一个是用  equals() 函数）
  */
-public abstract class Node<T> {
+public abstract class Node<T> extends BmobObject{
 
     private int _level = -1;//当前节点的层级，初始值-1 后面会讲到
     private List<Node> _childrenList = new ArrayList<>();//所有的孩子节点
