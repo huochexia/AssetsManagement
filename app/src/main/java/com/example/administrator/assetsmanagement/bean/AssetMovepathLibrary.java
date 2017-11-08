@@ -6,7 +6,7 @@ import cn.bmob.v3.BmobObject;
  * Created by Administrator on 2017/11/8.
  */
 
-public class AssetMoveLibrary extends BmobObject {
+public class AssetMovepathLibrary extends BmobObject {
     /*
     资产编号
      */
