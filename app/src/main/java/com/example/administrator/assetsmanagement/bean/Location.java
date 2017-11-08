@@ -1,13 +1,17 @@
-package com.example.administrator.assetsmanagement.treeUtil;
+package com.example.administrator.assetsmanagement.bean;
 
 import com.example.administrator.assetsmanagement.treeUtil.Node;
 
+/**
+ * 位置：包含上一级位置，名称，编号
+ */
 public class Location extends Node<Integer> {
-    private int id;
-    private int parentId;
+    private Integer id;
+    private Integer parentId;
     private String locationName;
+    private String locationNumber;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -15,7 +19,7 @@ public class Location extends Node<Integer> {
         this.id = id;
     }
 
-    public int getParentId() {
+    public Integer getParentId() {
         return parentId;
     }
 
@@ -31,11 +35,22 @@ public class Location extends Node<Integer> {
         this.locationName = locationName;
     }
 
+    public String getLocationNumber() {
+        return locationNumber;
+    }
+
+    public void setLocationNumber(String locationNumber) {
+        this.locationNumber = locationNumber;
+    }
+
+    /**
+     * 构造方法
+     */
     public Location() {
 
     }
 
-    public Location(int id, int parentId, String locationName) {
+    public Location(Integer id, Integer parentId, String locationName) {
         this.id = id;
         this.parentId = parentId;
         this.locationName = locationName;

@@ -90,6 +90,26 @@
             fancy:fb_textFont="隶书.ttf"
             fancy:fb_textSize="18sp"
             />
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/btn_search_dept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:visibility="gone"
+            android:layout_marginBottom="@dimen/margin_5"
+            android:padding="8dp"
+            fancy:fb_borderColor="#7ed862"
+            fancy:fb_borderWidth="2dp"
+            fancy:fb_focusColor="#ffa8f192"
+            fancy:fb_iconResource="@drawable/ic_dept_black_24dp"
+            fancy:fb_radiusBottomRight="10dp"
+            fancy:fb_radiusTopLeft="10dp"
+            fancy:fb_text="部门"
+            fancy:fb_ghost="true"
+            fancy:fb_textColor="#000000"
+            fancy:fb_textFont="隶书.ttf"
+            fancy:fb_textSize="18sp"
+            />
 
         <TextView
             android:id="@+id/tv_search_content"

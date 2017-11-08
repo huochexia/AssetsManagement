@@ -36,6 +36,8 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
     TextView mTvSearchContent;
     @BindView(R.id.btn_register_add_ok)
     FancyButton mBtnRegisterAddOk;
+    @BindView(R.id.btn_search_dept)
+    FancyButton mBtnSearchDept;
     @BindView(R.id.rc_search_list)
     RecyclerView mRcSearchList;
 
@@ -84,6 +86,10 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                         allSetGone();
                         mBtnRegisterCategory.setVisibility(View.VISIBLE);
                         break;
+                    case R.id.rb_assets_search_dept  :
+                        allSetGone();
+                        mBtnSearchDept.setVisibility(View.VISIBLE);
+                        break;
                     case R.id.rb_assets_search_manager:
                         allSetGone();
                         mBtnSearchManager.setVisibility(View.VISIBLE);
@@ -107,9 +113,11 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
         mBtnRegisterCategory.setVisibility(View.GONE);
         mBtnSearchManager.setVisibility(View.GONE);
         mBtnSearchName.setVisibility(View.GONE);
+        mBtnSearchDept.setVisibility(View.GONE);
         mTvSearchContent.setText("");
     }
-    @OnClick({R.id.btn_search_location, R.id.btn_register_category, R.id.btn_search_name, R.id.btn_search_manager})
+
+    @OnClick({R.id.btn_search_location, R.id.btn_register_category, R.id.btn_search_name, R.id.btn_search_manager,R.id.btn_search_dept})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_search_location:
@@ -117,6 +125,9 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
             case R.id.btn_register_category:
                 break;
             case R.id.btn_search_name:
+
+                break;
+            case R.id.btn_search_dept:
                 break;
             case R.id.btn_search_manager:
                 break;
