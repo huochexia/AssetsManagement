@@ -6,19 +6,60 @@ import com.example.administrator.assetsmanagement.treeUtil.Node;
  * Created by Administrator on 2017/11/8.
  */
 
-public class Department extends Node {
-    private Integer id;
-    private Integer parentId;
+public class Department extends Node<String> {
+    private String id;
+    private String parentId;
     private String departmentName;
     private String departmentNumber;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
+
+    public String getDepartmentNumber() {
+        return departmentNumber;
+    }
+
+    public void setDepartmentNumber(String departmentNumber) {
+        this.departmentNumber = departmentNumber;
+    }
+
+    public Department() {
+    }
+
+    public Department(String id, String parentId, String departmentName) {
+        this.id = id;
+        this.parentId = parentId;
+        this.departmentName = departmentName;
+    }
+
     @Override
-    public Object get_id() {
+    public String get_id() {
         return id;
     }
 
     @Override
-    public Object get_parentId() {
+    public String get_parentId() {
         return parentId;
     }
 
@@ -29,7 +70,7 @@ public class Department extends Node {
 
     @Override
     public boolean parent(Node dest) {
-        if (id == ((Integer) dest.get_parentId()).intValue()) {
+        if (id.equals ((String) dest.get_parentId())) {
             return true;
         }
 
@@ -38,7 +79,7 @@ public class Department extends Node {
 
     @Override
     public boolean child(Node dest) {
-        if (parentId == ((Integer) dest.get_id()).intValue()) {
+        if (parentId.equals(((String) dest.get_id()))) {
             return true;
         }
         return false;

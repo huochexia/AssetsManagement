@@ -5,25 +5,25 @@ import com.example.administrator.assetsmanagement.treeUtil.Node;
 /**
  * 位置：包含上一级位置，名称，编号
  */
-public class Location extends Node<Integer> {
-    private Integer id;
-    private Integer parentId;
+public class Location extends Node<String> {
+    private String id;
+    private String parentId;
     private String locationName;
     private String locationNumber;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String  id) {
         this.id = id;
     }
 
-    public Integer getParentId() {
+    public String getParentId() {
         return parentId;
     }
 
-    public void setParentId(int parentId) {
+    public void setParentId(String parentId) {
         this.parentId = parentId;
     }
 
@@ -50,19 +50,19 @@ public class Location extends Node<Integer> {
 
     }
 
-    public Location(Integer id, Integer parentId, String locationName) {
+    public Location(String id, String parentId, String locationName) {
         this.id = id;
         this.parentId = parentId;
         this.locationName = locationName;
     }
 
     @Override
-    public Integer get_id() {
+    public String get_id() {
         return id;
     }
 
     @Override
-    public Integer get_parentId() {
+    public String get_parentId() {
         return parentId;
     }
 
@@ -73,7 +73,7 @@ public class Location extends Node<Integer> {
 
     @Override
     public boolean parent(Node dest) {
-        if (id == ((Integer) dest.get_parentId()).intValue()) {
+        if (id.equals ((String) dest.get_parentId())) {
             return true;
         }
 
@@ -82,7 +82,7 @@ public class Location extends Node<Integer> {
 
     @Override
     public boolean child(Node dest) {
-        if (parentId == ((Integer) dest.get_id()).intValue()) {
+        if (parentId.equals((String) dest.get_id())) {
             return true;
         }
         return false;

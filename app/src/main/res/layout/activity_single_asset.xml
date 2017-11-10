@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/background">
 
@@ -106,77 +107,160 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <Button
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/btn_single_asset_change"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="移  交" />
-
-            <Button
+                android:layout_marginEnd="@dimen/height_2"
+                android:padding="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="0dp"
+                fancy:fb_defaultColor="#3f51b4"
+                fancy:fb_focusColor="#7182e2"
+                fancy:fb_radius="15dp"
+                fancy:fb_text="移交"
+                fancy:fb_textColor="#FFFFFF"
+                fancy:fb_textFont="隶书.ttf"
+                fancy:fb_textSize="20sp" />
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/btn_single_asset_cancel_change"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="取消移交"
-                android:visibility="gone" />
+                android:layout_marginEnd="@dimen/height_2"
+                android:visibility="gone"
+                android:padding="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="0dp"
+                fancy:fb_defaultColor="#3f51b4"
+                fancy:fb_focusColor="#7182e2"
+                fancy:fb_radius="15dp"
+                fancy:fb_text="取消移交"
+                fancy:fb_textColor="#FFFFFF"
+                fancy:fb_textFont="隶书.ttf"
+                fancy:fb_textSize="20sp" />
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <Button
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/btn_single_asset_maintain"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="维  修" />
+                android:layout_marginEnd="@dimen/height_2"
+                android:padding="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="0dp"
+                fancy:fb_defaultColor="#3f51b4"
+                fancy:fb_focusColor="#7182e2"
+                fancy:fb_radius="15dp"
+                fancy:fb_text="维修"
+                fancy:fb_textColor="#FFFFFF"
+                fancy:fb_textFont="隶书.ttf"
+                fancy:fb_textSize="20sp" />
 
-            <Button
+
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/btn_single_asset_cancel_maintain"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="修  好"
-                android:visibility="gone" />
+                android:layout_marginEnd="@dimen/height_2"
+                android:visibility="gone"
+                android:padding="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="0dp"
+                fancy:fb_defaultColor="#3f51b4"
+                fancy:fb_focusColor="#7182e2"
+                fancy:fb_radius="15dp"
+                fancy:fb_text="修好"
+                fancy:fb_textColor="#FFFFFF"
+                fancy:fb_textFont="隶书.ttf"
+                fancy:fb_textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <Button
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/btn_single_asset_lose"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="丢  失" />
+                android:layout_marginEnd="@dimen/height_2"
+                android:padding="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="0dp"
+                fancy:fb_defaultColor="#3f51b4"
+                fancy:fb_focusColor="#7182e2"
+                fancy:fb_radius="15dp"
+                fancy:fb_text="丢失"
+                fancy:fb_textColor="#FFFFFF"
+                fancy:fb_textFont="隶书.ttf"
+                fancy:fb_textSize="20sp" />
 
-            <Button
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/btn_single_asset_cancel_lose"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="找  回"
-                android:visibility="gone" />
+                android:layout_marginEnd="@dimen/height_2"
+                android:visibility="gone"
+                android:padding="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="0dp"
+                fancy:fb_defaultColor="#3f51b4"
+                fancy:fb_focusColor="#7182e2"
+                fancy:fb_radius="15dp"
+                fancy:fb_text="找回"
+                fancy:fb_textColor="#FFFFFF"
+                fancy:fb_textFont="隶书.ttf"
+                fancy:fb_textSize="20sp" />
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <Button
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/btn_single_asset_scrap"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="报  废" />
+                android:layout_marginEnd="@dimen/height_2"
+                android:padding="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="0dp"
+                fancy:fb_defaultColor="#3f51b4"
+                fancy:fb_focusColor="#7182e2"
+                fancy:fb_radius="15dp"
+                fancy:fb_text="报废"
+                fancy:fb_textColor="#FFFFFF"
+                fancy:fb_textFont="隶书.ttf"
+                fancy:fb_textSize="20sp" />
 
-            <Button
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/btn_single_asset_cancel_scrap"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="取消报废"
-                android:visibility="gone" />
+                android:layout_marginEnd="@dimen/height_2"
+                android:visibility="gone"
+                android:padding="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="0dp"
+                fancy:fb_defaultColor="#3f51b4"
+                fancy:fb_focusColor="#7182e2"
+                fancy:fb_radius="15dp"
+                fancy:fb_text="取消报废"
+                fancy:fb_textColor="#FFFFFF"
+                fancy:fb_textFont="隶书.ttf"
+                fancy:fb_textSize="20sp" />
+
         </LinearLayout>
 
 
@@ -194,14 +278,22 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">
-
-            <Button
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/btn_single_asset_receive"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginRight="10dp"
-                android:text="接  收" />
+                android:layout_marginEnd="@dimen/height_2"
+                android:padding="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="0dp"
+                fancy:fb_defaultColor="#3f51b4"
+                fancy:fb_focusColor="#7182e2"
+                fancy:fb_radius="15dp"
+                fancy:fb_text="接收"
+                fancy:fb_textColor="#FFFFFF"
+                fancy:fb_textFont="隶书.ttf"
+                fancy:fb_textSize="20sp" />
+
 
         </RelativeLayout>
 
@@ -210,12 +302,21 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
-            <Button
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/btn_single_asset_return"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="退   回" />
+                android:layout_marginEnd="@dimen/height_2"
+                android:padding="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="0dp"
+                fancy:fb_defaultColor="#3f51b4"
+                fancy:fb_focusColor="#7182e2"
+                fancy:fb_radius="15dp"
+                fancy:fb_text="退回"
+                fancy:fb_textColor="#FFFFFF"
+                fancy:fb_textFont="隶书.ttf"
+                fancy:fb_textSize="20sp" />
 
 
         </LinearLayout>
