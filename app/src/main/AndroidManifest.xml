@@ -31,6 +31,7 @@
         <activity android:name=".activity.LocationSettingActivity"/>
         <activity android:name=".activity.DepartmentSettingActivity"/>
         <activity android:name=".activity.PersonSettingActivity"/>
+        <activity android:name=".activity.SelectedTreeNodeActivity"/>
     </application>
 
 </manifest>

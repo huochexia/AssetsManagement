@@ -1,5 +1,6 @@
 package com.example.administrator.assetsmanagement.activity;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -121,16 +122,38 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_search_location:
+                startActivity(SelectedTreeNodeActivity.SEARCH_LOCATION);
                 break;
             case R.id.btn_register_category:
+
                 break;
             case R.id.btn_search_name:
 
                 break;
             case R.id.btn_search_dept:
+                startActivity(SelectedTreeNodeActivity.SEARCH_DEPARTMENT);
                 break;
             case R.id.btn_search_manager:
+                startActivity(SelectedTreeNodeActivity.SEARCH_MANAGER);
                 break;
+        }
+    }
+
+    private void startActivity(int type) {
+        Intent intent = new Intent(SearchAssetsActivity.this,SelectedTreeNodeActivity.class);
+        intent.putExtra("type", type);
+        startActivityForResult(intent,1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 1:
+                if (resultCode == 100) {
+                    toast("ok");
+                }
+                break;
+            default:
         }
     }
 }
