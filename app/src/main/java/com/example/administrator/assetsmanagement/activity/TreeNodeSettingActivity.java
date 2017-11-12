@@ -122,16 +122,16 @@ public abstract class TreeNodeSettingActivity extends ParentWithNaviActivity {
                         toast("请输入新名称！");
                     }
                 } else {
-                    if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
-                        mBaseNode = new BaseNode(System.currentTimeMillis() + "",
-                                "0", edTreeStructureNew.getText().toString());
-                        if (addToBmob(mBaseNode)) {
-                            addNode(mBaseNode, 0);
+                       if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
+                            //如果没有选择节点，则列表最后创建根节点
+                            mBaseNode = new BaseNode(System.currentTimeMillis() + "",
+                                    "0", edTreeStructureNew.getText().toString());
+                            if (addToBmob(mBaseNode)) {
+                                addNode(mBaseNode, 0);
+                            }
+                        } else {
+                            toast("请输入新名称！");
                         }
-                    } else {
-                        toast("请输入新名称！");
-                    }
-                   //如果没有选择节点，则列表最后创建根节点
                 }
                 break;
             case R.id.btn_tree_replace_node:

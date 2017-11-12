@@ -10,7 +10,6 @@ import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.activity.DepartmentSettingActivity;
 import com.example.administrator.assetsmanagement.activity.LocationSettingActivity;
 import com.example.administrator.assetsmanagement.activity.PersonSettingActivity;
-import com.example.administrator.assetsmanagement.activity.TreeNodeSettingActivity;
 import com.example.administrator.assetsmanagement.base.BaseFragment;
 
 import butterknife.ButterKnife;

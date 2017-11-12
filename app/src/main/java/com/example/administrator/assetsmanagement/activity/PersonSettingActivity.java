@@ -42,7 +42,6 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
     @BindView(R.id.lv_tree_structure)
     RecyclerView mLvTreeStructure;
 
-
     protected List<Object> personNodeList = new ArrayList<>();
     private BaseNode mBaseNode;
     private int mPosition;
@@ -134,36 +133,31 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_tree_add_node:
-                if (mBaseNode != null) {
+                if (mBaseNode != null && !mBaseNode.isLast) {
                     if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
                         BaseNode newNode = new BaseNode();
                         newNode.setName(edTreeStructureNew.getText().toString());
                         newNode.setId(System.currentTimeMillis() + "");
                         newNode.setpId(mBaseNode.getId());
+                        newNode.isLast = true;
                         if (addToBmob(newNode)) {
                             addNode(newNode, mBaseNode.getLevel() + 1);
                         }
-
                     } else {
                         toast("请输入姓名！");
                     }
                 } else {
-                    //如果没有选择节点，则列表最后创建根节点
-                    if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
-                        mBaseNode = new BaseNode(System.currentTimeMillis() + "",
-                                "0", edTreeStructureNew.getText().toString());
-                        if (addToBmob(mBaseNode)) {
-                            addNode(mBaseNode, 0);
-                        }
-
+                    if (mBaseNode == null) {
+                        toast("请选择部门");
                     } else {
-                        toast("请输入姓名！");
+                        toast("人员没有子类");
                     }
 
                 }
                 break;
             case R.id.btn_tree_replace_node:
-                if (mBaseNode != null) {
+                //只能修改人员信息
+                if (mBaseNode != null && mBaseNode.isLast) {
                     if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
                         if (updateToBmob(mBaseNode)) {
                             updateNode(mBaseNode);
@@ -172,20 +166,27 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
                         toast("请输入姓名！");
                     }
                 } else {
-                    toast("请选择要修改人员！");
+                    if (mBaseNode == null) {
+                        toast("请选择要修改人员!");
+                    } else {
+                        toast("不能修改部门信息！");
+                    }
                 }
                 break;
             case R.id.btn_tree_delete_node:
-                if (mBaseNode != null) {
+                if (mBaseNode != null && mBaseNode.isLast) {
                     if (removeToBmob(mBaseNode)) {
-
                         tvTreeStructureCurrentNode.setText("");
                         adapter.deleteNode(mBaseNode);
                         adapter.notifyDataSetChanged();
                     }
 
                 } else {
-                    toast("请选择要删除人员！");
+                    if (mBaseNode == null) {
+                        toast("请选择要删除人员！");
+                    } else {
+                        toast("不能删除部门信息！");
+                    }
                 }
                 break;
         }
@@ -201,7 +202,7 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
         if (node.getParent() != null) {
             tvTreeStructureCurrentNode.setText(node.getParent().getName() + "--" + node.getName());
         } else {
-            tvTreeStructureCurrentNode.setText("--"+node.getName());
+            tvTreeStructureCurrentNode.setText("--" + node.getName());
         }
         adapter.notifyDataSetChanged();
         edTreeStructureNew.setText("");
