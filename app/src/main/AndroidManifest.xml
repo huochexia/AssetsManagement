@@ -30,6 +30,7 @@
         <activity android:name=".activity.ManageAssetsActivity"/>
         <activity android:name=".activity.LocationSettingActivity"/>
         <activity android:name=".activity.DepartmentSettingActivity"/>
+        <activity android:name=".activity.PersonSettingActivity"/>
     </application>
 
 </manifest>

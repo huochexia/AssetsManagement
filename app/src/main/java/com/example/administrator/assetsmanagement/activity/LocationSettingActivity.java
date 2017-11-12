@@ -1,79 +1,63 @@
 package com.example.administrator.assetsmanagement.activity;
 
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
 
-import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
-import com.example.administrator.assetsmanagement.R;
-import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
+import com.example.administrator.assetsmanagement.bean.Location;
+import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+import java.util.ArrayList;
+import java.util.List;
+
+import cn.bmob.v3.BmobObject;
 
 /**
- * Created by Administrator on 2017/11/10.
+ * Created by Administrator on 2017/11/12 0012.
  */
 
-public class LocationSettingActivity extends ParentWithNaviActivity {
-    @BindView(R.id.tv_tree_structure_current_node_title)
-    TextView tvTreeStructureCurrentNodeTitle;
-    @BindView(R.id.tv_tree_structure_current_node)
-    TextView tvTreeStructureCurrentNode;
-    @BindView(R.id.ed_tree_structure_new)
-    EditText edTreeStructureNew;
+public class LocationSettingActivity extends TreeNodeSettingActivity {
+    Location l1 = new Location("1", "0", "河北省税务干部学校");
+    Location l2 = new Location("A", "0", "A座");
+    Location l3 = new Location("01", "A", "一楼");
+    Location l4 = new Location("02", "A", "二楼");
+    Location l5 = new Location("101", "01", "101");
+    Location l6 = new Location("201", "02", "学校");
+    Location l7 = new Location("B", "0", "B座");
+    Location l8 = new Location("C", "0", "C座");
+    private List<Object> locationList = new ArrayList<>();
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        locationList.add(l1);
+        locationList.add(l2);
+        locationList.add(l3);
+        locationList.add(l4);
+        locationList.add(l5);
+        locationList.add(l6);
+        locationList.add(l7);
+        locationList.add(l8);
+        treeNodeList = locationList;
+        super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    public boolean addToBmob(BaseNode node) {
+        return true;
+    }
+
+    @Override
+    public boolean updateToBmob(BaseNode node) {
+        return true;
+    }
+
+    @Override
+    public boolean removeToBmob(BaseNode node) {
+        return true;
+    }
 
     @Override
     public String title() {
         return "位置";
-    }
-
-    @Override
-    public Object left() {
-        return R.drawable.ic_left_navi;
-    }
-
-    @Override
-    public ToolbarClickListener getToolbarListener() {
-        return new ToolbarClickListener() {
-            @Override
-            public void clickLeft() {
-                finish();
-            }
-
-            @Override
-            public void clickRight() {
-
-            }
-        };
-    }
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_location_setting);
-        ButterKnife.bind(this);
-        initNaviView();
-        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/隶书.ttf");
-        tvTreeStructureCurrentNodeTitle.setTypeface(typeface);
-        tvTreeStructureCurrentNode.setTypeface(typeface);
-        edTreeStructureNew.setTypeface(typeface);
-
-    }
-
-    @OnClick({R.id.btn_tree_add_node, R.id.btn_tree_replace_node, R.id.btn_tree_delete_node})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.btn_tree_add_node:
-                break;
-            case R.id.btn_tree_replace_node:
-                break;
-            case R.id.btn_tree_delete_node:
-                break;
-        }
     }
 }

@@ -23,6 +23,6 @@
         android:layout_centerVertical="true"
         android:layout_toRightOf="@id/id_treenode_icon"
         android:textColor="@android:color/black"
-        android:textSize="12sp" />
+        android:textSize="16sp" />
 
 </RelativeLayout>

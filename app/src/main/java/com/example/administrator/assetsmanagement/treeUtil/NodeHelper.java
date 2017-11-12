@@ -1,9 +1,16 @@
 package com.example.administrator.assetsmanagement.treeUtil;
 
 
+import android.support.annotation.NonNull;
 
-import com.example.administrator.assetsmanagement.R;
+import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeIconCollape;
+import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeIconExpand;
+import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeId;
+import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeIsLast;
+import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeName;
+import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodePId;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,62 +20,175 @@ import java.util.List;
  * @description 节点帮助类
  */
 public class NodeHelper {
+    /**
+     * 得到确定关系并排好序的节点列表
+     */
+    public static <T> List<BaseNode> getSortNodes(List<T> datas, int defaultExpandLevel) {
+        List<BaseNode> result = new ArrayList<>();
+        try {
+            List<BaseNode> nodes = convertDatas2Nodes(datas);
+            //获得所有根节点
+            List<BaseNode> rootNodes = getRootNodes(nodes);
+            // 排序以及设置Node间关系
+            for (BaseNode node : rootNodes) {
+                addNode(result, node, defaultExpandLevel, 1);
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 
     /**
-     * 传入所有的要展示的节点数据
-     * @param nodeList  返回值是所有的根节点
+     * 过滤出所有可见的Node
+     *
+     * @param nodes
      * @return
      */
-    public static List<Node> sortNodes(List<Node> nodeList){
+    public static List<BaseNode> filterVisibleNode(List<BaseNode> nodes) {
+        List<BaseNode> result = new ArrayList<>();
 
-        List<Node> rootNodes = new ArrayList<>();
-        int size = nodeList.size();
-        Node m;
-        Node n;
-        //两个for循环整理出所有数据之间的斧子关系，最后会构造出一个森林（就是可能有多棵树）
-        for (int i = 0;i < size;i++){
-            m = nodeList.get(i);
-            for (int j = i+1;j < size;j++){
-                n = nodeList.get(j);
-                if (m.parent(n)){
-                    m.get_childrenList().add(n);
-                    n.set_parent(m);
-                }else if (m.child(n)){
-                    n.get_childrenList().add(m);
-                    m.set_parent(n);
-                }
+        for (BaseNode node : nodes) {
+            // 如果为跟节点，或者上层目录为展开状态
+            if (node.isRoot() || node.isParentExpand()) {
+                setNodeIcon(node);
+                result.add(node);
             }
         }
-        //找出所有的树根，同事设置相应的图标（后面你会发现其实这里的主要
-        // 作用是设置叶节点和非叶节点的图标）
-        for (int i = 0;i < size;i++){
-            m = nodeList.get(i);
-            if (m.isRoot()){
-                rootNodes.add(m);
-            }
-            setNodeIcon(m);
-        }
-        nodeList.clear();//此时所有的关系已经整理完成了
-        // ，森林构造完成，可以清空之前的数据，释放内存，提高性能
-        // ，如果之前的数据还有用的话就不清空
-        nodeList = rootNodes;//返回所有的根节点
-        rootNodes = null;
-        return nodeList;
+        return result;
     }
 
     /**
-     * 设置图标
+     * 将服务器端获取的数据转化为Node,并确定它们之间的关系
+     */
+    private static <T> List<BaseNode> convertDatas2Nodes(List<T> datas) throws IllegalAccessException {
+        List<BaseNode> nodes = new ArrayList<>();
+        BaseNode node = null;
+        for (T t : datas) {
+            String id = "";
+            String pId = "";
+            String name = "";
+            int iconExpand = -1;
+            int iconNoExpand = -1;
+            Boolean isLast =false;
+            node = null;
+            Class c = t.getClass();
+            Field fields[] = c.getDeclaredFields();
+            for (Field field : fields) {
+                if (field.getAnnotation(TreeNodeId.class) != null) {
+                    //设置访问权限，强制性的可以访问
+                    field.setAccessible(true);
+                    id = (String) field.get(t);
+                }
+
+                if (field.getAnnotation(TreeNodePId.class) != null) {
+                    //设置访问权限，强制性的可以访问
+                    field.setAccessible(true);
+                    pId = (String) field.get(t);
+                }
+
+                if (field.getAnnotation(TreeNodeName.class) != null) {
+                    //设置访问权限，强制性的可以访问
+                    field.setAccessible(true);
+                    name = (String) field.get(t);
+                }
+                if (field.getAnnotation(TreeNodeIconExpand.class) != null) {
+                    field.setAccessible(true);
+                    iconExpand = (int) field.get(t);
+                }
+                if (field.getAnnotation(TreeNodeIconCollape.class) != null) {
+                    field.setAccessible(true);
+                    iconNoExpand = (int) field.get(t);
+                }
+                if (field.getAnnotation(TreeNodeIsLast.class) != null) {
+                    field.setAccessible(true);
+                    isLast = (Boolean) field.get(t);
+                }
+            }
+            node = new BaseNode(id, pId, name);
+            node.iconExpand = iconExpand;
+            node.iconNoExpand = iconNoExpand;
+            node.isLast = isLast;
+            nodes.add(node);
+        }
+        return getNodesRelation(nodes);
+
+    }
+
+    /**
+     * 获取节点之间的关系
+     *
+     * @param nodes
+     * @return
+     */
+    @NonNull
+    private static List<BaseNode> getNodesRelation(List<BaseNode> nodes) {
+        //设置节点之间的父子关系
+        for (int i = 0; i < nodes.size(); i++) {
+            BaseNode n = nodes.get(i);
+            for (int j = i + 1; j < nodes.size(); j++) {
+                BaseNode m = nodes.get(j);
+                if (m.getId().equals(n.getpId())) {
+                    m.getChildren().add(n);
+                    n.setParent(m);
+                } else if (m.getpId().equals(n.getId())) {
+                    n.getChildren().add(m);
+                    m.setParent(n);
+                }
+
+            }
+        }
+
+        return nodes;
+    }
+
+    /**
+     * 设置节点的图标
+     *
      * @param node
      */
-    private static void setNodeIcon(Node node){
-        if (!node.isLeaf()){
-            if (node.isExpand()){
-                node.set_icon(R.mipmap.collapse);
-            }else{
-                node.set_icon(R.mipmap.expand);
-            }
-        }else{
-            node.set_icon(-1);
+    private static void setNodeIcon(BaseNode node) {
+        if (node.getChildren().size() > 0 && node.isExpand()) {
+            node.setIcon(node.iconExpand);
+        } else if (node.getChildren().size() > 0 && !node.isExpand()) {
+            node.setIcon(node.iconNoExpand);
+        } else {
+            node.setIcon(-1);
         }
     }
+
+    /**
+     * 获得所有根节点
+     *
+     * @param nodes
+     * @return
+     */
+    private static List<BaseNode> getRootNodes(List<BaseNode> nodes) {
+        List<BaseNode> root = new ArrayList<>();
+        for (BaseNode node : nodes) {
+            if (node.isRoot())
+                root.add(node);
+        }
+        return root;
+    }
+
+    /**
+     * 把一个节点上的所有的内容都挂上去
+     */
+    private static <B> void addNode(List<BaseNode> nodes, BaseNode<B> node,
+                                    int defaultExpandLeval, int currentLevel) {
+        nodes.add(node);
+//如果默认展开层级大于或者当前节点层级，那么设置当前层级是展开的，否则设置是闭合的
+        if (defaultExpandLeval >= currentLevel) {
+            node.setExpand(true);
+        }
+
+        if (node.isLeaf())
+            return;
+        for (int i = 0; i < node.getChildren().size(); i++) {
+            addNode(nodes, node.getChildren().get(i), defaultExpandLeval,
+                    currentLevel + 1);
+        }
+    }
+
 }

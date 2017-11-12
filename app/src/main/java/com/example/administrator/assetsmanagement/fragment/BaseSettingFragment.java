@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.activity.DepartmentSettingActivity;
 import com.example.administrator.assetsmanagement.activity.LocationSettingActivity;
+import com.example.administrator.assetsmanagement.activity.PersonSettingActivity;
+import com.example.administrator.assetsmanagement.activity.TreeNodeSettingActivity;
 import com.example.administrator.assetsmanagement.base.BaseFragment;
 
 import butterknife.ButterKnife;
@@ -56,6 +58,7 @@ public class BaseSettingFragment extends BaseFragment {
                 startActivity(DepartmentSettingActivity.class,null);
                 break;
             case R.id.iv_base_set_person:
+                startActivity(PersonSettingActivity.class,null);
                 break;
             case R.id.iv_base_set_categray:
                 break;
