@@ -19,9 +19,29 @@ public class Person extends BmobUser {
     @TreeNodePId
     private String parentId;
     @TreeNodeName
-    private String personName;
+    private String username;
     @TreeNodeIsLast
     private Boolean isPerson = true;
+    private String password;
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public Boolean getPerson() {
         return isPerson;
@@ -60,13 +80,7 @@ public class Person extends BmobUser {
         this.parentId = parentId;
     }
 
-    public String getPersonName() {
-        return personName;
-    }
 
-    public void setPersonName(String locationName) {
-        this.personName = locationName;
-    }
 
 //    public String getLocationNumber() {
 //        return locationNumber;
@@ -83,10 +97,10 @@ public class Person extends BmobUser {
 
     }
 
-    public Person(String id, String parentId, String personName) {
+    public Person(String id, String parentId, String username) {
         this.id = id;
         this.parentId = parentId;
-        this.personName = personName;
+        this.username = username;
     }
 
 

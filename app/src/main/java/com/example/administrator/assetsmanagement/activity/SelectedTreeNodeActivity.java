@@ -86,8 +86,12 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
         type = intent.getIntExtra("type", 0);
         isPerson = intent.getBooleanExtra("person", false);
         initNaviView();
+        LinearLayoutManager ll = new LinearLayoutManager(this);
+        mLvTreeStructure.setLayoutManager(ll);
+
         adapter = new CheckboxTreeNodeAdapter(this, treeNodeList,
                 0, R.mipmap.expand, R.mipmap.collapse);
+        mLvTreeStructure.setAdapter(adapter);
         adapter.setCheckBoxSelectedListener(new TreeNodeSelected() {
             @Override
             public void checked(BaseNode node, int postion) {
@@ -99,9 +103,9 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
                  mBaseNode =null;
             }
         });
-        LinearLayoutManager ll = new LinearLayoutManager(this);
-        mLvTreeStructure.setLayoutManager(ll);
-        mLvTreeStructure.setAdapter(adapter);
+
+
+
     }
 
 

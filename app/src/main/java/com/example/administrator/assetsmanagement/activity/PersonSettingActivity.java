@@ -2,6 +2,8 @@ package com.example.administrator.assetsmanagement.activity;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,16 +17,21 @@ import com.example.administrator.assetsmanagement.Interface.TreeNodeSelected;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.Department;
+import com.example.administrator.assetsmanagement.bean.Location;
 import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.CheckboxTreeNodeAdapter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.SaveListener;
 
 /**
  * 人员管理：增加，修改信息，删除等操作。删除时要判断是否有资产，无则可以删除。人员调动操作过程 是
@@ -127,8 +134,57 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
         LinearLayoutManager ll = new LinearLayoutManager(this);
         mLvTreeStructure.setLayoutManager(ll);
         mLvTreeStructure.setAdapter(adapter);
-    }
 
+        //
+        BmobQuery<Location> query = new BmobQuery<>();
+        query.setLimit(500);
+        //执行查询方法
+        query.findObjects(this, new FindListener<Location>() {
+            @Override
+            public void onSuccess(final List<Location> object) {
+                // TODO Auto-generated method stub
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Message msg = new Message();
+                        msg.what = USER_REQUEST;
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("location", (Serializable) object);
+                        msg.setData(bundle);
+                        handler.sendMessage(msg);
+                    }
+                }).start();
+
+            }
+
+            @Override
+            public void onError(int code, String msg) {
+                // TODO Auto-generated method stub
+                toast("查询失败：" + msg);
+            }
+        });
+    }
+    public static final int USER_REQUEST = 10;
+    public static final int ADD_SUCCESS = 11;
+
+    MyHandler handler = new MyHandler();
+
+    class MyHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case USER_REQUEST:
+                    List<Location> locations = (List<Location>) msg.getData().getSerializable("location");
+                    personNodeList.clear();
+                    personNodeList.addAll(locations);
+                    adapter.notifyDataSetChanged();
+                    break;
+
+            }
+        }
+    }
     @OnClick({R.id.btn_tree_add_node, R.id.btn_tree_replace_node, R.id.btn_tree_delete_node})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -140,9 +196,9 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
                         newNode.setId(System.currentTimeMillis() + "");
                         newNode.setpId(mBaseNode.getId());
                         newNode.isLast = true;
-                        if (addToBmob(newNode)) {
-                            addNode(newNode, mBaseNode.getLevel() + 1);
-                        }
+                        addToBmob(newNode);
+                        addNode(newNode, mBaseNode.getLevel() + 1);
+
                     } else {
                         toast("请输入姓名！");
                     }
@@ -221,8 +277,24 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
         mBaseNode = null;
     }
 
-    public boolean addToBmob(BaseNode node) {
-        return true;
+    public void addToBmob(BaseNode node) {
+        Person person = new Person();
+        person.setId(node.getId());
+        person.setParentId(node.getpId());
+        person.setUsername(node.getName());
+        person.login(this, new SaveListener() {
+            @Override
+            public void onSuccess() {
+                toast("ok");
+            }
+
+            @Override
+            public void onFailure(int i, String s) {
+
+            }
+        });
+
+
     }
 
     public boolean updateToBmob(BaseNode node) {
