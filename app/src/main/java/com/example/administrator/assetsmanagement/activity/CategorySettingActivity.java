@@ -50,8 +50,8 @@ public class CategorySettingActivity extends TreeNodeSettingActivity {
    
 
     @Override
-    public boolean addToBmob(BaseNode node) {
-        return true;
+    public void addToBmob(BaseNode node) {
+
     }
 
     @Override

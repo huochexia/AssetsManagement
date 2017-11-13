@@ -18,6 +18,7 @@ import com.example.administrator.assetsmanagement.fragment.ViewPagerAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.bmob.v3.Bmob;
 
 public class MainActivity extends ParentWithNaviActivity {
 
@@ -59,6 +60,7 @@ public class MainActivity extends ParentWithNaviActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Bmob.initialize(this, "facbe328bdb28e7864f448ba3321339f");
         ButterKnife.bind(this);
 
         initNaviView();

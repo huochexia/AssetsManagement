@@ -108,30 +108,30 @@ public abstract class TreeNodeSettingActivity extends ParentWithNaviActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_tree_add_node:
-                if (mBaseNode != null ) {
+                if (mBaseNode != null) {
                     if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
                         BaseNode newNode = new BaseNode();
                         newNode.setName(edTreeStructureNew.getText().toString());
                         newNode.setId(System.currentTimeMillis() + "");
                         newNode.setpId(mBaseNode.getId());
-                        if (addToBmob(newNode)) {
-                            addNode(newNode, mBaseNode.getLevel() + 1);
-                        }
+                        addToBmob(newNode);
+                        addNode(newNode, mBaseNode.getLevel() + 1);
+
 
                     } else {
                         toast("请输入新名称！");
                     }
                 } else {
-                       if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
-                            //如果没有选择节点，则列表最后创建根节点
-                            mBaseNode = new BaseNode(System.currentTimeMillis() + "",
-                                    "0", edTreeStructureNew.getText().toString());
-                            if (addToBmob(mBaseNode)) {
-                                addNode(mBaseNode, 0);
-                            }
-                        } else {
-                            toast("请输入新名称！");
-                        }
+                    if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
+                        //如果没有选择节点，则列表最后创建根节点
+                        mBaseNode = new BaseNode(System.currentTimeMillis() + "",
+                                "0", edTreeStructureNew.getText().toString());
+                        addToBmob(mBaseNode);
+                        addNode(mBaseNode, 0);
+
+                    } else {
+                        toast("请输入新名称！");
+                    }
                 }
                 break;
             case R.id.btn_tree_replace_node:
@@ -171,7 +171,7 @@ public abstract class TreeNodeSettingActivity extends ParentWithNaviActivity {
         if (node.getParent() != null) {
             tvTreeStructureCurrentNode.setText(node.getParent().getName() + "--" + node.getName());
         } else {
-            tvTreeStructureCurrentNode.setText("--"+node.getName());
+            tvTreeStructureCurrentNode.setText("--" + node.getName());
         }
         adapter.notifyDataSetChanged();
         edTreeStructureNew.setText("");
@@ -190,7 +190,7 @@ public abstract class TreeNodeSettingActivity extends ParentWithNaviActivity {
         mBaseNode = null;
     }
 
-    public abstract boolean addToBmob(BaseNode node);
+    public abstract void addToBmob(BaseNode node);
 
     public abstract boolean updateToBmob(BaseNode node);
 
