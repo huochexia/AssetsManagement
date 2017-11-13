@@ -78,6 +78,10 @@ public class CheckboxTreeNodeAdapter extends NodeRecyclerViewAdapter<CheckboxTre
         return holder;
     }
 
+    /**
+     * 设置选择框监听器
+     * @param selectedListener
+     */
     public void setCheckBoxSelectedListener(TreeNodeSelected selectedListener) {
         this.selectedListener = selectedListener;
     }

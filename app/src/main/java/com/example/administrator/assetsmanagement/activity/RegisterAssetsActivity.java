@@ -1,5 +1,6 @@
 package com.example.administrator.assetsmanagement.activity;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
+import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,6 +26,7 @@ import mehdi.sakout.fancybuttons.FancyButton;
  */
 
 public class RegisterAssetsActivity extends ParentWithNaviActivity {
+    public static final int REGISTER_LOCATION =2;
 
     @BindView(R.id.tv_register_place)
     TextView mTvRegisterPlace;
@@ -52,6 +55,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     @BindView(R.id.btn_register_add_next)
     FancyButton btnRegisterAddNext;
 
+    private BaseNode mBaseNode;
     @Override
     public String title() {
         return "登记资产";
@@ -108,6 +112,9 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_register_location:
+                Intent intent = new Intent(RegisterAssetsActivity.this, SelectedTreeNodeActivity.class);
+                intent.putExtra("type", SelectedTreeNodeActivity.SEARCH_LOCATION);
+                startActivityForResult(intent,REGISTER_LOCATION);
                 break;
             case R.id.btn_register_category:
                 break;
@@ -132,5 +139,19 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         }
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 2:
+                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
+                    toast("ok");
+                    mBaseNode = (BaseNode) data.getSerializableExtra("node");
+                    setSearchContent(mBaseNode);
+                }
+                break;
+        }
+    }
+    private void setSearchContent(BaseNode node) {
+        mTvRegisterPlace.setText(node.getName());
+    }
 }

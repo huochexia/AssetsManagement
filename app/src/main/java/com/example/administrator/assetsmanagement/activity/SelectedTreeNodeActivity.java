@@ -32,7 +32,7 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
     public static final int  SEARCH_LOCATION = 1;
     public static final int  SEARCH_DEPARTMENT = 2;
     public static final int  SEARCH_MANAGER= 3;
-
+    public static final int  SEARCH_RESULT_OK =100;
     protected List<BmobObject> treeNodeList = new ArrayList<>();
     @BindView(R.id.lv_tree_structure)
     RecyclerView mLvTreeStructure;
@@ -40,6 +40,7 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
     private int mPosition;
     private CheckboxTreeNodeAdapter adapter;
     private int type;
+    private boolean isPerson;
 
     @Override
     public String title() {
@@ -83,18 +84,19 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
         ButterKnife.bind(this);
         Intent intent = getIntent();
         type = intent.getIntExtra("type", 0);
+        isPerson = intent.getBooleanExtra("person", false);
         initNaviView();
         adapter = new CheckboxTreeNodeAdapter(this, treeNodeList,
                 0, R.mipmap.expand, R.mipmap.collapse);
         adapter.setCheckBoxSelectedListener(new TreeNodeSelected() {
             @Override
             public void checked(BaseNode node, int postion) {
-
+                 mBaseNode = node;
             }
 
             @Override
             public void cancelCheck(BaseNode node, int position) {
-
+                 mBaseNode =null;
             }
         });
         LinearLayoutManager ll = new LinearLayoutManager(this);
@@ -105,8 +107,39 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
 
     @OnClick(R.id.btn_tree_search_node_ok)
     public void onViewClicked() {
-        Intent intent = new Intent();
-        setResult(100,intent);
-        finish();
+        //模拟数据
+        mBaseNode = new BaseNode();
+        mBaseNode.isLast = true;
+        mBaseNode.setName("联系");
+        if (mBaseNode != null) {
+            if (!isPerson) {
+                //如果是查找位置或部门，则直接返回选择的节点
+
+                sendNodeInfo(mBaseNode);
+                finish();
+            } else {
+                //如果是查找人员，则必须选择人员，而不能选择部门
+                if (mBaseNode.isLast) {
+                    sendNodeInfo(mBaseNode);
+                    finish();
+                } else {
+                    toast("请选择人员！");
+                }
+            }
+        } else {
+            toast("请选择要查询的内容！");
+        }
+
     }
+
+    /**
+     * 返回选择节点
+     * @param node
+     */
+    private void sendNodeInfo(BaseNode node) {
+        Intent intent = new Intent();
+        intent.putExtra("node", node);
+        setResult(SEARCH_RESULT_OK, intent);
+    }
+
 }

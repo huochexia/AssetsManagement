@@ -87,6 +87,7 @@ public class MainActivity extends ParentWithNaviActivity {
         });
         mNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         setViewpager(mViewpager);
+        //增加ViewPager转换动画
         mViewpager.setPageTransformer(true,new RotateDownTransformer());
     }
 

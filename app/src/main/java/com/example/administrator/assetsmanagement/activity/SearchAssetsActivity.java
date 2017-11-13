@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
+import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,6 +24,9 @@ import mehdi.sakout.fancybuttons.FancyButton;
  */
 
 public class SearchAssetsActivity extends ParentWithNaviActivity {
+
+    public static final int SEARCHASSETS_REQUEST = 1;
+
     @BindView(R.id.rg_assets_search)
     RadioGroup mRgAssetsSearch;
     @BindView(R.id.btn_search_location)
@@ -42,6 +46,7 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
     @BindView(R.id.rc_search_list)
     RecyclerView mRcSearchList;
 
+    private BaseNode mNode;//接收传入的节点信息
     @Override
     public String title() {
         return "查找资产";
@@ -122,7 +127,7 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_search_location:
-                startActivity(SelectedTreeNodeActivity.SEARCH_LOCATION);
+                startActivity(SelectedTreeNodeActivity.SEARCH_LOCATION,false);
                 break;
             case R.id.btn_register_category:
 
@@ -131,29 +136,36 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
 
                 break;
             case R.id.btn_search_dept:
-                startActivity(SelectedTreeNodeActivity.SEARCH_DEPARTMENT);
+                startActivity(SelectedTreeNodeActivity.SEARCH_DEPARTMENT,false);
                 break;
             case R.id.btn_search_manager:
-                startActivity(SelectedTreeNodeActivity.SEARCH_MANAGER);
+                startActivity(SelectedTreeNodeActivity.SEARCH_MANAGER,true);
                 break;
         }
     }
 
-    private void startActivity(int type) {
+    private void startActivity(int type,boolean isPerson) {
         Intent intent = new Intent(SearchAssetsActivity.this,SelectedTreeNodeActivity.class);
         intent.putExtra("type", type);
-        startActivityForResult(intent,1);
+        intent.putExtra("person", isPerson);
+        startActivityForResult(intent,SEARCHASSETS_REQUEST);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case 1:
-                if (resultCode == 100) {
+                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
                     toast("ok");
+                    mNode = (BaseNode) data.getSerializableExtra("node");
+                    setSearchContent(mNode);
                 }
                 break;
             default:
         }
+    }
+
+    private void setSearchContent(BaseNode node) {
+        mTvSearchContent.setText(node.getName());
     }
 }

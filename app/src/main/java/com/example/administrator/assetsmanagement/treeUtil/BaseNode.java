@@ -8,6 +8,7 @@ import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeIs
 import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeName;
 import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodePId;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
  * 如果你觉得你的Item布局十分复杂，且布局会展示Bean的其他数据，那么为了方便，你可以让Node中
  * 包含一个泛型B， 每个Node携带与之对于的Bean的所有数据；
  */
-public class BaseNode<B> {
+public class BaseNode<B> implements Serializable {
 
     //传入一下实体bean
     public B bean;
