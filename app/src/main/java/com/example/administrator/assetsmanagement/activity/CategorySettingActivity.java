@@ -1,30 +1,19 @@
 package com.example.administrator.assetsmanagement.activity;
 
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
 
-import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
-import com.example.administrator.assetsmanagement.R;
-import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.Location;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 /**
  * Created by Administrator on 2017/11/10.
  */
 
-public class DepartmentSettingActivity extends TreeNodeSettingActivity {
+public class CategorySettingActivity extends TreeNodeSettingActivity {
     private List<Object> departList = new ArrayList<>();
     Location l1 = new Location("1", "0", "信息技术部");
     Location l2 = new Location("A", "0", "后勤部");
@@ -38,7 +27,7 @@ public class DepartmentSettingActivity extends TreeNodeSettingActivity {
     
     @Override
     public String title() {
-        return "部门";
+        return "资产类别";
     }
 
    

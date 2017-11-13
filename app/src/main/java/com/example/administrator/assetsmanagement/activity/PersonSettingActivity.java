@@ -175,7 +175,7 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
                 break;
             case R.id.btn_tree_delete_node:
                 if (mBaseNode != null && mBaseNode.isLast) {
-                    if (removeToBmob(mBaseNode)) {
+                    if (removeFromBmob(mBaseNode)) {
                         tvTreeStructureCurrentNode.setText("");
                         adapter.deleteNode(mBaseNode);
                         adapter.notifyDataSetChanged();
@@ -229,7 +229,7 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
         return true;
     }
 
-    public boolean removeToBmob(BaseNode node) {
+    public boolean removeFromBmob(BaseNode node) {
         return true;
     }
 

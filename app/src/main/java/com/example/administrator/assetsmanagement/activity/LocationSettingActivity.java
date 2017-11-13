@@ -52,7 +52,7 @@ public class LocationSettingActivity extends TreeNodeSettingActivity {
     }
 
     @Override
-    public boolean removeToBmob(BaseNode node) {
+    public boolean removeFromBmob(BaseNode node) {
         return true;
     }
 

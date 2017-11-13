@@ -11,7 +11,7 @@ import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobUser;
 
 /**
- * 位置：包含上一级位置，名称，编号
+ * 人员信息
  */
 public class Person extends BmobUser {
     @TreeNodeId

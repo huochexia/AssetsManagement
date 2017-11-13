@@ -149,7 +149,7 @@ public abstract class TreeNodeSettingActivity extends ParentWithNaviActivity {
                 break;
             case R.id.btn_tree_delete_node:
                 if (mBaseNode != null) {
-                    if (removeToBmob(mBaseNode)) {
+                    if (removeFromBmob(mBaseNode)) {
                         tvTreeStructureCurrentNode.setText("");
                         adapter.deleteNode(mBaseNode);
                         adapter.notifyDataSetChanged();
@@ -194,7 +194,7 @@ public abstract class TreeNodeSettingActivity extends ParentWithNaviActivity {
 
     public abstract boolean updateToBmob(BaseNode node);
 
-    public abstract boolean removeToBmob(BaseNode node);
+    public abstract boolean removeFromBmob(BaseNode node);
 
 
 }

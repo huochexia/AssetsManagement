@@ -6,7 +6,7 @@ import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodePI
 
 import cn.bmob.v3.BmobObject;
 
-/**部门信息，继承自节点（Node)类，实现树型管理。
+/**部门信息
  * Created by Administrator on 2017/11/8.
  */
 

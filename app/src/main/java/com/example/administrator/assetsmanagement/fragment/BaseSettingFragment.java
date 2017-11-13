@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.administrator.assetsmanagement.R;
+import com.example.administrator.assetsmanagement.activity.CategorySettingActivity;
 import com.example.administrator.assetsmanagement.activity.DepartmentSettingActivity;
 import com.example.administrator.assetsmanagement.activity.LocationSettingActivity;
 import com.example.administrator.assetsmanagement.activity.PersonSettingActivity;
@@ -60,6 +61,7 @@ public class BaseSettingFragment extends BaseFragment {
                 startActivity(PersonSettingActivity.class,null);
                 break;
             case R.id.iv_base_set_categray:
+                startActivity(CategorySettingActivity.class,null);
                 break;
         }
     }

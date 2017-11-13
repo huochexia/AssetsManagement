@@ -7,7 +7,7 @@ import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodePI
 import cn.bmob.v3.BmobObject;
 
 /**
- * 位置：包含上一级位置，名称，编号
+ * 位置信息
  */
 public class Location extends BmobObject {
     @TreeNodeId
