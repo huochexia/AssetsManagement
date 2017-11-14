@@ -58,7 +58,7 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
 
     @Override
     public String title() {
-        return "位置";
+        return "资产类别";
     }
 
     @Override
@@ -107,10 +107,10 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
         new BmobQuery<AssetCategory>().doSQLQuery(this, sql, new SQLQueryListener<AssetCategory>() {
             @Override
             public void done(BmobQueryResult<AssetCategory> bmobQueryResult, BmobException e) {
-                List<AssetCategory> locations = bmobQueryResult.getResults();
-                if (locations != null && locations.size() > 0) {
+                List<AssetCategory> assetCategories = bmobQueryResult.getResults();
+                if (assetCategories != null && assetCategories.size() > 0) {
                     treeNodeList.clear();
-                    treeNodeList.addAll(bmobQueryResult.getResults());
+                    treeNodeList.addAll(assetCategories);
                     adapter = new CheckboxTreeNodeAdapter(CategorySettingActivity.this, treeNodeList,
                             0, R.mipmap.expand, R.mipmap.collapse);
                     mLvTreeStructure.setAdapter(adapter);
@@ -151,7 +151,7 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
                         newNode.setpId(mBaseNode.getId());
                         addToBmob(newNode);
                         addNode(newNode, mBaseNode.getLevel() + 1);
-
+                        mBaseNode = null;
                     } else {
                         toast("请输入新名称！");
                     }
@@ -162,7 +162,7 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
                                 "0", edTreeStructureNew.getText().toString());
                         addToBmob(mBaseNode);
                         addNode(mBaseNode, 0);
-
+                        mBaseNode = null;
                     } else {
                         toast("请输入新名称！");
                     }
@@ -173,25 +173,39 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
                     if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
                         updateToBmob(mBaseNode);
                         updateNode(mBaseNode);
-
+                        mBaseNode = null;
                     } else {
                         toast("请输入新名称！");
                     }
                 } else {
-                    toast("请选择要修改的位置！");
+                    toast("请选择要修改的类别！");
                 }
                 break;
             case R.id.btn_tree_delete_node:
-                if (mBaseNode != null) {
+                if (mBaseNode != null &&  mBaseNode.getChildren().size()<=0) {
                     removeFromBmob(mBaseNode);
-                    tvTreeStructureCurrentNode.setText("");
-                    adapter.deleteNode(mBaseNode);
-                    adapter.notifyDataSetChanged();
+                    deleteNode(mBaseNode);
                 } else {
-                    toast("请选择要删除的内容！");
+                    if (mBaseNode == null) {
+
+                        toast("请选择要删除的内容！");
+                    } else {
+                        toast("不能删除父节点！");
+                    }
                 }
                 break;
         }
+    }
+
+    /**
+     * 删除节点
+     * @param node
+     */
+    private void deleteNode(BaseNode node) {
+        tvTreeStructureCurrentNode.setText("");
+        adapter.deleteNode(node);
+        adapter.notifyDataSetChanged();
+
     }
 
     /**
@@ -220,7 +234,7 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
         tvTreeStructureCurrentNode.setText("");
         adapter.addData(mPosition, newNode, level);
         adapter.notifyDataSetChanged();
-        mBaseNode = null;
+
     }
 
     /**

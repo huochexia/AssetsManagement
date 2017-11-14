@@ -107,10 +107,10 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
         new BmobQuery<Department>().doSQLQuery(this, sql, new SQLQueryListener<Department>() {
             @Override
             public void done(BmobQueryResult<Department> bmobQueryResult, BmobException e) {
-                List<Department> locations = bmobQueryResult.getResults();
-                if (locations != null && locations.size() > 0) {
+                List<Department> departments = bmobQueryResult.getResults();
+                if (departments != null && departments.size() > 0) {
                     treeNodeList.clear();
-                    treeNodeList.addAll(bmobQueryResult.getResults());
+                    treeNodeList.addAll(departments);
                     adapter = new CheckboxTreeNodeAdapter(DepartmentSettingActivity.this, treeNodeList,
                             0, R.mipmap.expand, R.mipmap.collapse);
                     mLvTreeStructure.setAdapter(adapter);
@@ -151,7 +151,7 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
                         newNode.setpId(mBaseNode.getId());
                         addToBmob(newNode);
                         addNode(newNode, mBaseNode.getLevel() + 1);
-
+                        mBaseNode = null;
                     } else {
                         toast("请输入新名称！");
                     }
@@ -162,7 +162,7 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
                                 "0", edTreeStructureNew.getText().toString());
                         addToBmob(mBaseNode);
                         addNode(mBaseNode, 0);
-
+                        mBaseNode = null;
                     } else {
                         toast("请输入新名称！");
                     }
@@ -178,20 +178,35 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
                         toast("请输入新名称！");
                     }
                 } else {
-                    toast("请选择要修改的位置！");
+                    toast("请选择要修改的部门！");
                 }
                 break;
             case R.id.btn_tree_delete_node:
-                if (mBaseNode != null) {
+                if (mBaseNode != null && mBaseNode.getChildren().size()<=0) {
                     removeFromBmob(mBaseNode);
-                    tvTreeStructureCurrentNode.setText("");
-                    adapter.deleteNode(mBaseNode);
-                    adapter.notifyDataSetChanged();
+                    deleteNode(mBaseNode);
+                    mBaseNode = null;
                 } else {
-                    toast("请选择要删除的内容！");
+                    if (mBaseNode == null) {
+
+                        toast("请选择要删除的内容！");
+                    } else {
+                        toast("不能删除父节点！");
+                    }
                 }
                 break;
         }
+    }
+
+    /**
+     * 删除节点
+     * @param node
+     */
+    private void deleteNode(BaseNode node) {
+        tvTreeStructureCurrentNode.setText("");
+        adapter.deleteNode(node);
+        adapter.notifyDataSetChanged();
+
     }
 
     /**
@@ -220,7 +235,7 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
         tvTreeStructureCurrentNode.setText("");
         adapter.addData(mPosition, newNode, level);
         adapter.notifyDataSetChanged();
-        mBaseNode = null;
+
     }
 
     /**

@@ -36,7 +36,12 @@ import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
 /**
- * 位置管理类
+ * 位置管理类：涉及从服务器数据库中获取所有数据，然后增加，修改名称和删除等三个主要功能。
+ * 这三个功能都涉及到了同时对节点和数据库的两个操作。其中对数据库的操作使用到了异步操作，
+ * 特别是修改和删除功能。因为Bmob数据库操作的局限性（即对BmobObject类的修改和删除只能使用
+ * ObjectId属性，所有要通过从节点中获取的对象id，到数据库中查找对象ObjectId，然后再利用这
+ * 个ObjectId进行修改和删除。所以它们都使用了异步操作。即从数据库中取得结果后，开启子线程
+ * 在子线程中进行对数据库内容的修改和删除。
  * Created by Administrator on 2017/11/10.
  */
 
@@ -110,7 +115,7 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
                 List<Location> locations = bmobQueryResult.getResults();
                 if (locations != null && locations.size() > 0) {
                     treeNodeList.clear();
-                    treeNodeList.addAll(bmobQueryResult.getResults());
+                    treeNodeList.addAll(locations);
                     adapter = new CheckboxTreeNodeAdapter(LocationSettingActivity.this, treeNodeList,
                             0, R.mipmap.expand, R.mipmap.collapse);
                     mLvTreeStructure.setAdapter(adapter);
@@ -151,7 +156,7 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
                         newNode.setpId(mBaseNode.getId());
                         addToBmob(newNode);
                         addNode(newNode, mBaseNode.getLevel() + 1);
-
+                        mBaseNode = null;
                     } else {
                         toast("请输入新名称！");
                     }
@@ -162,7 +167,7 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
                                 "0", edTreeStructureNew.getText().toString());
                         addToBmob(mBaseNode);
                         addNode(mBaseNode, 0);
-
+                        mBaseNode = null;
                     } else {
                         toast("请输入新名称！");
                     }
@@ -182,13 +187,17 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
                 }
                 break;
             case R.id.btn_tree_delete_node:
-                if (mBaseNode != null) {
+                if (mBaseNode != null && mBaseNode.getChildren().size()<=0) {
                     removeFromBmob(mBaseNode);
-                    tvTreeStructureCurrentNode.setText("");
-                    adapter.deleteNode(mBaseNode);
-                    adapter.notifyDataSetChanged();
+                    deleteNode(mBaseNode);
+                    mBaseNode = null;
                 } else {
-                    toast("请选择要删除的内容！");
+                    if (mBaseNode == null) {
+
+                        toast("请选择要删除的内容！");
+                    } else {
+                        toast("不能删除父节点！");
+                    }
                 }
                 break;
         }
@@ -220,7 +229,18 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
         tvTreeStructureCurrentNode.setText("");
         adapter.addData(mPosition, newNode, level);
         adapter.notifyDataSetChanged();
-        mBaseNode = null;
+
+    }
+
+    /**
+     * 删除节点
+     * @param node
+     */
+    private void deleteNode(BaseNode node) {
+        tvTreeStructureCurrentNode.setText("");
+        adapter.deleteNode(node);
+        adapter.notifyDataSetChanged();
+
     }
 
     /**

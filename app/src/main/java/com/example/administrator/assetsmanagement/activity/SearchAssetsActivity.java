@@ -130,7 +130,7 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                 startActivity(SelectedTreeNodeActivity.SEARCH_LOCATION,false);
                 break;
             case R.id.btn_register_category:
-
+                startActivity(SelectedTreeNodeActivity.SEARCH_LOCATION,false);
                 break;
             case R.id.btn_search_name:
 
@@ -156,7 +156,7 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
         switch (requestCode) {
             case 1:
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    toast("ok");
+
                     mNode = (BaseNode) data.getSerializableExtra("node");
                     setSearchContent(mNode);
                 }
