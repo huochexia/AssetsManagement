@@ -13,6 +13,10 @@ import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
+import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,6 +51,7 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
     RecyclerView mRcSearchList;
 
     private BaseNode mNode;//接收传入的节点信息
+
     @Override
     public String title() {
         return "查找资产";
@@ -92,7 +97,7 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                         allSetGone();
                         mBtnRegisterCategory.setVisibility(View.VISIBLE);
                         break;
-                    case R.id.rb_assets_search_dept  :
+                    case R.id.rb_assets_search_dept:
                         allSetGone();
                         mBtnSearchDept.setVisibility(View.VISIBLE);
                         break;
@@ -123,32 +128,32 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
         mTvSearchContent.setText("");
     }
 
-    @OnClick({R.id.btn_search_location, R.id.btn_register_category, R.id.btn_search_name, R.id.btn_search_manager,R.id.btn_search_dept})
+    @OnClick({R.id.btn_search_location, R.id.btn_register_category, R.id.btn_search_name, R.id.btn_search_manager, R.id.btn_search_dept})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_search_location:
-                startActivity(SelectedTreeNodeActivity.SEARCH_LOCATION,false);
+                startActivity(SelectedTreeNodeActivity.SEARCH_LOCATION, false);
                 break;
             case R.id.btn_register_category:
-                startActivity(SelectedTreeNodeActivity.SEARCH_LOCATION,false);
+                startActivity(SelectedTreeNodeActivity.SEARCH_CATEGORY, false);
                 break;
             case R.id.btn_search_name:
 
                 break;
             case R.id.btn_search_dept:
-                startActivity(SelectedTreeNodeActivity.SEARCH_DEPARTMENT,false);
+                startActivity(SelectedTreeNodeActivity.SEARCH_DEPARTMENT, false);
                 break;
             case R.id.btn_search_manager:
-                startActivity(SelectedTreeNodeActivity.SEARCH_MANAGER,true);
+                startActivity(SelectedTreeNodeActivity.SEARCH_MANAGER, true);
                 break;
         }
     }
 
-    private void startActivity(int type,boolean isPerson) {
-        Intent intent = new Intent(SearchAssetsActivity.this,SelectedTreeNodeActivity.class);
+    private void startActivity(int type, boolean isPerson) {
+        Intent intent = new Intent(SearchAssetsActivity.this, SelectedTreeNodeActivity.class);
         intent.putExtra("type", type);
         intent.putExtra("person", isPerson);
-        startActivityForResult(intent,SEARCHASSETS_REQUEST);
+        startActivityForResult(intent, SEARCHASSETS_REQUEST);
     }
 
     @Override
@@ -156,7 +161,6 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
         switch (requestCode) {
             case 1:
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-
                     mNode = (BaseNode) data.getSerializableExtra("node");
                     setSearchContent(mNode);
                 }
@@ -165,7 +169,22 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
         }
     }
 
-    private void setSearchContent(BaseNode node) {
-        mTvSearchContent.setText(node.getName());
+    /**
+     * 显示要查找的内容，传入的节点是201室，得到它的完整链内容。比如 A座-2楼-201室。
+     * @param baseNode
+     */
+    private void setSearchContent(BaseNode baseNode) {
+        StringBuffer buffer = new StringBuffer();
+        List<BaseNode> nodes = new ArrayList<>();
+        NodeHelper.getAllParents(nodes, baseNode);
+        int i = nodes.size();
+        while (i > 0) {
+            i--;
+            buffer.append(nodes.get(i).getName());
+            if (i != 0)
+                buffer.append("-");
+        }
+        mTvSearchContent.setText(buffer.toString());
     }
+
 }

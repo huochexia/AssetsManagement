@@ -1,7 +1,6 @@
 package com.example.administrator.assetsmanagement.activity;
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +10,8 @@ import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener
 import com.example.administrator.assetsmanagement.Interface.TreeNodeSelected;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
+import com.example.administrator.assetsmanagement.bean.AssetCategory;
+import com.example.administrator.assetsmanagement.bean.Department;
 import com.example.administrator.assetsmanagement.bean.Location;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.CheckboxTreeNodeAdapter;
@@ -98,30 +99,29 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
         mLvTreeStructure.setLayoutManager(ll);
         switch (type) {
             case SEARCH_LOCATION:
-                sql ="select * from Location";
+                getLocationFromBmob();
                 break;
             case SEARCH_DEPARTMENT:
-                sql="select * from Department";
+                getDepartmentFromBmob();
                 break;
             case SEARCH_MANAGER:
                 break;
             case SEARCH_CATEGORY:
-                sql="select * from Category";
+               getCategoryFromBmob();
                 break;
             default:
                 break;
         }
-        getDataFromBmob(sql);
 
 
     }
 
     /**
-     * 从服务器获取数据，并以此设置适配器
+     * 从服务器获取位置数据，并以此设置适配器
      */
-    private void getDataFromBmob(String sql) {
-
-        new BmobQuery<Location>().doSQLQuery(this, sql, new SQLQueryListener<Location>() {
+    private  void getLocationFromBmob() {
+        String sqlLocation = "select * from Location";
+        new BmobQuery<Location>().doSQLQuery(this, sqlLocation, new SQLQueryListener<Location>() {
             @Override
             public void done(BmobQueryResult<Location> bmobQueryResult, BmobException e) {
                 List<Location> locations = bmobQueryResult.getResults();
@@ -136,11 +136,7 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
                         public void checked(BaseNode node, int postion) {
                             mBaseNode = node;
                             mPosition = postion;
-                            String parent = "";
-                            if (node.getParent() != null) {
-                                parent = node.getParent().getName();
-                            }
-                                                   }
+                        }
 
                         @Override
                         public void cancelCheck(BaseNode node, int position) {
@@ -155,13 +151,81 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
         });
     }
 
+    /**
+     * 从服务器获取部门数据，并以此设置适配器
+     */
+    private  void getDepartmentFromBmob() {
+        String sqlLocation = "select * from Department";
+        new BmobQuery<Department>().doSQLQuery(this, sqlLocation, new SQLQueryListener<Department>() {
+            @Override
+            public void done(BmobQueryResult<Department> bmobQueryResult, BmobException e) {
+                List<Department> departments = bmobQueryResult.getResults();
+                if (departments != null && departments.size() > 0) {
+                    treeNodeList.clear();
+                    treeNodeList.addAll(departments);
+                    adapter = new CheckboxTreeNodeAdapter(SelectedTreeNodeActivity.this, treeNodeList,
+                            0, R.mipmap.expand, R.mipmap.collapse);
+                    mLvTreeStructure.setAdapter(adapter);
+                    adapter.setCheckBoxSelectedListener(new TreeNodeSelected() {
+                        @Override
+                        public void checked(BaseNode node, int postion) {
+                            mBaseNode = node;
+                            mPosition = postion;
+                        }
+
+                        @Override
+                        public void cancelCheck(BaseNode node, int position) {
+                            mBaseNode = null;
+                            mPosition = 0;
+
+                        }
+                    });
+                }
+
+            }
+        });
+    }
+
+    /**
+     * 从服务器获取资产类别数据，并以此设置适配器
+     */
+    private  void getCategoryFromBmob() {
+        String sqlLocation = "select * from AssetCategory";
+        new BmobQuery<AssetCategory>().doSQLQuery(this, sqlLocation, new SQLQueryListener<AssetCategory>() {
+            @Override
+            public void done(BmobQueryResult<AssetCategory> bmobQueryResult, BmobException e) {
+                List<AssetCategory> category = bmobQueryResult.getResults();
+                if (category != null && category.size() > 0) {
+                    treeNodeList.clear();
+                    treeNodeList.addAll(category);
+                    adapter = new CheckboxTreeNodeAdapter(SelectedTreeNodeActivity.this, treeNodeList,
+                            0, R.mipmap.expand, R.mipmap.collapse);
+                    mLvTreeStructure.setAdapter(adapter);
+                    adapter.setCheckBoxSelectedListener(new TreeNodeSelected() {
+                        @Override
+                        public void checked(BaseNode node, int postion) {
+                            mBaseNode = node;
+                            mPosition = postion;
+                        }
+
+                        @Override
+                        public void cancelCheck(BaseNode node, int position) {
+                            mBaseNode = null;
+                            mPosition = 0;
+
+                        }
+                    });
+                }
+
+            }
+        });
+    }
     @OnClick(R.id.btn_tree_search_node_ok)
     public void onViewClicked() {
 
         if (mBaseNode != null) {
             if (!isPerson) {
                 //如果是查找位置或部门，则直接返回选择的节点
-
                 sendNodeInfo(mBaseNode);
                 finish();
             } else {

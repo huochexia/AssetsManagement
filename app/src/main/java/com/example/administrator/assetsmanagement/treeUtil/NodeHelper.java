@@ -191,4 +191,17 @@ public class NodeHelper {
         }
     }
 
+    /**
+     * 获得节点的父节点，以及父节点的父节点
+     * @param nodes
+     * @param node
+     * @param <B>
+     */
+    public static <B> void getAllParents(List<BaseNode> nodes, BaseNode<B> node) {
+        nodes.add(node);
+        if (node.getParent() == null) {
+            return;
+        }
+        getAllParents(nodes,node.getParent());
+    }
 }

@@ -1,7 +1,7 @@
 <?xml version="1" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="0dp"
@@ -14,7 +14,7 @@
             android:layout_centerInParent="true"
             android:text="查询方向："
             android:textColor="#000000"
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
     </RelativeLayout>
 
     <LinearLayout
@@ -29,46 +29,49 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-                <RadioButton
-                    android:id="@+id/rb_assets_search_location"
-                    android:textSize="16sp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="位     置"
-                    android:checked="true"/>
-
-                <RadioButton
-                    android:id="@+id/rb_assets_search_category"
-                    android:textSize="16sp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="类     别" />
-                <RadioButton
-                    android:id="@+id/rb_assets_search_name"
-                    android:textSize="16sp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="名     称" />
             <RadioButton
-                    android:id="@+id/rb_assets_search_dept"
-                    android:textSize="16sp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="部     门" />
+                android:id="@+id/rb_assets_search_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="位     置"
+                android:textSize="16sp"/>
 
-                <RadioButton
-                    android:id="@+id/rb_assets_search_manager"
-                    android:textSize="16sp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="管理员" />
+            <RadioButton
+                android:id="@+id/rb_assets_search_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="类     别"
+                android:textSize="16sp"/>
 
-                <RadioButton
-                    android:id="@+id/rb_assets_search_scrap"
-                    android:textSize="16sp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="报     废" />
+            <RadioButton
+                android:id="@+id/rb_assets_search_dept"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="部     门"
+                android:textSize="16sp"/>
+
+            <RadioButton
+                android:id="@+id/rb_assets_search_manager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="管理员"
+                android:textSize="16sp"/>
+
+            <RadioButton
+                android:id="@+id/rb_assets_search_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="名     称"
+                android:textSize="16sp"/>
+
+
+            <RadioButton
+                android:id="@+id/rb_assets_search_scrap"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="报     废"
+                android:textSize="16sp"/>
 
         </RadioGroup>
     </LinearLayout>
