@@ -128,7 +128,7 @@
         android:layout_weight="1">
 
         <mehdi.sakout.fancybuttons.FancyButton
-            android:id="@+id/btn_register_add_ok"
+            android:id="@+id/btn_search_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"

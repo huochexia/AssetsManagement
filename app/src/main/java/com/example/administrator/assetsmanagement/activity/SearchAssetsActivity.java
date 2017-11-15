@@ -29,7 +29,15 @@ import mehdi.sakout.fancybuttons.FancyButton;
 
 public class SearchAssetsActivity extends ParentWithNaviActivity {
 
-    public static final int SEARCHASSETS_REQUEST = 1;
+    public static final int SEARCHASSETS_REQUEST = 110;
+
+    public static final int SEARCH_LOCATION = 1;
+    public static final int SEARCH_CATEGORY = 2;
+    public static final int SEARCH_DEPARTMENT = 3;
+    public static final int SEARCH_MANAGER = 4;
+    public static final int SEARCH_NAME = 5;
+    public static final int SEARCH_STATUS = 6;
+
 
     @BindView(R.id.rg_assets_search)
     RadioGroup mRgAssetsSearch;
@@ -43,14 +51,15 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
     FancyButton mBtnSearchManager;
     @BindView(R.id.tv_search_content)
     TextView mTvSearchContent;
-    @BindView(R.id.btn_register_add_ok)
-    FancyButton mBtnRegisterAddOk;
     @BindView(R.id.btn_search_dept)
     FancyButton mBtnSearchDept;
     @BindView(R.id.rc_search_list)
     RecyclerView mRcSearchList;
+    @BindView(R.id.btn_search_start)
+    FancyButton btnSearchStart;
 
     private BaseNode mNode;//接收传入的节点信息
+    private int search_type;
 
     @Override
     public String title() {
@@ -92,27 +101,52 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                     case R.id.rb_assets_search_location:
                         allSetGone();
                         mBtnSearchLocation.setVisibility(View.VISIBLE);
+                        search_type = SEARCH_LOCATION;
                         break;
                     case R.id.rb_assets_search_category:
                         allSetGone();
                         mBtnRegisterCategory.setVisibility(View.VISIBLE);
+                        search_type = SEARCH_CATEGORY;
                         break;
                     case R.id.rb_assets_search_dept:
                         allSetGone();
                         mBtnSearchDept.setVisibility(View.VISIBLE);
+                        search_type = SEARCH_DEPARTMENT;
                         break;
                     case R.id.rb_assets_search_manager:
                         allSetGone();
                         mBtnSearchManager.setVisibility(View.VISIBLE);
+                        search_type = SEARCH_MANAGER;
                         break;
                     case R.id.rb_assets_search_name:
                         allSetGone();
                         mBtnSearchName.setVisibility(View.VISIBLE);
+                        search_type = SEARCH_NAME;
                         break;
                     case R.id.rb_assets_search_scrap:
                         allSetGone();
                         mTvSearchContent.setText("所有报废资产");
                         mTvSearchContent.setTextSize(25);
+                        search_type = SEARCH_STATUS;
+                        break;
+                }
+            }
+        });
+        btnSearchStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (search_type) {
+                    case SEARCH_LOCATION:
+                        break;
+                    case SEARCH_CATEGORY:
+                        break;
+                    case SEARCH_DEPARTMENT:
+                        break;
+                    case SEARCH_MANAGER:
+                        break;
+                    case SEARCH_NAME:
+                        break;
+                    case SEARCH_STATUS:
                         break;
                 }
             }
@@ -128,7 +162,8 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
         mTvSearchContent.setText("");
     }
 
-    @OnClick({R.id.btn_search_location, R.id.btn_register_category, R.id.btn_search_name, R.id.btn_search_manager, R.id.btn_search_dept})
+    @OnClick({R.id.btn_search_location, R.id.btn_register_category, R.id.btn_search_name,
+            R.id.btn_search_manager, R.id.btn_search_dept})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_search_location:
@@ -146,6 +181,7 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
             case R.id.btn_search_manager:
                 startActivity(SelectedTreeNodeActivity.SEARCH_MANAGER, true);
                 break;
+
         }
     }
 
@@ -159,10 +195,10 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case 1:
+            case SEARCHASSETS_REQUEST:
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
                     mNode = (BaseNode) data.getSerializableExtra("node");
-                    setSearchContent(mNode);
+                    mTvSearchContent.setText(getSearchContentName(mNode));
                 }
                 break;
             default:
@@ -171,9 +207,10 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
 
     /**
      * 显示要查找的内容，传入的节点是201室，得到它的完整链内容。比如 A座-2楼-201室。
+     *
      * @param baseNode
      */
-    private void setSearchContent(BaseNode baseNode) {
+    private String getSearchContentName(BaseNode baseNode) {
         StringBuffer buffer = new StringBuffer();
         List<BaseNode> nodes = new ArrayList<>();
         NodeHelper.getAllParents(nodes, baseNode);
@@ -184,7 +221,27 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
             if (i != 0)
                 buffer.append("-");
         }
-        mTvSearchContent.setText(buffer.toString());
+        return buffer.toString();
+    }
+
+    /**
+     * 获得查询对象的ID
+     *
+     * @param baseNode
+     * @return
+     */
+    private String getSearchContentId(BaseNode baseNode) {
+        StringBuffer buffer = new StringBuffer();
+        List<BaseNode> nodes = new ArrayList<>();
+        NodeHelper.getAllParents(nodes, baseNode);
+        int i = nodes.size();
+        while (i > 0) {
+            i--;
+            buffer.append(nodes.get(i).getId());
+            if (i != 0)
+                buffer.append("-");
+        }
+        return buffer.toString();
     }
 
 }
