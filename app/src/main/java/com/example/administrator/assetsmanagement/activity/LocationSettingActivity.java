@@ -20,6 +20,7 @@ import com.example.administrator.assetsmanagement.bean.Location;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.CheckboxTreeNodeAdapter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,39 +110,25 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
      */
     private void getDataFromBmob() {
         String sql = "select * from Location";
-        new BmobQuery<Location>().doSQLQuery(this, sql, new SQLQueryListener<Location>() {
+        BmobQuery<Location> query = new BmobQuery<>();
+        query.setLimit(500);
+        query.findObjects(this, new FindListener<Location>() {
             @Override
-            public void done(BmobQueryResult<Location> bmobQueryResult, BmobException e) {
-                List<Location> locations = bmobQueryResult.getResults();
-                if (locations != null && locations.size() > 0) {
-                    treeNodeList.clear();
-                    treeNodeList.addAll(locations);
-                    adapter = new CheckboxTreeNodeAdapter(LocationSettingActivity.this, treeNodeList,
-                            0, R.mipmap.expand, R.mipmap.collapse);
-                    mLvTreeStructure.setAdapter(adapter);
-                    adapter.setCheckBoxSelectedListener(new TreeNodeSelected() {
-                        @Override
-                        public void checked(BaseNode node, int postion) {
-                            mBaseNode = node;
-                            mPosition = postion;
-                            String parent = "";
-                            if (node.getParent() != null) {
-                                parent = node.getParent().getName();
-                            }
-                            tvTreeStructureCurrentNode.setText(parent + "--" + node.getName());
-                        }
+            public void onSuccess(List<Location> list) {
+                Message msg = new Message();
+                msg.what = FIND_ALL;
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("list", (Serializable) list);
+                msg.setData(bundle);
+                handler.sendMessage(msg);
+            }
 
-                        @Override
-                        public void cancelCheck(BaseNode node, int position) {
-                            mBaseNode = null;
-                            mPosition = 0;
-                            tvTreeStructureCurrentNode.setText("");
-                        }
-                    });
-                }
+            @Override
+            public void onError(int i, String s) {
 
             }
         });
+
     }
 
     @OnClick({R.id.btn_tree_add_node, R.id.btn_tree_replace_node, R.id.btn_tree_delete_node})
@@ -323,8 +310,10 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
         });
     }
 
-    public static final int UPDATE_FLAG = 0;
-    public static final int DELETE_FLAG = 1;
+    public static final int FIND_ALL =0;
+    public static final int UPDATE_FLAG = 1;
+    public static final int DELETE_FLAG = 2;
+
 
     /**
      * 异步处理类
@@ -335,6 +324,10 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
         public void handleMessage(Message msg) {
             Location location = new Location();
             switch (msg.what) {
+                case FIND_ALL:
+                    List<Location> list = (List<Location>) msg.getData().getSerializable("list");
+                    initAdapter(list);
+                    break;
                 case UPDATE_FLAG:
                     String objectId = msg.getData().getString("objectId");
                     String name = msg.getData().getString("name");
@@ -368,6 +361,37 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
                     break;
             }
         }
+    }
+
+    /**
+     * 初始化创建适配器
+     * @param list
+     */
+    private void initAdapter(List<Location> list) {
+        treeNodeList.clear();
+        treeNodeList.addAll(list);
+        adapter = new CheckboxTreeNodeAdapter(LocationSettingActivity.this, treeNodeList,
+                0, R.mipmap.expand, R.mipmap.collapse);
+        mLvTreeStructure.setAdapter(adapter);
+        adapter.setCheckBoxSelectedListener(new TreeNodeSelected() {
+            @Override
+            public void checked(BaseNode node, int postion) {
+                mBaseNode = node;
+                mPosition = postion;
+                String parent = "";
+                if (node.getParent() != null) {
+                    parent = node.getParent().getName();
+                }
+                tvTreeStructureCurrentNode.setText(parent + "--" + node.getName());
+            }
+
+            @Override
+            public void cancelCheck(BaseNode node, int position) {
+                mBaseNode = null;
+                mPosition = 0;
+                tvTreeStructureCurrentNode.setText("");
+            }
+        });
     }
 
 }

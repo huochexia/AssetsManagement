@@ -95,7 +95,8 @@
             <EditText
                 android:id="@+id/et_register_assets_name"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                />
         </LinearLayout>
     </LinearLayout>
     <include layout="@layout/view_line_between"/>
