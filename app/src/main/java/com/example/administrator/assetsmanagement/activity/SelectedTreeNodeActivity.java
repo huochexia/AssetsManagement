@@ -51,7 +51,7 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
     private CheckboxTreeNodeAdapter adapter;
     private int type;
     private boolean isPerson;
-    private String sql;
+
 
     @Override
     public String title() {

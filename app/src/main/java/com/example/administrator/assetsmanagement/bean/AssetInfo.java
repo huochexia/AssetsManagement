@@ -2,12 +2,12 @@ package com.example.administrator.assetsmanagement.bean;
 
 import cn.bmob.v3.BmobObject;
 
-/**资产信息：记录每一个资产的基本信息，包括：名称、所在区域、具体位置、部门、管理员、资产类别、
- * 图片、状态等
+/**资产信息：记录每一个资产的基本信息，包括：名称、所在位置编号、部门编号、管理员、资产类别编号、
+ * 图片编号、状态等
  * Created by Administrator on 2017/11/8.
  */
 
-public class AssetInfo extends BmobObject {
+public class AssetInfo extends BmobObject implements Cloneable{
     /*
     资产名称
      */
@@ -42,8 +42,7 @@ public class AssetInfo extends BmobObject {
      */
     private String mRegisterDate;
     /*
-    资产编号：由名称的拼音首字母、资产图片编号、登记系统时间和序号四个因素组成唯一编号。因为同样的资产
-    可能有很多，但名称和图片编号一样，登记时间不一样，同一时间登记的资产自动累加形成序号，
+    资产编号：当前系统时间字符串+“-”+该资产的序列号。
     */
     private String mAssetsNum;
 
@@ -120,5 +119,9 @@ public class AssetInfo extends BmobObject {
 
     public void setmAssetsNum(String mAssetsNum) {
         this.mAssetsNum = mAssetsNum;
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }
