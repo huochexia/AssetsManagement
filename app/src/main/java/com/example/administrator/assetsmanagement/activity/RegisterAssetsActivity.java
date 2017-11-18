@@ -134,12 +134,12 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         initNaviView();
         btnRegisterAddNext.setEnabled(false);
         setTextFonts();
-        mEtRegisterAssetsDate.setText(TimeUtils.getFormatToday(TimeUtils.FORMAT_DATE));
         asset = new AssetInfo();
         asset.setmStatus(0);//初始状态，0正常
-        asset.setmManagerNum(null);//初始管理者，为空
+        asset.setmManagerNum("");//初始管理者，为空
         outputImage = new File(getExternalCacheDir(),"output_image.jpg");
         initEvent();
+        mEtRegisterAssetsDate.setText(TimeUtils.getFormatToday(TimeUtils.FORMAT_DATE));
     }
 
     public void initEvent() {
@@ -359,6 +359,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             btnRegisterAddOk.setEnabled(false);
             btnRegisterAddNext.setEnabled(true);
             btnRegisterCategory.setEnabled(false);
+            mBtnRegisterDepartment.setEnabled(false);
             mBtnRegisterLocation.setEnabled(false);
             mEtRegisterAssetsName.setEnabled(false);
             mEtRegisterAssetsQuantity.setEnabled(false);
@@ -369,6 +370,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             btnRegisterAddNext.setEnabled(false);
             btnRegisterCategory.setEnabled(true);
             mBtnRegisterLocation.setEnabled(true);
+            mBtnRegisterDepartment.setEnabled(true);
             mEtRegisterAssetsName.setEnabled(true);
             mEtRegisterAssetsQuantity.setEnabled(true);
             mTvAssetsItemPictureLib.setEnabled(true);
