@@ -44,6 +44,7 @@
         <activity android:name=".activity.PersonSettingActivity"/>
         <activity android:name=".activity.CategorySettingActivity"/>
         <activity android:name=".activity.SelectedTreeNodeActivity"/>
+        <activity android:name=".activity.SelectAssetsPhotoActivity"/>
     </application>
 
 </manifest>

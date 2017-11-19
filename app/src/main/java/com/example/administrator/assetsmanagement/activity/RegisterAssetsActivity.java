@@ -13,12 +13,12 @@ import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
@@ -57,6 +57,8 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     public static final int REGISTER_DEPARTMENT = 4;
     public static final int CHOOSET_PHOTO = 5;
     public static final int TAKE_PHOTO = 6;
+    public static final String IMAGE_UNSPECIFIED = "image/*";
+    public static final int REQUEST_CROP = 1;
 
     @BindView(R.id.tv_register_place)
     TextView mTvRegisterLocation;
@@ -94,8 +96,9 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
     private BaseNode mBaseNode;//临时节点
     private AssetInfo asset;
-    private File outputImage;
+    private File Imagefile;
     private Uri imageUri;
+
     @Override
     public String title() {
         return "登记资产";
@@ -137,7 +140,6 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         asset = new AssetInfo();
         asset.setmStatus(0);//初始状态，0正常
         asset.setmManagerNum("");//初始管理者，为空
-        outputImage = new File(getExternalCacheDir(),"output_image.jpg");
         initEvent();
         mEtRegisterAssetsDate.setText(TimeUtils.getFormatToday(TimeUtils.FORMAT_DATE));
     }
@@ -227,9 +229,22 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 setAllWidget(false);
                 break;
             case R.id.tv_assets_item_picture_lib:
+                if (asset.getmCategoryNum() != null) {
+                    Intent intentPhoto = new Intent(this, SelectAssetsPhotoActivity.class);
+                    intentPhoto.putExtra("category_num", asset.getmCategoryNum());
+                    intentPhoto.putExtra("category_name", mTvRegisterCategory.getText());
+                    startActivityForResult(intentPhoto, CHOOSET_PHOTO);
+                } else {
+                    toast("请先选择资产类别！");
+                }
+
                 break;
             case R.id.tv_assets_item_camera:
-                startCamera();
+                if (asset.getmCategoryNum() != null) {
+                    Imagefile = startCamera();
+                } else {
+                    toast("请先选择资产类别！");
+                }
                 break;
         }
     }
@@ -237,7 +252,8 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     /**
      * 启动照相
      */
-    private void startCamera() {
+    private File startCamera() {
+        File outputImage = new File(getExternalCacheDir(), System.currentTimeMillis() + ".jpg");
         try {
             if (outputImage.exists()) {
                 outputImage.delete();
@@ -252,14 +268,11 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         } else {
             imageUri = Uri.fromFile(outputImage);
         }
-        if (asset.getmCategoryNum() == null) {
-            toast("请先选择资产类别！");
-        } else {
-            //启动相机
-            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-            startActivityForResult(cameraIntent, TAKE_PHOTO);
-        }
+        //启动相机
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        startActivityForResult(cameraIntent, TAKE_PHOTO);
+        return outputImage;
 
     }
 
@@ -409,27 +422,38 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 }
                 break;
             case CHOOSET_PHOTO:
+                if (data != null) {
+                    Bundle bundle = data.getBundleExtra("assetpicture");
+                    asset.setmPictureNum(bundle.getString("imageNum"));
+                    Glide.with(this).load(bundle.getSerializable("imageFile")).centerCrop().into(mIvRegisterPicture);
+                }
                 break;
             case TAKE_PHOTO:
                 if (resultCode == RESULT_OK) {
                     try {
                         //第一步：将拍照得到原始图片存入文件
                         BitmapFactory.decodeStream(getContentResolver().
-                                openInputStream( imageUri));
+                                openInputStream(imageUri));
                         //第二步：将文件进行压缩处理后得到新的Bitmap
-                        Bitmap bm = ImageFactory.getSmallBitmap(outputImage.getPath());
+                        Bitmap bm = ImageFactory.getSmallBitmap(Imagefile.getPath());
                         //第三步：创建文件输入流
-                        FileOutputStream baos = new FileOutputStream(outputImage);
+                        FileOutputStream baos = new FileOutputStream(Imagefile);
                         //第四步：将位图以JPG格式，按100比例，再次压缩形成新文件
-                        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        bm.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+                        baos.flush();
+                        baos.close();
                         mIvRegisterPicture.setImageBitmap(bm);
-                        uploadPhotoFile(outputImage);
-
+                        uploadPhotoFile(Imagefile);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
+
                 }
 
+                break;
+            case REQUEST_CROP:
                 break;
         }
     }
@@ -474,35 +498,57 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         }
         return buffer.toString();
     }
-    /** 上传图片信息对象操作
+
+    /**
+     * 上传图片信息对象操作
      * insertObject
+     *
      * @return void
      * @throws
      */
-    private void insertObject(final BmobObject obj){
+    private void insertObject(final BmobObject obj) {
         obj.save(this, new SaveListener() {
             @Override
             public void onSuccess() {
                 // TODO Auto-generated method stub
-               toast("-->上传图片信息成功：" );
+                toast("-->上传图片信息成功：");
 
             }
 
             @Override
             public void onFailure(int arg0, String arg1) {
                 // TODO Auto-generated method stub
-                toast("-->上传图片失败：" + arg0+",msg = "+arg1);
+                toast("-->上传图片失败：" + arg0 + ",msg = " + arg1);
             }
         });
     }
-    /** 上传指定路径下的图片文件
-     * @Title: uploadMovoieFile
-     * @Description: TODO
+
+    /**
+     * 裁剪
+     */
+    private void cropImage(Uri uri) {
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, IMAGE_UNSPECIFIED);
+        intent.putExtra("crop", "true");
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        intent.putExtra("return-data", false);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+        intent.putExtra("noFaceDetection", true);
+        startActivityForResult(intent, REQUEST_CROP);
+    }
+
+    /**
+     * 上传指定路径下的图片文件
+     *
      * @param @param type
      * @param @param i
      * @param @param file
      * @return void
      * @throws
+     * @Title: uploadMovoieFile
+     * @Description: TODO
      */
     private void uploadPhotoFile(File file) {
         final BmobFile bmobFile = new BmobFile(file);
@@ -512,12 +558,13 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 // TODO Auto-generated method stub
                 AssetPicture picture = new AssetPicture();
                 picture.setCategoryNum(asset.getmCategoryNum());
-                picture.setImageNum(System.currentTimeMillis()+"");
+                picture.setImageNum(System.currentTimeMillis() + "");
                 picture.setImageFile(bmobFile);
                 asset.setmPictureNum(picture.getImageNum());
                 insertObject(picture);
 
             }
+
             @Override
             public void onProgress(Integer arg0) {
                 // TODO Auto-generated method stub

@@ -1,5 +1,7 @@
 package com.example.administrator.assetsmanagement.bean;
 
+import java.io.Serializable;
+
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.datatype.BmobFile;
 
@@ -8,7 +10,8 @@ import cn.bmob.v3.datatype.BmobFile;
  * Created by Administrator on 2017/11/8.
  */
 
-public class AssetPicture extends BmobObject {
+public class AssetPicture extends BmobObject implements Serializable{
+
     /*
     图片文件
      */
@@ -21,6 +24,20 @@ public class AssetPicture extends BmobObject {
     资产类别编号
      */
     private String categoryNum;
+    /*
+    是否选择
+     */
+
+    private Boolean isSelected = false;
+
+    public Boolean getSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(Boolean selected) {
+        isSelected = selected;
+    }
+
     /**
      * 构造函数
      */
