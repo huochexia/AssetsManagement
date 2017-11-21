@@ -11,11 +11,11 @@
         android:layout_height="match_parent"
         android:paddingLeft="2dp"/>
 
-    <CheckBox
+    <RadioButton
         android:id="@+id/rb_selected_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:background="@color/colorAccent"
+        android:background="@color/background"
         />
 </FrameLayout>

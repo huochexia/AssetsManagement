@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -146,13 +145,13 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
      * ViewHolder
      */
     class PhotoViewHolder extends RecyclerView.ViewHolder {
-        CheckBox selected;
+        RadioButton selected;
         ImageView assetPhoto;
         FrameLayout mFrameLayout;
 
         public PhotoViewHolder(View itemView) {
             super(itemView);
-            selected = (CheckBox) itemView.findViewById(R.id.rb_selected_photo);
+            selected = (RadioButton) itemView.findViewById(R.id.rb_selected_photo);
             assetPhoto = (ImageView) itemView.findViewById(R.id.iv_selected_image);
             mFrameLayout = (FrameLayout) itemView.findViewById(R.id.fl_photo);
         }
