@@ -23,6 +23,24 @@ public class Person extends BmobUser {
     @TreeNodeIsLast
     private Boolean isPerson = true;
     private String password;
+    private String telephone;
+    private List<String> role;
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public List<String> getRole() {
+        return role;
+    }
+
+    public void setRole(List<String> role) {
+        this.role = role;
+    }
 
     @Override
     public String getUsername() {
@@ -51,19 +69,6 @@ public class Person extends BmobUser {
         isPerson = person;
     }
 
-
-
-    public List<String> getAssetsList() {
-        return assetsList;
-    }
-
-    public void setAssetsList(List<String> assetsList) {
-        this.assetsList = assetsList;
-    }
-
-    private List<String> assetsList;//管理的资产编号列表
-//    private String locationNumber;
-
     public String getId() {
         return id;
     }
@@ -79,16 +84,6 @@ public class Person extends BmobUser {
     public void setParentId(String parentId) {
         this.parentId = parentId;
     }
-
-
-
-//    public String getLocationNumber() {
-//        return locationNumber;
-//    }
-
-//    public void setLocationNumber(String locationNumber) {
-//        this.locationNumber = locationNumber;
-//    }
 
     /**
      * 构造方法
