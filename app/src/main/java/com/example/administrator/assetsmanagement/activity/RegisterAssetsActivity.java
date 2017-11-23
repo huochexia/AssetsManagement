@@ -93,6 +93,12 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     TextView mTvRegisterDepartment;
     @BindView(R.id.et_register_assets_date)
     LineEditText mEtRegisterAssetsDate;
+    @BindView(R.id.tv_assets_register_date)
+    TextView tvAssetsRegisterDate;
+    @BindView(R.id.tv_assets_register_comment)
+    TextView tvAssetsRegisterComment;
+    @BindView(R.id.et_register_assets_comment)
+    LineEditText etRegisterAssetsComment;
 
     private BaseNode mBaseNode;//临时节点
     private AssetInfo asset;
@@ -179,6 +185,23 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
             }
         });
+        //备注
+        etRegisterAssetsComment.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                asset.setmComment(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     /**
@@ -195,6 +218,9 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         mTvAssetsItemCamera.setTypeface(typeface);
         mTvRegisterLocation.setTypeface(typeface);
         mTvRegisterDepartment.setTypeface(typeface);
+        tvAssetsRegisterDate.setTypeface(typeface);
+        tvAssetsRegisterComment.setTypeface(typeface);
+        etRegisterAssetsComment.setTypeface(typeface);
     }
 
     @OnClick({R.id.btn_register_location, R.id.btn_register_category, R.id.btn_register_add_ok,
@@ -390,6 +416,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             mTvAssetsItemCamera.setEnabled(true);
             mEtRegisterAssetsName.setText("");
             mEtRegisterAssetsQuantity.setText("");
+            etRegisterAssetsComment.setText("");
             mIvRegisterPicture.setImageResource(R.drawable.assets_image_default);
         }
     }

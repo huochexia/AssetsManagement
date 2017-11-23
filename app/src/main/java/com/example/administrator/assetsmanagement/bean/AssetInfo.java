@@ -45,7 +45,10 @@ public class AssetInfo extends BmobObject implements Cloneable{
     资产编号：当前系统时间字符串+“-”+该资产的序列号。
     */
     private String mAssetsNum;
-
+    /*
+    备注内容
+     */
+    private String mComment;
     /**
      * setter 和 getter 方法
      */
@@ -119,6 +122,14 @@ public class AssetInfo extends BmobObject implements Cloneable{
 
     public void setmAssetsNum(String mAssetsNum) {
         this.mAssetsNum = mAssetsNum;
+    }
+
+    public String getmComment() {
+        return mComment;
+    }
+
+    public void setmComment(String mComment) {
+        this.mComment = mComment;
     }
 
     public Object clone() throws CloneNotSupportedException {
