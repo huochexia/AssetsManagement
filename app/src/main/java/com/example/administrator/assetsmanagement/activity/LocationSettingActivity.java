@@ -109,7 +109,7 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
      * 从服务器获取数据，并以此设置适配器
      */
     private void getDataFromBmob() {
-        String sql = "select * from Location";
+
         BmobQuery<Location> query = new BmobQuery<>();
         query.setLimit(500);
         query.findObjects(this, new FindListener<Location>() {

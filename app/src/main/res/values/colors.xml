@@ -8,4 +8,7 @@
     <color name="base_color_text_white">#ffffff</color>
     <color name="base_color_text_black">#000000</color>
     <color name="transparent">#00000000</color>
+
+    <color name="start_line_color">#E0004E</color>
+    <color name="start_button_color">#D80050</color>
 </resources>

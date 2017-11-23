@@ -50,7 +50,7 @@ public class BaseNode<B> implements Serializable {
      */
     private boolean isChecked;
     /**
-     * 是否为最后节点
+     * 是否为最后节点,例如：人不可能有子节点，所以转换人为节点是会改变这个值
      */
     @TreeNodeIsLast
     public boolean isLast = false;

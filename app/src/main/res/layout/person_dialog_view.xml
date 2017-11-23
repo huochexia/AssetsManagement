@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:line="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <com.example.administrator.assetsmanagement.utils.LineEditText
+        android:id="@+id/et_person_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/login_margin_left_right_edit"
+        android:layout_marginRight="@dimen/login_margin_left_right_edit"
+        android:layout_marginTop="20dp"
+        android:background="@color/transparent"
+        android:drawablePadding="@dimen/login_et_dw_padding"
+        android:hint="请输入姓名"
+        android:paddingBottom="@dimen/login_et_padding_bottom"
+        android:textSize="@dimen/login_et_text_size"
+        line:lineColorEt="@color/start_button_color"
+        />
+    <RelativeLayout
+        android:layout_marginTop="@dimen/login_pass_et_margin_top"
+        android:layout_marginRight="@dimen/login_margin_left_right_edit"
+        android:layout_marginLeft="@dimen/login_margin_left_right_edit"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.example.administrator.assetsmanagement.utils.LineEditText
+            android:id="@+id/password_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:drawablePadding="@dimen/login_et_dw_padding"
+            android:hint="请输入手机号码"
+            android:paddingBottom="@dimen/login_et_padding_bottom"
+            android:textSize="@dimen/login_et_text_size"
+            line:lineColorEt="@color/start_button_color"
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_marginLeft="@dimen/login_sf_line_tv_left"
+            android:layout_marginRight="@dimen/login_sf_line_tv_right"
+            android:layout_toLeftOf="@+id/line_text"
+            android:layout_centerVertical="true"
+            android:id="@+id/line_left"
+            android:background="@color/start_line_color"
+            android:layout_width="match_parent"
+            android:layout_height="2dp" />
+
+        <TextView
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/start_line_color"
+            android:id="@+id/line_text"
+            android:text="可操作模块"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_marginLeft="@dimen/login_sf_line_tv_right"
+            android:layout_marginRight="@dimen/login_sf_line_tv_left"
+            android:layout_toRightOf="@+id/line_text"
+            android:layout_centerVertical="true"
+            android:id="@+id/line_right"
+            android:background="@color/start_line_color"
+            android:layout_width="match_parent"
+            android:layout_height="2dp" />
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_marginTop="@dimen/login_pass_et_margin_top"
+        android:layout_marginRight="@dimen/login_margin_left_right_edit"
+        android:layout_marginLeft="@dimen/login_margin_left_right_edit"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="登记"
+                android:textSize="16sp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="审批"
+                android:textSize="16sp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="设置"
+                android:textSize="16sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>
