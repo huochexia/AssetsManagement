@@ -26,8 +26,9 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <com.example.administrator.assetsmanagement.utils.LineEditText
-            android:id="@+id/password_et"
+            android:id="@+id/et_person_telephone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/transparent"
@@ -82,6 +83,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <CheckBox
+                android:id="@+id/cb_person_role_register"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <TextView
@@ -94,6 +96,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <CheckBox
+                android:id="@+id/cb_person_role_approve"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <TextView
@@ -106,6 +109,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <CheckBox
+                android:id="@+id/cb_person_role_setting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <TextView

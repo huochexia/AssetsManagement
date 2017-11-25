@@ -8,7 +8,9 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -246,20 +248,17 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
 
     }
 
-    public void addToBmob(BaseNode node) {
-        Person person = new Person();
-        person.setId(node.getId());
-        person.setParentId(node.getpId());
-        person.setUsername(node.getName());
-        person.login(this, new SaveListener() {
+    public void addToBmob(Person person) {
+        BmobUser user = person;
+       user.signUp(this, new SaveListener() {
             @Override
             public void onSuccess() {
-                toast("ok");
+                toast("添加人员成功！");
             }
 
             @Override
             public void onFailure(int i, String s) {
-
+                toast("添加人员失败！"+s);
             }
         });
 
@@ -280,6 +279,33 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
         return builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int which) {
+                Person person = new Person();
+                EditText name = (EditText) mDialogView.findViewById(R.id.et_person_name);
+                EditText phone = (EditText) mDialogView.findViewById(R.id.et_person_telephone);
+                CheckBox register = (CheckBox) mDialogView.findViewById(R.id.cb_person_role_register);
+                CheckBox approve = (CheckBox) mDialogView.findViewById(R.id.cb_person_role_approve);
+                CheckBox setting = (CheckBox) mDialogView.findViewById(R.id.cb_person_role_setting);
+                List<String>  roles = new ArrayList<>();
+                if (register.isChecked()) {
+                    roles.add("register");
+                }
+                if (approve.isChecked())
+                    roles.add("approve");
+                if (setting.isChecked())
+                    roles.add("setting");
+                if (!TextUtils.isEmpty(name.getText()) && !TextUtils.isEmpty(phone.getText()) && mBaseNode!=null) {
+                    person.setUsername(name.getText().toString());
+                    person.setNodename(name.getText().toString());
+                    person.setMobilePhoneNumber(phone.getText().toString());
+                    person.setRole(roles);
+                    person.setId(System.currentTimeMillis()+"");
+                    person.setParentId(mBaseNode.getId());
+                    person.setPassword("123456");
+                    addToBmob(person);
+                } else {
+                    toast("请选择部门，输入人员姓名和电话号码！");
+
+                }
 
             }
         });
