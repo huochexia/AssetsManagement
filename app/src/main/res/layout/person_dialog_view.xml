@@ -34,6 +34,7 @@
             android:background="@color/transparent"
             android:drawablePadding="@dimen/login_et_dw_padding"
             android:hint="请输入手机号码"
+            android:inputType="phone"
             android:paddingBottom="@dimen/login_et_padding_bottom"
             android:textSize="@dimen/login_et_text_size"
             line:lineColorEt="@color/start_button_color"
@@ -105,19 +106,70 @@
                 android:text="审批"
                 android:textSize="16sp"/>
         </LinearLayout>
+
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="@dimen/login_pass_et_margin_top"
+        android:layout_marginRight="@dimen/login_margin_left_right_edit"
+        android:layout_marginLeft="@dimen/login_margin_left_right_edit"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <CheckBox
-                android:id="@+id/cb_person_role_setting"
+                android:id="@+id/cb_person_role_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="设置"
+                android:text="位置"
                 android:textSize="16sp"/>
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <CheckBox
+                android:id="@+id/cb_person_role_department"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="部门"
+                android:textSize="16sp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <CheckBox
+                android:id="@+id/cb_person_role_person"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="人员"
+                android:textSize="16sp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <CheckBox
+                android:id="@+id/cb_person_role_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="类别"
+                android:textSize="16sp"/>
+        </LinearLayout>
+
 
     </LinearLayout>
 
