@@ -74,7 +74,7 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
                     }
                     mPictureList.get(position).setSelected(true);
                     String imagenum = mPictureList.get(position).getImageNum();
-                    listener.selected(imagenum, mFileMap.get(imagenum));
+                    listener.selected(mPictureList.get(position),mFileMap.get(imagenum));
                     notifyDataSetChanged();
                 }
             }

@@ -2,12 +2,13 @@ package com.example.administrator.assetsmanagement.bean;
 
 import cn.bmob.v3.BmobObject;
 
-/**资产信息：记录每一个资产的基本信息，包括：名称、所在位置编号、部门编号、管理员、资产类别编号、
+/**
+ * 资产信息：记录每一个资产的基本信息，包括：名称、所在位置编号、部门编号、管理员、资产类别编号、
  * 图片编号、状态等
  * Created by Administrator on 2017/11/8.
  */
 
-public class AssetInfo extends BmobObject implements Cloneable{
+public class AssetInfo extends BmobObject implements Cloneable {
     /*
     资产名称
      */
@@ -29,9 +30,11 @@ public class AssetInfo extends BmobObject implements Cloneable{
      */
     private String mCategoryNum;
     /*
-    资产所属图片编号
-     */
-    private String mPictureNum;
+           资产所属图片
+            */
+    private AssetPicture mPicture;
+
+
     /*
     资产状态：0正常，1损坏，2丢失，3待报废：即管理员提交报废，但还没有得到批准；4待移交，即管理员准
     备移交，但接受者还没有确认
@@ -49,6 +52,7 @@ public class AssetInfo extends BmobObject implements Cloneable{
     备注内容
      */
     private String mComment;
+
     /**
      * setter 和 getter 方法
      */
@@ -92,14 +96,6 @@ public class AssetInfo extends BmobObject implements Cloneable{
         this.mCategoryNum = mCategoryNum;
     }
 
-    public String getmPictureNum() {
-        return mPictureNum;
-    }
-
-    public void setmPictureNum(String mPictureNum) {
-        this.mPictureNum = mPictureNum;
-    }
-
     public Integer getmStatus() {
         return mStatus;
     }
@@ -130,6 +126,14 @@ public class AssetInfo extends BmobObject implements Cloneable{
 
     public void setmComment(String mComment) {
         this.mComment = mComment;
+    }
+
+    public AssetPicture getPicture() {
+        return mPicture;
+    }
+
+    public void setPicture(AssetPicture picture) {
+        mPicture = picture;
     }
 
     public Object clone() throws CloneNotSupportedException {

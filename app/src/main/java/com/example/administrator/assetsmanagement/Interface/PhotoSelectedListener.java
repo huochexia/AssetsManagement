@@ -9,5 +9,5 @@ import java.io.File;
  */
 
 public interface PhotoSelectedListener {
-     void selected(String imageNum,File imageFile);
+     void selected(AssetPicture picture,File imageFile);
 }

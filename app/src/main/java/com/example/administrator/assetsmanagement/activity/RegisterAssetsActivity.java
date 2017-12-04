@@ -451,8 +451,8 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             case CHOOSET_PHOTO:
                 if (data != null) {
                     Bundle bundle = data.getBundleExtra("assetpicture");
-                    asset.setmPictureNum(bundle.getString("imageNum"));
-                    Glide.with(this).load(bundle.getSerializable("imageFile")).centerCrop().into(mIvRegisterPicture);
+                    asset.setPicture((AssetPicture) bundle.getSerializable("image"));
+                    Glide.with(this).load(( bundle.getSerializable("imageFile"))).centerCrop().into(mIvRegisterPicture);
                 }
                 break;
             case TAKE_PHOTO:
@@ -587,7 +587,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 picture.setCategoryNum(asset.getmCategoryNum());
                 picture.setImageNum(System.currentTimeMillis() + "");
                 picture.setImageFile(bmobFile);
-                asset.setmPictureNum(picture.getImageNum());
+                asset.setPicture(picture);
                 insertObject(picture);
 
             }

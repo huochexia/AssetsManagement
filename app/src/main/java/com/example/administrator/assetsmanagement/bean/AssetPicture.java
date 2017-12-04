@@ -10,7 +10,7 @@ import cn.bmob.v3.datatype.BmobFile;
  * Created by Administrator on 2017/11/8.
  */
 
-public class AssetPicture extends BmobObject implements Serializable{
+public class AssetPicture extends BmobObject implements Serializable, Cloneable {
 
     /*
     图片文件
@@ -44,11 +44,12 @@ public class AssetPicture extends BmobObject implements Serializable{
     public AssetPicture() {
     }
 
-    public AssetPicture(BmobFile imageFile, String imageNum,String categoryNum) {
+    public AssetPicture(BmobFile imageFile, String imageNum, String categoryNum) {
         this.imageFile = imageFile;
         this.imageNum = imageNum;
         this.categoryNum = categoryNum;
     }
+
     /**
      * setter 和getter 方法
      */
@@ -74,5 +75,9 @@ public class AssetPicture extends BmobObject implements Serializable{
 
     public void setCategoryNum(String categoryNum) {
         this.categoryNum = categoryNum;
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

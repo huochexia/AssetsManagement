@@ -43,7 +43,7 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
 
     private PhotoRecyclerViewAdapter mAdapter;
     private List<AssetPicture> photoLists;
-
+    private AssetPicture selectedPicture;
     @Override
     public String title() {
         return title;
@@ -69,11 +69,11 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
 
             @Override
             public void clickRight() {
-                if (imageFile!=null && imageNum !=null) {
+                if (selectedPicture!=null) {
                     Intent returnPhoto = new Intent();
                     Bundle bundle = new Bundle();
+                    bundle.putSerializable("image",selectedPicture);
                     bundle.putSerializable("imageFile",imageFile);
-                    bundle.putString("imageNum", imageNum);
                     returnPhoto.putExtra("assetpicture", bundle);
                     setResult(RESULT_OK, returnPhoto);
                     finish();
@@ -121,13 +121,7 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
         });
     }
 
-    public void setImageNum(String imageNum) {
-        this.imageNum = imageNum;
-    }
 
-    public void setImageFile(File imageFile) {
-        this.imageFile = imageFile;
-    }
     public static final int TAKE_PHOTO=0;
     public MyHandler handler= new MyHandler();
     class MyHandler extends Handler {
@@ -141,9 +135,9 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
                     mRcPicturesList.setAdapter(mAdapter);
                     mAdapter.getSelectedListener(new PhotoSelectedListener() {
                         @Override
-                        public void selected(String imageNum, File imageFile) {
-                            setImageNum(imageNum);
-                            setImageFile(imageFile);
+                        public void selected(AssetPicture picture,File image) {
+                            selectedPicture = picture;
+                            imageFile = image;
                         }
                     });
                     break;
