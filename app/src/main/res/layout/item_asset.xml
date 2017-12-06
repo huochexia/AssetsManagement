@@ -23,6 +23,7 @@
             android:layout_height="50dp"
             android:layout_toRightOf="@+id/tv_assets_item_serial"
             android:layout_margin="5dp"
+            android:visibility="invisible"
             />
         <TextView
             android:id="@+id/tv_assets_item_name"
