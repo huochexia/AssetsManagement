@@ -17,6 +17,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
+ * 资产管理，主要由资产登记，资产管理，资产查询三个功能组成
  * Created by Administrator on 2017/11/4 0004.
  */
 
@@ -51,12 +52,15 @@ public class AssetsManagementFragment extends BaseFragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_assets_register:
+                //启动资产登记活动
                 startActivity(RegisterAssetsActivity.class,null);
                 break;
             case R.id.iv_assets_management:
+                //启动资产管理活动
                 startActivity(ManageAssetsActivity.class,null);
                 break;
             case R.id.iv_assets_search:
+                //启动资产查询活动
                 startActivity(SearchAssetsActivity.class,null);
                 break;
         }

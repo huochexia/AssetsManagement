@@ -11,7 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * 图片处理
+ * 图片处理，压缩处理
  * Created by Administrator on 2017/11/18 0018.
  */
 

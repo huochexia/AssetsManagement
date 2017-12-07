@@ -11,7 +11,7 @@ import com.example.administrator.assetsmanagement.R;
 
 
 /**
- * 自定义EditText
+ * 自定义EditText，增加了绘制下线
  * Created by Administrator on 2017/11/18 0018.
  */
 

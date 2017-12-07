@@ -8,13 +8,12 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.ToxicBakery.viewpager.transforms.CubeOutTransformer;
 import com.ToxicBakery.viewpager.transforms.RotateDownTransformer;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.fragment.AssetsManagementFragment;
 import com.example.administrator.assetsmanagement.fragment.BaseSettingFragment;
 import com.example.administrator.assetsmanagement.fragment.PersonSettingFragment;
-import com.example.administrator.assetsmanagement.fragment.ViewPagerAdapter;
+import com.example.administrator.assetsmanagement.adapter.ViewPagerAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

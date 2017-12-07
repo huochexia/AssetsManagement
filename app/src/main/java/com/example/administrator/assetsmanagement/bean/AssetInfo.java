@@ -30,9 +30,9 @@ public class AssetInfo extends BmobObject implements Cloneable {
      */
     private String mCategoryNum;
     /*
-           资产所属图片
+           资产所属图片编号，它是识别资产是否属于一种的标志
             */
-    private AssetPicture mPicture;
+    private  String mPicture;
 
 
     /*
@@ -52,7 +52,10 @@ public class AssetInfo extends BmobObject implements Cloneable {
     备注内容
      */
     private String mComment;
-
+    /*
+    该资产数量
+     */
+    private Integer quantity = 1;
     /**
      * setter 和 getter 方法
      */
@@ -128,12 +131,20 @@ public class AssetInfo extends BmobObject implements Cloneable {
         this.mComment = mComment;
     }
 
-    public AssetPicture getPicture() {
+    public String getmPicture() {
         return mPicture;
     }
 
-    public void setPicture(AssetPicture picture) {
-        mPicture = picture;
+    public void setmPicture(String mPicture) {
+        this.mPicture = mPicture;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     public Object clone() throws CloneNotSupportedException {

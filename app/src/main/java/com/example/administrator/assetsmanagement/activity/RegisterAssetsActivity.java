@@ -47,7 +47,10 @@ import cn.bmob.v3.listener.UploadFileListener;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
- * 登记资产
+ * 登记资产：对原有资产和新购资产进行基本信息登记，资产图片的分两种方式，一是从现有图库中进行选择，
+ * 二是现场拍照。资产编号根据登记时的系统时间自动产生，同样资产的编号，在自动产生的编号基础上依据
+ * 其数量增加序号，做到一资产一编号。
+ *
  * Created by Administrator on 2017/11/4 0004.
  */
 
@@ -369,6 +372,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
      * @return
      */
     private boolean checkAlltext() {
+        int quantity = Integer.parseInt(mEtRegisterAssetsQuantity.getText().toString());
         if (TextUtils.isEmpty(mTvRegisterLocation.getText())) {
             toast("请选择位置！");
             return false;
@@ -381,7 +385,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         } else if (TextUtils.isEmpty(mEtRegisterAssetsName.getText())) {
             toast("请填入资产名称！");
             return false;
-        } else if (TextUtils.isEmpty(mEtRegisterAssetsQuantity.getText())) {
+        } else if (TextUtils.isEmpty(mEtRegisterAssetsQuantity.getText()) && quantity>0) {
             toast("请填写资产数量！");
             return false;
         }
@@ -451,7 +455,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             case CHOOSET_PHOTO:
                 if (data != null) {
                     Bundle bundle = data.getBundleExtra("assetpicture");
-                    asset.setPicture((AssetPicture) bundle.getSerializable("image"));
+                    asset.setmPicture((String) bundle.getSerializable("imageNum"));
                     Glide.with(this).load(( bundle.getSerializable("imageFile"))).centerCrop().into(mIvRegisterPicture);
                 }
                 break;
@@ -585,9 +589,10 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 // TODO Auto-generated method stub
                 AssetPicture picture = new AssetPicture();
                 picture.setCategoryNum(asset.getmCategoryNum());
-                picture.setImageNum(System.currentTimeMillis() + "");
+                String imangNum= System.currentTimeMillis() + "";
+                picture.setImageNum(imangNum);
                 picture.setImageFile(bmobFile);
-                asset.setPicture(picture);
+                asset.setmPicture(imangNum);
                 insertObject(picture);
 
             }

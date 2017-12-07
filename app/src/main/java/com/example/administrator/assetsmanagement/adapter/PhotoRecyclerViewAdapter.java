@@ -27,6 +27,7 @@ import java.util.Map;
 import cn.bmob.v3.listener.DownloadFileListener;
 
 /**
+ * 照片适配器:主要用于资产登记图片选择列表
  * Created by Administrator on 2017/11/19 0019.
  */
 
@@ -74,7 +75,7 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
                     }
                     mPictureList.get(position).setSelected(true);
                     String imagenum = mPictureList.get(position).getImageNum();
-                    listener.selected(mPictureList.get(position),mFileMap.get(imagenum));
+                    listener.selected(mPictureList.get(position).getImageNum(),mFileMap.get(imagenum));
                     notifyDataSetChanged();
                 }
             }
