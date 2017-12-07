@@ -1,20 +1,34 @@
 package com.example.administrator.assetsmanagement.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
+import com.example.administrator.assetsmanagement.bean.AssetPicture;
 
+import java.io.File;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.listener.DownloadFileListener;
+import cn.bmob.v3.listener.FindListener;
 
 /**
  * 资产列表适配器，显示查询资产的名称及数量。传入的资产列表中包含的每一个资产，有些资产属于同样的，
@@ -29,7 +43,8 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
 
     Map map = new HashMap();
 
-
+    LinearLayout mDialogView;
+    ImageView image;
     public AssetRecyclerViewAdapter(Context context, List<AssetInfo> list) {
         mContext=context;
         assetInfoList = sumQuantity(list);
@@ -42,10 +57,62 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
     }
 
     @Override
-    public void onBindViewHolder(AssetHolder holder, int position) {
+    public void onBindViewHolder(AssetHolder holder, final int position) {
         holder.serial_number.setText((position + 1)+"");
         holder.assetName.setText(assetInfoList.get(position).getmAssetName());
         holder.assetQuantity.setText(assetInfoList.get(position).getQuantity()+"");
+        holder.item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BmobQuery<AssetPicture> query = new BmobQuery<>();
+                query.addWhereEqualTo("imageNum", assetInfoList.get(position).getmPicture());
+                query.findObjects(mContext, new FindListener<AssetPicture>() {
+                    @Override
+                    public void onSuccess(List<AssetPicture> list) {
+                        Message msg = new Message();
+                        msg.what = 1;
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("image", (Serializable) list);
+                        msg.setData(bundle);
+                        handler.sendMessage(msg);
+                    }
+
+                    @Override
+                    public void onError(int i, String s) {
+
+                    }
+                });
+
+            }
+        });
+    }
+
+    CustomHandler handler = new CustomHandler();
+    class CustomHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    List<AssetPicture> list1 = (List<AssetPicture>) msg.getData().getSerializable("image");
+                    downloadFile(list1.get(0));
+                    break;
+                case 2:
+                    File file = (File) msg.getData().getSerializable("file");
+                    //获取对话框
+                    mDialogView = (LinearLayout) layoutInflater.inflate(R.layout.dialog_image_view, null);
+                    image = (ImageView) mDialogView.findViewById(R.id.iv_asset_picture_dialog);
+                    Glide.with(mContext).load(file).centerCrop().into(image);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setView(mDialogView);
+                    builder.setNegativeButton("返回", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    }).create().show();
+                    break;
+            }
+        }
     }
 
     @Override
@@ -83,15 +150,49 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
     }
 
     /**
+     * 下载BmobFile文件
+     *
+     * @param picture
+     */
+    private void downloadFile(AssetPicture picture) {
+
+            final File imagefile = new File(mContext.getCacheDir() + picture.getImageFile().getFilename());
+            picture.getImageFile().download(mContext, imagefile, new DownloadFileListener() {
+                @Override
+                public void onSuccess(String s) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Message msg = new Message();
+                            msg.what = 2;
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("file", imagefile);
+                            msg.setData(bundle);
+                            handler.sendMessage(msg);
+                        }
+                    }).start();
+
+                }
+
+                @Override
+                public void onFailure(int i, String s) {
+
+                }
+            });
+
+
+    }
+    /**
      * 自定义ViewHolder
      */
     class AssetHolder extends RecyclerView.ViewHolder {
+        LinearLayout item;
         TextView serial_number;
         TextView assetName;
         TextView assetQuantity;
-
         public AssetHolder(View itemView) {
             super(itemView);
+            item = (LinearLayout) itemView.findViewById(R.id.ll_asset_item);
             serial_number = (TextView) itemView.findViewById(R.id.tv_assets_item_serial);
             assetName = (TextView) itemView.findViewById(R.id.tv_assets_item_name);
             assetQuantity = (TextView) itemView.findViewById(R.id.tv_assets_item_quantity);

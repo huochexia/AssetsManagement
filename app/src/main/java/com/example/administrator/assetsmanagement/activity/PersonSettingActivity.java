@@ -1,7 +1,6 @@
 package com.example.administrator.assetsmanagement.activity;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,7 +35,6 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
-import cn.bmob.v3.listener.UpdateListener;
 
 /**
  * 人员管理：增加，修改信息，删除以及角色的设定等操作。删除时要判断是否有资产，无则可以删除。人员调动操作过程 是
@@ -247,7 +245,7 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_person_setting_add:
-                mDialogView = (LinearLayout) this.getLayoutInflater().inflate(R.layout.person_dialog_view, null);
+                mDialogView = (LinearLayout) this.getLayoutInflater().inflate(R.layout.dialog_person_view, null);
                 if (mBaseNode != null && !mBaseNode.isLast) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle("添加人员信息").setView(mDialogView);
@@ -260,7 +258,7 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
                 break;
             case R.id.btn_person_setting_repair:
                 if (mBaseNode != null && mBaseNode.isLast) {
-                    mDialogView = (LinearLayout) this.getLayoutInflater().inflate(R.layout.person_dialog_view, null);
+                    mDialogView = (LinearLayout) this.getLayoutInflater().inflate(R.layout.dialog_person_view, null);
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle("人员信息").setView(mDialogView);
                     setNegativeButton(builder).create().show();

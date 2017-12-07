@@ -161,19 +161,24 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
             public void onClick(View v) {
                 switch (search_type) {
                     case SEARCH_LOCATION:
-
-                        searchAssets("mLocationNum",mNode.getId());
-
+                        if (mNode != null) {
+                            searchAssets("mLocationNum", mNode.getId());
+                        }
                         break;
                     case SEARCH_CATEGORY:
-
-                        searchAssets("mCategoryNum",mNode.getId() );
+                        if (mNode != null) {
+                            searchAssets("mCategoryNum", mNode.getId());
+                        }
                         break;
                     case SEARCH_DEPARTMENT:
-                        searchAssets("mDeptNum",mNode.getId() );
+                        if (mNode != null) {
+                            searchAssets("mDeptNum", mNode.getId());
+                        }
                         break;
                     case SEARCH_MANAGER:
-                        searchAssets("mManagerNum",mNode.getId());
+                        if (mNode != null) {
+                            searchAssets("mManagerNum", mNode.getId());
+                        }
                         break;
                     case SEARCH_NAME:
                         searchAssets("mAssetName",mTvSearchContent.getText().toString());
