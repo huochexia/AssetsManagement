@@ -62,7 +62,8 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
         holder.serial_number.setText((position + 1)+"");
         holder.assetName.setText(assetInfoList.get(position).getmAssetName());
         holder.assetQuantity.setText(assetInfoList.get(position).getQuantity()+"");
-        holder.item.setOnClickListener(new View.OnClickListener() {
+        holder.assetStatus.setText(assetInfoList.get(position).getmStatus()+"");
+        holder.assetName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 title=assetInfoList.get(position).getmAssetName();
@@ -183,12 +184,14 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
         TextView serial_number;
         TextView assetName;
         TextView assetQuantity;
+        TextView assetStatus;
         public AssetHolder(View itemView) {
             super(itemView);
             item = (LinearLayout) itemView.findViewById(R.id.ll_asset_item);
             serial_number = (TextView) itemView.findViewById(R.id.tv_assets_item_serial);
             assetName = (TextView) itemView.findViewById(R.id.tv_assets_item_name);
             assetQuantity = (TextView) itemView.findViewById(R.id.tv_assets_item_quantity);
+            assetStatus = (TextView) itemView.findViewById(R.id.tv_assets_item_status);
         }
     }
 }

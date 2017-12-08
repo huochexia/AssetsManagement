@@ -51,4 +51,19 @@
             tool:text="10"
             android:textSize="16sp" />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:layout_gravity="center">
+
+        <TextView
+            android:gravity="center"
+            android:id="@+id/tv_assets_item_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            tool:text="10"
+            android:textSize="16sp" />
+    </LinearLayout>
 </LinearLayout>

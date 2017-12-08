@@ -72,7 +72,7 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
     private BaseNode mNode;//接收传入的节点信息
     private int search_type = SEARCH_LOCATION;
 
-    private List<AssetInfo> search_result_list;
+    private List<AssetInfo> search_result_list = new ArrayList<>();
     private AssetRecyclerViewAdapter adapter;
     private RecyclerView searchList;
     @Override
@@ -219,8 +219,11 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
      * 清空列表
      */
     private void clearLists() {
-        search_result_list.clear();
-        adapter.notifyDataSetChanged();
+        if (adapter != null) {
+            search_result_list.clear();
+            adapter.notifyDataSetChanged();
+        }
+
     }
 
     /**
@@ -234,17 +237,22 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
         query.findObjects(SearchAssetsActivity.this, new FindListener<AssetInfo>() {
             @Override
             public void onSuccess(final List<AssetInfo> list) {
-                        Message msg = new Message();
-                        msg.what = 1;
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("assets", (Serializable) list);
-                        msg.setData(bundle);
-                        handler.sendMessage(msg);
+                if (list != null && list.size() > 0) {
+                    Message msg = new Message();
+                    msg.what = 1;
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("assets", (Serializable) list);
+                    msg.setData(bundle);
+                    handler.sendMessage(msg);
+                } else {
+                    toast("没有符合条件的资产！");
+                }
+
             }
 
             @Override
             public void onError(int i, String s) {
-
+                    toast("查询失败，请稍后再查！");
             }
         });
     }
@@ -281,18 +289,22 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_search_location:
+                clearLists();
                 startActivity(SelectedTreeNodeActivity.SEARCH_LOCATION, false);
                 break;
             case R.id.btn_register_category:
+                clearLists();
                 startActivity(SelectedTreeNodeActivity.SEARCH_CATEGORY, false);
                 break;
             case R.id.btn_search_name:
-
+                clearLists();
                 break;
             case R.id.btn_search_dept:
+                clearLists();
                 startActivity(SelectedTreeNodeActivity.SEARCH_DEPARTMENT, false);
                 break;
             case R.id.btn_search_manager:
+                clearLists();
                 startActivity(SelectedTreeNodeActivity.SEARCH_MANAGER, true);
                 break;
 
