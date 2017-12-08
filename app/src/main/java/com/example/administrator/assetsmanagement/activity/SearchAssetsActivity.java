@@ -124,31 +124,37 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                 switch (checkedId) {
                     case R.id.rb_assets_search_location:
                         allSetGone();
+                        clearLists();
                         mBtnSearchLocation.setVisibility(View.VISIBLE);
                         search_type = SEARCH_LOCATION;
                         break;
                     case R.id.rb_assets_search_category:
                         allSetGone();
+                        clearLists();
                         mBtnRegisterCategory.setVisibility(View.VISIBLE);
                         search_type = SEARCH_CATEGORY;
                         break;
                     case R.id.rb_assets_search_dept:
                         allSetGone();
+                        clearLists();
                         mBtnSearchDept.setVisibility(View.VISIBLE);
                         search_type = SEARCH_DEPARTMENT;
                         break;
                     case R.id.rb_assets_search_manager:
                         allSetGone();
+                        clearLists();
                         mBtnSearchManager.setVisibility(View.VISIBLE);
                         search_type = SEARCH_MANAGER;
                         break;
                     case R.id.rb_assets_search_name:
                         allSetGone();
+                        clearLists();
                         mBtnSearchName.setVisibility(View.VISIBLE);
                         search_type = SEARCH_NAME;
                         break;
                     case R.id.rb_assets_search_scrap:
                         allSetGone();
+                        clearLists();
                         mTvSearchContent.setText("所有报废资产");
                         mTvSearchContent.setTextSize(25);
                         search_type = SEARCH_STATUS;
@@ -207,6 +213,14 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                 }
             }
         });
+    }
+
+    /**
+     * 清空列表
+     */
+    private void clearLists() {
+        search_result_list.clear();
+        adapter.notifyDataSetChanged();
     }
 
     /**

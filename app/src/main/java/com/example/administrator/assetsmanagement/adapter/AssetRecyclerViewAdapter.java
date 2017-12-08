@@ -3,6 +3,7 @@ package com.example.administrator.assetsmanagement.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.assetsmanagement.R;
+import com.example.administrator.assetsmanagement.activity.AssetPictureActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
 
@@ -32,7 +34,7 @@ import cn.bmob.v3.listener.FindListener;
 
 /**
  * 资产列表适配器，显示查询资产的名称及数量。传入的资产列表中包含的每一个资产，有些资产属于同样的，
- * 只是编号不同，需要将这类资产汇总数量
+ * 只是编号不同，需要将这类资产汇总数量.点击结果列表，显示该项的图片
  * Created by Administrator on 2017/12/6.
  */
 
@@ -43,8 +45,7 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
 
     Map map = new HashMap();
 
-    LinearLayout mDialogView;
-    ImageView image;
+    String title;
     public AssetRecyclerViewAdapter(Context context, List<AssetInfo> list) {
         mContext=context;
         assetInfoList = sumQuantity(list);
@@ -64,6 +65,7 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                title=assetInfoList.get(position).getmAssetName();
                 BmobQuery<AssetPicture> query = new BmobQuery<>();
                 query.addWhereEqualTo("imageNum", assetInfoList.get(position).getmPicture());
                 query.findObjects(mContext, new FindListener<AssetPicture>() {
@@ -94,23 +96,14 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
             switch (msg.what) {
                 case 1:
                     List<AssetPicture> list1 = (List<AssetPicture>) msg.getData().getSerializable("image");
-                    downloadFile(list1.get(0));
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("picture",list1.get(0));
+                    bundle.putString("title",title);
+                    Intent intent = new Intent(mContext, AssetPictureActivity.class);
+                    intent.putExtra(mContext.getPackageName(), bundle);
+                    mContext.startActivity(intent);
                     break;
-                case 2:
-                    File file = (File) msg.getData().getSerializable("file");
-                    //获取对话框
-                    mDialogView = (LinearLayout) layoutInflater.inflate(R.layout.dialog_image_view, null);
-                    image = (ImageView) mDialogView.findViewById(R.id.iv_asset_picture_dialog);
-                    Glide.with(mContext).load(file).centerCrop().into(image);
-                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                    builder.setView(mDialogView);
-                    builder.setNegativeButton("返回", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
 
-                        }
-                    }).create().show();
-                    break;
             }
         }
     }
