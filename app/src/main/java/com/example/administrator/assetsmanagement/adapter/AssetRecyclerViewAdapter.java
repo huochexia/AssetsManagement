@@ -1,8 +1,6 @@
 package com.example.administrator.assetsmanagement.adapter;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,17 +9,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.activity.AssetPictureActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.listener.DownloadFileListener;
 import cn.bmob.v3.listener.FindListener;
 
 /**
@@ -46,22 +40,24 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
     Map map = new HashMap();
 
     String title;
+
     public AssetRecyclerViewAdapter(Context context, List<AssetInfo> list) {
-        mContext=context;
+        mContext = context;
         assetInfoList = sumQuantity(list);
         layoutInflater = LayoutInflater.from(mContext);
     }
+
     @Override
     public AssetHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = layoutInflater.inflate(R.layout.item_asset, parent,false);
+        View view = layoutInflater.inflate(R.layout.item_asset, parent, false);
         return new AssetHolder(view);
     }
 
     @Override
     public void onBindViewHolder(AssetHolder holder, final int position) {
-        holder.serial_number.setText((position + 1)+"");
+        holder.serial_number.setText((position + 1) + "");
         holder.assetName.setText(assetInfoList.get(position).getAssetName());
-        holder.assetQuantity.setText(assetInfoList.get(position).getQuantity()+"");
+        holder.assetQuantity.setText(assetInfoList.get(position).getQuantity() + "");
         switch (assetInfoList.get(position).getStatus()) {
             case 0:
                 holder.assetStatus.setText("正常");
@@ -83,7 +79,7 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
         holder.assetName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                title=assetInfoList.get(position).getAssetName();
+                title = assetInfoList.get(position).getAssetName();
                 BmobQuery<AssetPicture> query = new BmobQuery<>();
                 query.addWhereEqualTo("imageNum", assetInfoList.get(position).getPicture());
                 query.findObjects(mContext, new FindListener<AssetPicture>() {
@@ -108,6 +104,7 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
     }
 
     CustomHandler handler = new CustomHandler();
+
     class CustomHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
@@ -115,8 +112,8 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
                 case 1:
                     List<AssetPicture> list1 = (List<AssetPicture>) msg.getData().getSerializable("image");
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("picture",list1.get(0));
-                    bundle.putString("title",title);
+                    bundle.putSerializable("picture", list1.get(0));
+                    bundle.putString("title", title);
                     Intent intent = new Intent(mContext, AssetPictureActivity.class);
                     intent.putExtra(mContext.getPackageName(), bundle);
                     mContext.startActivity(intent);
@@ -169,6 +166,7 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
         TextView assetName;
         TextView assetQuantity;
         TextView assetStatus;
+
         public AssetHolder(View itemView) {
             super(itemView);
             item = (LinearLayout) itemView.findViewById(R.id.ll_asset_item);

@@ -159,14 +159,11 @@
             <include layout="@layout/assets_search_middle"/>
         </LinearLayout>
     </LinearLayout>
-
+    <include layout="@layout/item_asset_header"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="5">
-
-        <include layout="@layout/item_asset_header"/>
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rc_turn_over_list"
             android:layout_width="match_parent"

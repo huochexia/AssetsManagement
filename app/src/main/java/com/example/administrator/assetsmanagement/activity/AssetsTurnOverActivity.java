@@ -96,9 +96,10 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     RadioGroup mRgAssetsTurnOverRange;
 
 
-    private List<AssetInfo> select_list;
+    private List<AssetInfo> select_list =new ArrayList<>();
+    private List<AssetInfo> temp_list = new ArrayList<>();
     private AssetRecyclerViewAdapter adapter;
-    RecyclerView mRcTurnOverList;
+    private RecyclerView mRcTurnOverList;
     @Override
     public String title() {
         return "资产移交";
@@ -133,7 +134,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         initEvent();
         mBtnTurnOverOk.setEnabled(false);
         mRcTurnOverList = (RecyclerView) findViewById(R.id.rc_turn_over_list);
-        LinearLayoutManager ll = new LinearLayoutManager(this);
+        LinearLayoutManager ll = new LinearLayoutManager(AssetsTurnOverActivity.this);
         mRcTurnOverList.setLayoutManager(ll);
     }
 
@@ -149,11 +150,13 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                         mRlSingleAsset.setVisibility(View.VISIBLE);
                         mLlOverallAsset.setVisibility(View.GONE);
                         mBtnTurnOverOk.setEnabled(false);
+                        clearLists();
                         break;
                     case R.id.rb_overall_assets:
                         mLlOverallAsset.setVisibility(View.VISIBLE);
                         mRlSingleAsset.setVisibility(View.GONE);
                         mBtnTurnOverOk.setEnabled(false);
+                        clearLists();
                         break;
                 }
             }
@@ -164,18 +167,21 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 switch (checkedId) {
                     case R.id.rb_turn_over_location:
                         changeBtnStatus();
+                        clearLists();
                         select_type = SEARCH_LOCATION;
                         mTvSearchContent.setText("");
                         mBtnSearchLocation.setVisibility(View.VISIBLE);
                         break;
                     case R.id.rb_turn_over_dept:
                         changeBtnStatus();
+                        clearLists();
                         select_type = SEARCH_DEPARTMENT;
                         mTvSearchContent.setText("");
                         mBtnSearchDept.setVisibility(View.VISIBLE);
                         break;
                     case R.id.rb_turn_over_manager:
                         changeBtnStatus();
+                        clearLists();
                         select_type = SEARCH_MANAGER;
                         mTvSearchContent.setText("");
                         mBtnSearchManager.setVisibility(View.VISIBLE);
@@ -212,12 +218,15 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 searchAssets("mAssetsNum", mEtSearchAssetNum.getText().toString().trim());
                 break;
             case R.id.btn_search_location:
+                clearLists();
                 getSelectedInfo(SelectedTreeNodeActivity.SEARCH_LOCATION, false);
                 break;
             case R.id.btn_search_manager:
+                clearLists();
                 getSelectedInfo(SelectedTreeNodeActivity.SEARCH_MANAGER, true);
                 break;
             case R.id.btn_search_dept:
+                clearLists();
                 getSelectedInfo(SelectedTreeNodeActivity.SEARCH_DEPARTMENT, false);
                 break;
             case R.id.btn_search_start:
@@ -295,12 +304,18 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
             @Override
             public void onSuccess(final List<AssetInfo> list) {
                 if (list != null && list.size() > 0) {
-                    Message msg = new Message();
-                    msg.what = 1;
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("assets", (Serializable) list);
-                    msg.setData(bundle);
-                    handler.sendMessage(msg);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Message msg = new Message();
+                            msg.what = 1;
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("assets", (Serializable) list);
+                            msg.setData(bundle);
+                            handler.sendMessage(msg);
+                        }
+                    }).start();
+
                 } else {
                     toast("没有符合条件的资产！");
                 }
@@ -327,17 +342,16 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                     if (select_list.size() > 0) {
                         mBtnTurnOverOk.setEnabled(true);
                     }
-                    List<AssetInfo> temp = new ArrayList<>();
                     for (AssetInfo asset : select_list) {
                         try {
                             AssetInfo ass1 = (AssetInfo) asset.clone();
-                            temp.add(ass1);
+                            temp_list.add(ass1);
                         } catch (CloneNotSupportedException e) {
                             e.printStackTrace();
                         }
 
                     }
-                    adapter = new AssetRecyclerViewAdapter(AssetsTurnOverActivity.this, temp);
+                    adapter = new AssetRecyclerViewAdapter(AssetsTurnOverActivity.this, temp_list);
                     mRcTurnOverList.setAdapter(adapter);
                     break;
             }
@@ -350,6 +364,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     private void clearLists() {
         if (adapter != null) {
             select_list.clear();
+            temp_list.clear();
             adapter.notifyDataSetChanged();
             mBtnTurnOverOk.setEnabled(false);
         }
