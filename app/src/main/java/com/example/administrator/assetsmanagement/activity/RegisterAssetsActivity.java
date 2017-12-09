@@ -147,8 +147,8 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         btnRegisterAddNext.setEnabled(false);
         setTextFonts();
         asset = new AssetInfo();
-        asset.setmStatus(0);//初始状态，0正常
-        asset.setmManagerNum("");//初始管理者，为空
+        asset.setStatus(0);//初始状态，0正常
+        asset.setOldManager("");//初始管理者，为空
         initEvent();
         mEtRegisterAssetsDate.setText(TimeUtils.getFormatToday(TimeUtils.FORMAT_DATE));
     }
@@ -163,7 +163,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                asset.setmAssetName(s.toString());
+                asset.setAssetName(s.toString());
             }
 
             @Override
@@ -180,7 +180,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                asset.setmRegisterDate(s.toString());
+                asset.setRegisterDate(s.toString());
             }
 
             @Override
@@ -197,7 +197,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                asset.setmComment(s.toString());
+                asset.setComment(s.toString());
             }
 
             @Override
@@ -258,9 +258,9 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 setAllWidget(false);
                 break;
             case R.id.tv_assets_item_picture_lib:
-                if (asset.getmCategoryNum() != null) {
+                if (asset.getCategoryNum() != null) {
                     Intent intentPhoto = new Intent(this, SelectAssetsPhotoActivity.class);
-                    intentPhoto.putExtra("category_num", asset.getmCategoryNum());
+                    intentPhoto.putExtra("category_num", asset.getCategoryNum());
                     intentPhoto.putExtra("category_name", mTvRegisterCategory.getText());
                     startActivityForResult(intentPhoto, CHOOSET_PHOTO);
                 } else {
@@ -269,7 +269,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
                 break;
             case R.id.tv_assets_item_camera:
-                if (asset.getmCategoryNum() != null) {
+                if (asset.getCategoryNum() != null) {
                     Imagefile = startCamera();
                 } else {
                     toast("请先选择资产类别！");
@@ -321,7 +321,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 for (int j = 0; j < 50; j++) {
                     try {
                         AssetInfo asi = (AssetInfo) asset.clone();
-                        asi.setmAssetsNum(number + "-" + n);
+                        asi.setAssetsNum(number + "-" + n);
                         list.add(asi);
                     } catch (CloneNotSupportedException e) {
                         e.printStackTrace();
@@ -346,7 +346,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         for (int k = 0; k < s; k++) {
             try {
                 AssetInfo asi = (AssetInfo) asset.clone();
-                asi.setmAssetsNum(number + "-" + n);
+                asi.setAssetsNum(number + "-" + n);
                 list.add(asi);
             } catch (CloneNotSupportedException e) {
 
@@ -433,7 +433,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                     mBaseNode = (BaseNode) data.getSerializableExtra("node");
                     mTvRegisterLocation.setText(getNodeAllPathName(mBaseNode));
                     //TODO:位置编号赋值给资产对象实例
-                    asset.setmLocationNum(mBaseNode.getId());
+                    asset.setLocationNum(mBaseNode.getId());
                 }
                 break;
             case REGISTER_CATEGORY:
@@ -441,7 +441,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                     mBaseNode = (BaseNode) data.getSerializableExtra("node");
                     mTvRegisterCategory.setText(getNodeAllPathName(mBaseNode));
                     //TODO:类别编号赋值给资产对象实例
-                    asset.setmCategoryNum(mBaseNode.getId());
+                    asset.setCategoryNum(mBaseNode.getId());
                 }
                 break;
             case REGISTER_DEPARTMENT:
@@ -449,13 +449,13 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                     mBaseNode = (BaseNode) data.getSerializableExtra("node");
                     mTvRegisterDepartment.setText(getNodeAllPathName(mBaseNode));
                     //TODO:部门编号赋值给资产对象实例
-                    asset.setmDeptNum(mBaseNode.getId());
+                    asset.setDeptNum(mBaseNode.getId());
                 }
                 break;
             case CHOOSET_PHOTO:
                 if (data != null) {
                     Bundle bundle = data.getBundleExtra("assetpicture");
-                    asset.setmPicture((String) bundle.getSerializable("imageNum"));
+                    asset.setPicture((String) bundle.getSerializable("imageNum"));
                     Glide.with(this).load(( bundle.getSerializable("imageFile"))).centerCrop().into(mIvRegisterPicture);
                 }
                 break;
@@ -588,11 +588,11 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             public void onSuccess() {
                 // TODO Auto-generated method stub
                 AssetPicture picture = new AssetPicture();
-                picture.setCategoryNum(asset.getmCategoryNum());
+                picture.setCategoryNum(asset.getCategoryNum());
                 String imangNum= System.currentTimeMillis() + "";
                 picture.setImageNum(imangNum);
                 picture.setImageFile(bmobFile);
-                asset.setmPicture(imangNum);
+                asset.setPicture(imangNum);
                 insertObject(picture);
 
             }

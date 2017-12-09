@@ -1,9 +1,13 @@
 package com.example.administrator.assetsmanagement.base;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
@@ -72,5 +76,24 @@ public class BaseActivity extends AppCompatActivity {
         else
             return null;
     }
-
+    /**
+     * 隐藏软键盘,API5.0以下支持 。6.0不支持。活动启动后由于EditView焦点的获得，系统会自动显示软键盘
+     * 这样有时会影响用户的体验，所以需要隐藏。
+     */
+    public void hideSoftInputView() {
+        InputMethodManager manager = ((InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE));
+        if (getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
+            if (getCurrentFocus() != null)
+                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+    /**隐藏软键盘-一般是EditText.getWindowToken()，API5.0以下支持 。6.0不支持
+     * @param token
+     */
+    public void hideSoftInput(IBinder token) {
+        if (token != null) {
+            InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            im.hideSoftInputFromWindow(token,0);
+        }
+    }
 }

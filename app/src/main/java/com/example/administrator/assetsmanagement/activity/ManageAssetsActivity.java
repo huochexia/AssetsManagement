@@ -50,7 +50,7 @@ public class ManageAssetsActivity extends ParentWithNaviActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manager_scope);
+        setContentView(R.layout.activity_assets_manage);
         ButterKnife.bind(this);
         initNaviView();
     }

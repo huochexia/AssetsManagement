@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:line="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:fancy="http://schemas.android.com/tools"
-    android:background="@color/background"
-    android:orientation="vertical">
+              xmlns:fancy="http://schemas.android.com/apk/res-auto"
+              xmlns:line="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/background"
+              android:orientation="vertical">
 
-    <include layout="@layout/include_navi" />
+    <include layout="@layout/include_navi"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,9 +26,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="移交内容："
-                android:textSize="18sp" />
+                android:textSize="18sp"/>
 
             <RadioGroup
+                android:id="@+id/rg_assets_turn_over"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -38,24 +39,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="个别资产"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
 
                 <RadioButton
                     android:id="@+id/rb_overall_assets"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="整体资产"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
             </RadioGroup>
         </LinearLayout>
 
-        <include layout="@layout/view_line_between" />
+        <include layout="@layout/view_line_between"/>
 
         <RelativeLayout
             android:id="@+id/rl_single_asset"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible">
+            android:visibility="visible"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
 
             <LinearLayout
 
@@ -68,25 +71,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:src="@drawable/barcode_2d" />
+                    android:src="@drawable/barcode_2d"/>
 
                 <com.example.administrator.assetsmanagement.utils.LineEditText
-                    android:id="@+id/et_register_assets_name"
+                    android:id="@+id/et_search_asset_num"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_10"
                     android:background="@color/transparent"
                     android:hint="请输入资产编号"
                     android:textSize="16sp"
-                    line:lineColorEt="#1d26de" />
+
+                    line:lineColorEt="#1d26de"/>
             </LinearLayout>
 
             <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/btn_turn_over_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
                 android:layout_alignParentEnd="true"
+                android:layout_marginEnd="10dp"
                 android:padding="10dp"
                 fancy:fb_borderColor="#FFFFFF"
                 fancy:fb_borderWidth="0dp"
@@ -94,13 +98,13 @@
                 fancy:fb_focusColor="#7182e2"
                 fancy:fb_radius="15dp"
                 fancy:fb_text="查找"
+                fancy:fb_textColor="#FFFFFF"
                 fancy:fb_textFont="隶书.ttf"
-                fancy:fb_textSize="20sp"
-                fancy:fb_textColor="#FFFFFF">
+                fancy:fb_textSize="20sp">
             </mehdi.sakout.fancybuttons.FancyButton>
         </RelativeLayout>
 
-        <include layout="@layout/view_line_between" />
+        <include layout="@layout/view_line_between"/>
 
         <LinearLayout
             android:id="@+id/ll_overall_asset"
@@ -119,36 +123,40 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="移交范围："
-                    android:textSize="18sp" />
+                    android:textSize="18sp"/>
 
                 <RadioGroup
+                    android:id="@+id/rg_assets_turn_over_range"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <RadioButton
+                        android:id="@+id/rb_turn_over_location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="位置"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:checked="true"/>
 
                     <RadioButton
+                        android:id="@+id/rb_turn_over_dept"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="部门"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"/>
 
                     <RadioButton
+                        android:id="@+id/rb_turn_over_manager"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="管理员"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"/>
                 </RadioGroup>
+
             </LinearLayout>
-
-            <include layout="@layout/view_line_between" />
-
-            <include layout="@layout/assets_search_middle" />
+            <include layout="@layout/view_line_between"/>
+            <include layout="@layout/assets_search_middle"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -157,14 +165,15 @@
         android:layout_height="0dp"
         android:layout_weight="5">
 
-        <include layout="@layout/item_asset_header" />
+        <include layout="@layout/item_asset_header"/>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rc_turn_over_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </LinearLayout>
 
-    <include layout="@layout/view_line_between" />
+    <include layout="@layout/view_line_between"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -181,8 +190,8 @@
                 android:id="@+id/btn_turn_over_receiver"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
                 android:layout_alignParentEnd="true"
+                android:layout_marginEnd="10dp"
                 android:padding="10dp"
                 fancy:fb_borderColor="#FFFFFF"
                 fancy:fb_borderWidth="0dp"
@@ -190,18 +199,20 @@
                 fancy:fb_focusColor="#7182e2"
                 fancy:fb_radius="15dp"
                 fancy:fb_text="接收者"
+                fancy:fb_textColor="#FFFFFF"
                 fancy:fb_textFont="隶书.ttf"
-                fancy:fb_textSize="20sp"
-                fancy:fb_textColor="#FFFFFF">
+                fancy:fb_textSize="20sp">
             </mehdi.sakout.fancybuttons.FancyButton>
 
             <TextView
+                android:id="@+id/tv_turn_over_receiver"
+                android:layout_marginTop="@dimen/margin_10"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp" />
+                android:textSize="18sp"/>
         </LinearLayout>
 
-        <include layout="@layout/view_line_between" />
+        <include layout="@layout/view_line_between"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -214,10 +225,11 @@
 
                 <mehdi.sakout.fancybuttons.FancyButton
                     android:id="@+id/btn_turn_over_ok"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginStart="20dp"
                     android:padding="10dp"
                     fancy:fb_borderColor="#FFFFFF"
                     fancy:fb_borderWidth="0dp"
@@ -225,35 +237,12 @@
                     fancy:fb_focusColor="#7182e2"
                     fancy:fb_radius="15dp"
                     fancy:fb_text="确定"
+                    fancy:fb_textColor="#FFFFFF"
                     fancy:fb_textFont="隶书.ttf"
-                    fancy:fb_textSize="20sp"
-                    fancy:fb_textColor="#FFFFFF">
+                    fancy:fb_textSize="20sp">
                 </mehdi.sakout.fancybuttons.FancyButton>
             </RelativeLayout>
 
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <mehdi.sakout.fancybuttons.FancyButton
-                    android:id="@+id/btn_turn_over_cancel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_alignParentStart="true"
-                    android:padding="10dp"
-                    fancy:fb_borderColor="#FFFFFF"
-                    fancy:fb_borderWidth="0dp"
-                    fancy:fb_defaultColor="#3f51b4"
-                    fancy:fb_focusColor="#7182e2"
-                    fancy:fb_radius="15dp"
-                    fancy:fb_text="取消"
-                    fancy:fb_textFont="隶书.ttf"
-                    fancy:fb_textSize="20sp"
-                    fancy:fb_textColor="#FFFFFF">
-                </mehdi.sakout.fancybuttons.FancyButton>
-            </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

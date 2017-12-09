@@ -183,7 +183,7 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                         break;
                     case SEARCH_MANAGER:
                         if (mNode != null) {
-                            searchAssets("mManagerNum", mNode.getId());
+                            searchAssets("mOldManager", mNode.getId());
                         }
                         break;
                     case SEARCH_NAME:
@@ -324,50 +324,13 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
             case SEARCHASSETS_REQUEST:
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
                     mNode = (BaseNode) data.getSerializableExtra("node");
-                    mTvSearchContent.setText(getSearchContentName(mNode));
+                    mTvSearchContent.setText(NodeHelper.getSearchContentName(mNode));
                 }
                 break;
             default:
         }
     }
 
-    /**
-     * 显示要查找的内容，传入的节点是201室，得到它的完整链内容。比如 A座-2楼-201室。
-     *
-     * @param baseNode
-     */
-    private String getSearchContentName(BaseNode baseNode) {
-        StringBuffer buffer = new StringBuffer();
-        List<BaseNode> nodes = new ArrayList<>();
-        NodeHelper.getAllParents(nodes, baseNode);
-        int i = nodes.size();
-        while (i > 0) {
-            i--;
-            buffer.append(nodes.get(i).getName());
-            if (i != 0)
-                buffer.append("-");
-        }
-        return buffer.toString();
-    }
 
-    /**
-     * 获得查询对象的ID
-     *
-     * @param baseNode
-     * @return
-     */
-    private String getSearchContentId(BaseNode baseNode) {
-        StringBuffer buffer = new StringBuffer();
-        List<BaseNode> nodes = new ArrayList<>();
-        NodeHelper.getAllParents(nodes, baseNode);
-        int i = nodes.size();
-        while (i > 0) {
-            i--;
-            buffer.append(nodes.get(i).getId());
-            if (i != 0)
-                buffer.append("-");
-        }
-        return buffer.toString();
-    }
 
 }

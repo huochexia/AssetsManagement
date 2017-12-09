@@ -15,6 +15,7 @@ import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetCategory;
 import com.example.administrator.assetsmanagement.bean.Department;
 import com.example.administrator.assetsmanagement.bean.Location;
+import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.CheckboxTreeNodeAdapter;
 
@@ -109,6 +110,7 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
                 getDepartmentFromBmob();
                 break;
             case SEARCH_MANAGER:
+                getPersonFromBmob();
                 break;
             case SEARCH_CATEGORY:
                getCategoryFromBmob();
@@ -167,6 +169,24 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
         query.findObjects(this, new FindListener<AssetCategory>() {
             @Override
             public void onSuccess(List<AssetCategory> list) {
+                createMessage((Serializable) list);
+            }
+
+            @Override
+            public void onError(int i, String s) {
+
+            }
+        });
+    }
+    /**
+     * 从服务器获取人员数据，并以此设置适配器
+     */
+    private  void getPersonFromBmob() {
+        BmobQuery<Person> query = new BmobQuery<>();
+        query.setLimit(500);
+        query.findObjects(this, new FindListener<Person>() {
+            @Override
+            public void onSuccess(List<Person> list) {
                 createMessage((Serializable) list);
             }
 

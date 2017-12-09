@@ -60,15 +60,32 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
     @Override
     public void onBindViewHolder(AssetHolder holder, final int position) {
         holder.serial_number.setText((position + 1)+"");
-        holder.assetName.setText(assetInfoList.get(position).getmAssetName());
+        holder.assetName.setText(assetInfoList.get(position).getAssetName());
         holder.assetQuantity.setText(assetInfoList.get(position).getQuantity()+"");
-        holder.assetStatus.setText(assetInfoList.get(position).getmStatus()+"");
+        switch (assetInfoList.get(position).getStatus()) {
+            case 0:
+                holder.assetStatus.setText("正常");
+                break;
+            case 1:
+                holder.assetStatus.setText("损坏");
+                break;
+            case 2:
+                holder.assetStatus.setText("丢失");
+                break;
+            case 3:
+                holder.assetStatus.setText("待报废");
+                break;
+            case 4:
+                holder.assetStatus.setText("待移交");
+                break;
+        }
+
         holder.assetName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                title=assetInfoList.get(position).getmAssetName();
+                title=assetInfoList.get(position).getAssetName();
                 BmobQuery<AssetPicture> query = new BmobQuery<>();
-                query.addWhereEqualTo("imageNum", assetInfoList.get(position).getmPicture());
+                query.addWhereEqualTo("imageNum", assetInfoList.get(position).getPicture());
                 query.findObjects(mContext, new FindListener<AssetPicture>() {
                     @Override
                     public void onSuccess(List<AssetPicture> list) {
@@ -126,7 +143,7 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
         Iterator it = list.iterator();
         while (it.hasNext()) {
             AssetInfo asset = (AssetInfo) it.next();
-            String key = asset.getmPicture();
+            String key = asset.getPicture();
             if (map.get(key) == null) {
                 map.put(key, asset);
             } else {
@@ -143,39 +160,6 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
         return list1;
     }
 
-    /**
-     * 下载BmobFile文件
-     *
-     * @param picture
-     */
-    private void downloadFile(AssetPicture picture) {
-
-            final File imagefile = new File(mContext.getCacheDir() + picture.getImageFile().getFilename());
-            picture.getImageFile().download(mContext, imagefile, new DownloadFileListener() {
-                @Override
-                public void onSuccess(String s) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Message msg = new Message();
-                            msg.what = 2;
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("file", imagefile);
-                            msg.setData(bundle);
-                            handler.sendMessage(msg);
-                        }
-                    }).start();
-
-                }
-
-                @Override
-                public void onFailure(int i, String s) {
-
-                }
-            });
-
-
-    }
     /**
      * 自定义ViewHolder
      */
@@ -194,4 +178,5 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
             assetStatus = (TextView) itemView.findViewById(R.id.tv_assets_item_status);
         }
     }
+
 }

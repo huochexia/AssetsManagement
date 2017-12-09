@@ -22,18 +22,24 @@ public class AssetInfo extends BmobObject implements Cloneable {
      */
     private String mDeptNum;
     /*
-    资产管理员编号
+    新资产管理员编号
      */
-    private String mManagerNum;
+    private String mNewManager;
+    /*
+    原资产管理员编号,正常情况下新管理员与原管理一致。待移交状态下，新管理员为拟接收的管理员。这
+    样设计是为了解决，拟接收人员不能接收资产时，只有新管理员接收了该资产后，旧管理员才会变更为新管理
+    员；如果未接收原管理员不变。如果要退回原管理员，则新管理员清空。
+    管理员
+     */
+    private String mOldManager;
     /*
     资产类别编号
      */
     private String mCategoryNum;
     /*
-           资产所属图片编号，它是识别资产是否属于一种的标志
-            */
+       资产所属图片编号，它是识别资产是否属于一种的标志
+     */
     private  String mPicture;
-
 
     /*
     资产状态：0正常，1损坏，2丢失，3待报废：即管理员提交报废，但还没有得到批准；4待移交，即管理员准
@@ -56,87 +62,93 @@ public class AssetInfo extends BmobObject implements Cloneable {
     该资产数量
      */
     private Integer quantity = 1;
-    /**
-     * setter 和 getter 方法
-     */
-    public String getmAssetName() {
+
+    public String getAssetName() {
         return mAssetName;
     }
 
-    public void setmAssetName(String mAssetName) {
-        this.mAssetName = mAssetName;
+    public void setAssetName(String assetName) {
+        mAssetName = assetName;
     }
 
-    public String getmLocationNum() {
+    public String getLocationNum() {
         return mLocationNum;
     }
 
-    public void setmLocationNum(String mLocationNum) {
-        this.mLocationNum = mLocationNum;
+    public void setLocationNum(String locationNum) {
+        mLocationNum = locationNum;
     }
 
-    public String getmDeptNum() {
+    public String getDeptNum() {
         return mDeptNum;
     }
 
-    public void setmDeptNum(String mDeptNum) {
-        this.mDeptNum = mDeptNum;
+    public void setDeptNum(String deptNum) {
+        mDeptNum = deptNum;
     }
 
-    public String getmManagerNum() {
-        return mManagerNum;
+    public String getNewManager() {
+        return mNewManager;
     }
 
-    public void setmManagerNum(String mManagerNum) {
-        this.mManagerNum = mManagerNum;
+    public void setNewManager(String newManager) {
+        mNewManager = newManager;
     }
 
-    public String getmCategoryNum() {
+    public String getOldManager() {
+        return mOldManager;
+    }
+
+    public void setOldManager(String oldManager) {
+        mOldManager = oldManager;
+    }
+
+    public String getCategoryNum() {
         return mCategoryNum;
     }
 
-    public void setmCategoryNum(String mCategoryNum) {
-        this.mCategoryNum = mCategoryNum;
+    public void setCategoryNum(String categoryNum) {
+        mCategoryNum = categoryNum;
     }
 
-    public Integer getmStatus() {
-        return mStatus;
-    }
-
-    public void setmStatus(Integer mStatus) {
-        this.mStatus = mStatus;
-    }
-
-    public String getmRegisterDate() {
-        return mRegisterDate;
-    }
-
-    public void setmRegisterDate(String mRegisterDate) {
-        this.mRegisterDate = mRegisterDate;
-    }
-
-    public String getmAssetsNum() {
-        return mAssetsNum;
-    }
-
-    public void setmAssetsNum(String mAssetsNum) {
-        this.mAssetsNum = mAssetsNum;
-    }
-
-    public String getmComment() {
-        return mComment;
-    }
-
-    public void setmComment(String mComment) {
-        this.mComment = mComment;
-    }
-
-    public String getmPicture() {
+    public String getPicture() {
         return mPicture;
     }
 
-    public void setmPicture(String mPicture) {
-        this.mPicture = mPicture;
+    public void setPicture(String picture) {
+        mPicture = picture;
+    }
+
+    public Integer getStatus() {
+        return mStatus;
+    }
+
+    public void setStatus(Integer status) {
+        mStatus = status;
+    }
+
+    public String getRegisterDate() {
+        return mRegisterDate;
+    }
+
+    public void setRegisterDate(String registerDate) {
+        mRegisterDate = registerDate;
+    }
+
+    public String getAssetsNum() {
+        return mAssetsNum;
+    }
+
+    public void setAssetsNum(String assetsNum) {
+        mAssetsNum = assetsNum;
+    }
+
+    public String getComment() {
+        return mComment;
+    }
+
+    public void setComment(String comment) {
+        mComment = comment;
     }
 
     public Integer getQuantity() {
@@ -146,6 +158,11 @@ public class AssetInfo extends BmobObject implements Cloneable {
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
+
+    /**
+     * setter 和 getter 方法
+     */
+
 
     public Object clone() throws CloneNotSupportedException {
         return super.clone();

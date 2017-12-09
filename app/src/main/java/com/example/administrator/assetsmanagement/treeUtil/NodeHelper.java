@@ -204,4 +204,41 @@ public class NodeHelper {
         }
         getAllParents(nodes,node.getParent());
     }
+    /**
+     * 显示要查找的内容，传入的节点是201室，得到它的完整链内容。比如 A座-2楼-201室。
+     *
+     * @param baseNode
+     */
+    public static String getSearchContentName(BaseNode baseNode) {
+        StringBuffer buffer = new StringBuffer();
+        List<BaseNode> nodes = new ArrayList<>();
+        NodeHelper.getAllParents(nodes, baseNode);
+        int i = nodes.size();
+        while (i > 0) {
+            i--;
+            buffer.append(nodes.get(i).getName());
+            if (i != 0)
+                buffer.append("-");
+        }
+        return buffer.toString();
+    }
+    /**
+     * 获得查询对象的ID
+     *
+     * @param baseNode
+     * @return
+     */
+    public String getSearchContentId(BaseNode baseNode) {
+        StringBuffer buffer = new StringBuffer();
+        List<BaseNode> nodes = new ArrayList<>();
+        NodeHelper.getAllParents(nodes, baseNode);
+        int i = nodes.size();
+        while (i > 0) {
+            i--;
+            buffer.append(nodes.get(i).getId());
+            if (i != 0)
+                buffer.append("-");
+        }
+        return buffer.toString();
+    }
 }
