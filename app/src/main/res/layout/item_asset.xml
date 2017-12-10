@@ -66,4 +66,16 @@
             tool:text="10"
             android:textSize="16sp" />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:layout_gravity="center">
+        <CheckBox
+            android:gravity="center"
+            android:id="@+id/cb_assets_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"/>
+    </LinearLayout>
 </LinearLayout>

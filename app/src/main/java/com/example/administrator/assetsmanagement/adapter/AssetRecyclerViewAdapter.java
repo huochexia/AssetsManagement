@@ -37,13 +37,13 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
     Context mContext;
     LayoutInflater layoutInflater;
 
-    Map map = new HashMap();
+
 
     String title;
 
     public AssetRecyclerViewAdapter(Context context, List<AssetInfo> list) {
         mContext = context;
-        assetInfoList = sumQuantity(list);
+        assetInfoList = list;
         layoutInflater = LayoutInflater.from(mContext);
     }
 
@@ -128,34 +128,6 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
         return assetInfoList.size();
     }
 
-    /**
-     * 计算同样资产的数量
-     *
-     * @param list
-     */
-    private Integer sum = 1;
-
-    private List<AssetInfo> sumQuantity(List<AssetInfo> list) {
-        List<AssetInfo> list1 = list;
-        Iterator it = list.iterator();
-        while (it.hasNext()) {
-            AssetInfo asset = (AssetInfo) it.next();
-            String key = asset.getPicture();
-            if (map.get(key) == null) {
-                map.put(key, asset);
-            } else {
-                AssetInfo asset1 = (AssetInfo) map.get(key);
-                asset1.setQuantity(asset1.getQuantity() + 1);
-                map.put(key, asset1);
-            }
-
-        }
-        list1.clear();//最后清空后遍历map，存入List中
-        for (Object obj : map.keySet()) {
-            list1.add((AssetInfo) map.get(obj));
-        }
-        return list1;
-    }
 
     /**
      * 自定义ViewHolder

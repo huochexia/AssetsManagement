@@ -21,6 +21,7 @@ import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
+import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 import com.example.administrator.assetsmanagement.utils.LineEditText;
 
 import java.io.Serializable;
@@ -43,22 +44,31 @@ import mehdi.sakout.fancybuttons.FancyButton;
  */
 
 public class AssetsTurnOverActivity extends ParentWithNaviActivity {
-    public static final int SELECTED_REQUEST = 100;
-    public static final int RECEIVER_SELECT = 101;
+    public static final int REQUEST_SELECTED = 100;
+    public static final int REQUEST_RECEIVE_LOCATION = 101;
+    public static final int REQUEST_RECEIVE_DEPT= 102;
+    public static final int REQUEST_RECEIVE_MANAGER = 103;
 
     public static final int SEARCH_LOCATION = 1;
     public static final int SEARCH_DEPARTMENT = 3;
     public static final int SEARCH_MANAGER = 4;
 
 
-    private BaseNode mNode;//接收传入位置、部门和原管理员信息的节点
-    private int select_type = SEARCH_LOCATION; //拟选择的类型，位置、部门、管理员
-    private BaseNode mReceiver;//拟接收者的信息节点
 
+    private BaseNode mNode;//接收传入位置、部门和原管理员信息的节点
+    private BaseNode mNewLocation,mNewDept,mNewManager;
+    private int select_type = SEARCH_LOCATION; //拟选择的类型，位置、部门、管理员
+
+    @BindView(R.id.ll_assets_turn_over_top)
+    LinearLayout mLlAssetsTurnOverTop;
     @BindView(R.id.et_search_asset_num)
     LineEditText mEtSearchAssetNum;
-    @BindView(R.id.tv_turn_over_receiver)
-    TextView mTvTurnOverReceiver;
+    @BindView(R.id.tv_receive_new_location)
+    TextView mTvReceiveNewLocation;
+    @BindView(R.id.tv_receive_new_dept)
+    TextView mTvReceiveNewDept;
+    @BindView(R.id.tv_receive_new_manager)
+    TextView mTvNewManager;
     @BindView(R.id.iv_left_navi)
     ImageView ivLeftNavi;
     @BindView(R.id.rg_assets_turn_over)
@@ -83,7 +93,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     FancyButton mBtnSearchStart;
 
 
-    @BindView(R.id.btn_turn_over_receiver)
+    @BindView(R.id.btn_receive_manager)
     FancyButton mBtnTurnOverReceiver;
     @BindView(R.id.btn_turn_over_ok)
     FancyButton mBtnTurnOverOk;
@@ -96,10 +106,12 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     RadioGroup mRgAssetsTurnOverRange;
 
 
-    private List<AssetInfo> select_list =new ArrayList<>();
+    private List<AssetInfo> select_list = new ArrayList<>();
     private List<AssetInfo> temp_list = new ArrayList<>();
     private AssetRecyclerViewAdapter adapter;
     private RecyclerView mRcTurnOverList;
+
+
     @Override
     public String title() {
         return "资产移交";
@@ -209,8 +221,8 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
      */
 
     @OnClick({R.id.btn_turn_over_search, R.id.btn_search_location, R.id.btn_search_manager, R.id.btn_search_dept,
-            R.id.btn_search_start, R.id.btn_turn_over_receiver, R.id.btn_turn_over_ok,
-            })
+            R.id.btn_search_start, R.id.btn_receive_manager, R.id.btn_turn_over_ok, R.id.btn_receive_location,
+            R.id.btn_receive_dept})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_turn_over_search:
@@ -219,26 +231,33 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 break;
             case R.id.btn_search_location:
                 clearLists();
-                getSelectedInfo(SelectedTreeNodeActivity.SEARCH_LOCATION, false);
+                getSelectedInfo(SelectedTreeNodeActivity.SEARCH_LOCATION, false,REQUEST_SELECTED);
                 break;
             case R.id.btn_search_manager:
                 clearLists();
-                getSelectedInfo(SelectedTreeNodeActivity.SEARCH_MANAGER, true);
+                getSelectedInfo(SelectedTreeNodeActivity.SEARCH_MANAGER, true,REQUEST_SELECTED);
                 break;
             case R.id.btn_search_dept:
                 clearLists();
-                getSelectedInfo(SelectedTreeNodeActivity.SEARCH_DEPARTMENT, false);
+                getSelectedInfo(SelectedTreeNodeActivity.SEARCH_DEPARTMENT, false,REQUEST_SELECTED);
                 break;
             case R.id.btn_search_start:
                 getSearchResultList();
                 break;
-            case R.id.btn_turn_over_receiver:
-                getReceiver(SelectedTreeNodeActivity.SEARCH_MANAGER, true);
+            case R.id.btn_receive_location:
+                getSelectedInfo(SelectedTreeNodeActivity.SEARCH_LOCATION, false,REQUEST_RECEIVE_LOCATION);
+                break;
+            case R.id.btn_receive_dept:
+                getSelectedInfo(SelectedTreeNodeActivity.SEARCH_DEPARTMENT, false,REQUEST_RECEIVE_DEPT);
+                break;
+            case R.id.btn_receive_manager:
+                getSelectedInfo(SelectedTreeNodeActivity.SEARCH_MANAGER, false,REQUEST_RECEIVE_MANAGER);
                 break;
             case R.id.btn_turn_over_ok:
-                if (mReceiver != null) {
-                    updateManager(select_list);
+                if (mNewManager != null) {
+                    updateAssetsInfo(select_list);
                     mBtnTurnOverOk.setEnabled(false);
+                    initAssetsInfo();
                 } else {
                     toast("请选择接受人！");
                 }
@@ -251,16 +270,28 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case SELECTED_REQUEST:
+            case REQUEST_SELECTED:
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
                     mNode = (BaseNode) data.getSerializableExtra("node");
                     mTvSearchContent.setText(NodeHelper.getSearchContentName(mNode));
                 }
                 break;
-            case RECEIVER_SELECT:
+            case REQUEST_RECEIVE_LOCATION:
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    mReceiver = (BaseNode) data.getSerializableExtra("node");
-                    mTvTurnOverReceiver.setText(NodeHelper.getSearchContentName(mReceiver));
+                    mNewLocation = (BaseNode) data.getSerializableExtra("node");
+                    mTvReceiveNewLocation.setText(NodeHelper.getSearchContentName(mNewLocation));
+                }
+                break;
+            case REQUEST_RECEIVE_DEPT:
+                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
+                    mNewDept = (BaseNode) data.getSerializableExtra("node");
+                    mTvReceiveNewDept.setText(NodeHelper.getSearchContentName(mNewDept));
+                }
+                break;
+            case REQUEST_RECEIVE_MANAGER:
+                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
+                    mNewManager = (BaseNode) data.getSerializableExtra("node");
+                    mTvNewManager.setText(NodeHelper.getSearchContentName(mNewManager));
                 }
             default:
         }
@@ -272,25 +303,14 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
      * @param type
      * @param isPerson
      */
-    private void getSelectedInfo(int type, boolean isPerson) {
+    private void getSelectedInfo(int type, boolean isPerson,int requestCode) {
         Intent intent = new Intent(AssetsTurnOverActivity.this, SelectedTreeNodeActivity.class);
         intent.putExtra("type", type);
         intent.putExtra("person", isPerson);
-        startActivityForResult(intent, SELECTED_REQUEST);
+        startActivityForResult(intent, requestCode);
     }
 
-    /**
-     * 获取接收人信息
-     *
-     * @param type
-     * @param isPerson
-     */
-    private void getReceiver(int type, boolean isPerson) {
-        Intent intent = new Intent(AssetsTurnOverActivity.this, SelectedTreeNodeActivity.class);
-        intent.putExtra("type", type);
-        intent.putExtra("person", isPerson);
-        startActivityForResult(intent, RECEIVER_SELECT);
-    }
+
 
     /**
      * 查询资产
@@ -351,7 +371,8 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                         }
 
                     }
-                    adapter = new AssetRecyclerViewAdapter(AssetsTurnOverActivity.this, temp_list);
+                    adapter = new AssetRecyclerViewAdapter(AssetsTurnOverActivity.this,
+                            AssetsUtil.mergeAndSum(temp_list));
                     mRcTurnOverList.setAdapter(adapter);
                     break;
             }
@@ -371,7 +392,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     }
 
     /**
-     *获取查询结果
+     * 获取查询结果
      */
     private void getSearchResultList() {
         switch (select_type) {
@@ -394,10 +415,31 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
 
     }
 
-    private void updateManager(List<AssetInfo> assets) {
+    /**
+     * 初始化资产的新信息
+     */
+    private void initAssetsInfo() {
+        mNewDept = null;
+        mNewLocation=null;
+        mNewManager = null;
+        mTvReceiveNewLocation.setText("");
+        mTvReceiveNewDept.setText("");
+        mTvNewManager.setText("");
+    }
+    /**
+     * 变更资产信息
+     * @param assets
+     */
+    private void updateAssetsInfo(List<AssetInfo> assets) {
         List<BmobObject> objects = new ArrayList<>();
         for (AssetInfo asset : assets) {
-            asset.setNewManager(mReceiver.getId());
+            if (mNewLocation != null) {
+                asset.setLocationNum(mNewLocation.getId());
+            }
+            if (mNewDept != null) {
+                asset.setDeptNum(mNewDept.getId());
+            }
+            asset.setNewManager(mNewManager.getId());
             asset.setStatus(4);
             objects.add(asset);
         }
@@ -425,28 +467,28 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
      */
     private void batchUpdate(List<BmobObject> objects) {
         int size = objects.size();
-        int m = size/50;//倍数
-        int y = size%50;//余数
+        int m = size / 50;//倍数
+        int y = size % 50;//余数
         //整50的倍数量更新
-        for(int i=0;i<m;i++) {
-            final int finalI = i+1;
-            int fromIndex = 50*i;
-            int toIndex = fromIndex+49;
-            new BmobObject().updateBatch(this, objects.subList(fromIndex,toIndex), new UpdateListener() {
+        for (int i = 0; i < m; i++) {
+            final int finalI = i + 1;
+            int fromIndex = 50 * i;
+            int toIndex = fromIndex + 49;
+            new BmobObject().updateBatch(this, objects.subList(fromIndex, toIndex), new UpdateListener() {
                 @Override
                 public void onSuccess() {
-                    toast("第"+ finalI +"批量更新成功");
+                    toast("第" + finalI + "批量更新成功");
                 }
 
                 @Override
                 public void onFailure(int code, String msg) {
-                    toast("第"+ finalI +"批量更新失败:" + msg);
+                    toast("第" + finalI + "批量更新失败:" + msg);
                 }
             });
         }
         //余数量批量更新
         if (y > 0) {
-            new BmobObject().updateBatch(this, objects.subList(50*m-1,size-1), new UpdateListener() {
+            new BmobObject().updateBatch(this, objects.subList(50 * m - 1, size - 1), new UpdateListener() {
                 @Override
                 public void onSuccess() {
                     toast("最后一批量更新成功");
@@ -459,19 +501,19 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
             });
         }
         //最后一个
-           BmobObject object = objects.get(size - 1);
-            String objectId = object.getObjectId();
-            object.update(this, objectId, new UpdateListener() {
-                @Override
-                public void onSuccess() {
-                    toast("最后一个更新成功");
-                }
+        BmobObject object = objects.get(size - 1);
+        String objectId = object.getObjectId();
+        object.update(this, objectId, new UpdateListener() {
+            @Override
+            public void onSuccess() {
+                toast("最后一个更新成功");
+            }
 
-                @Override
-                public void onFailure(int i, String s) {
-                    toast("最后一个更新失败:" + s);
-                }
-            });
+            @Override
+            public void onFailure(int i, String s) {
+                toast("最后一个更新失败:" + s);
+            }
+        });
 
     }
 }

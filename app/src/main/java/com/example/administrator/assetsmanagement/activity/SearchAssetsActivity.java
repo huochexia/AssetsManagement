@@ -19,6 +19,7 @@ import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
+import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -265,7 +266,8 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
             switch (msg.what) {
                 case 1:
                     search_result_list = (List<AssetInfo>) msg.getData().getSerializable("assets");
-                    adapter = new AssetRecyclerViewAdapter(SearchAssetsActivity.this, search_result_list);
+                    adapter = new AssetRecyclerViewAdapter(SearchAssetsActivity.this,
+                            AssetsUtil.mergeAndSum(search_result_list));
                     searchList.setAdapter(adapter);
                     break;
             }

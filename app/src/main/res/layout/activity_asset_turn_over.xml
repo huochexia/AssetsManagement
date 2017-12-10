@@ -10,6 +10,7 @@
     <include layout="@layout/include_navi"/>
 
     <LinearLayout
+        android:id="@+id/ll_assets_turn_over_top"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3"
@@ -56,9 +57,9 @@
             android:id="@+id/rl_single_asset"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
             android:focusable="true"
-            android:focusableInTouchMode="true">
+            android:focusableInTouchMode="true"
+            android:visibility="visible">
 
             <LinearLayout
 
@@ -100,11 +101,9 @@
                 fancy:fb_text="查找"
                 fancy:fb_textColor="#FFFFFF"
                 fancy:fb_textFont="隶书.ttf"
-                fancy:fb_textSize="20sp">
+                fancy:fb_textSize="16sp">
             </mehdi.sakout.fancybuttons.FancyButton>
         </RelativeLayout>
-
-        <include layout="@layout/view_line_between"/>
 
         <LinearLayout
             android:id="@+id/ll_overall_asset"
@@ -135,9 +134,9 @@
                         android:id="@+id/rb_turn_over_location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:checked="true"
                         android:text="位置"
-                        android:textSize="16sp"
-                        android:checked="true"/>
+                        android:textSize="16sp"/>
 
                     <RadioButton
                         android:id="@+id/rb_turn_over_dept"
@@ -155,15 +154,21 @@
                 </RadioGroup>
 
             </LinearLayout>
+
             <include layout="@layout/view_line_between"/>
             <include layout="@layout/assets_search_middle"/>
+
         </LinearLayout>
+
     </LinearLayout>
+    <include layout="@layout/view_line_between"/>
     <include layout="@layout/item_asset_header"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="5">
+        android:layout_weight="6">
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rc_turn_over_list"
             android:layout_width="match_parent"
@@ -175,16 +180,88 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"
+        android:layout_weight="4"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_5">
+            android:orientation="horizontal">
 
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_5"
+                android:layout_weight="1">
+
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:id="@+id/btn_receive_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="10dp"
+                    android:padding="10dp"
+                    fancy:fb_borderColor="#FFFFFF"
+                    fancy:fb_borderWidth="0dp"
+                    fancy:fb_defaultColor="#3fb2b4"
+                    fancy:fb_focusColor="#3f51b4"
+                    fancy:fb_radius="15dp"
+                    fancy:fb_text="新位置"
+                    fancy:fb_textColor="#FFFFFF"
+                    fancy:fb_textFont="隶书.ttf"
+                    fancy:fb_textSize="16sp">
+                </mehdi.sakout.fancybuttons.FancyButton>
+
+                <TextView
+                    android:id="@+id/tv_receive_new_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:textSize="15sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_5"
+                android:layout_weight="1">
+
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:id="@+id/btn_receive_dept"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="10dp"
+                    android:padding="10dp"
+                    fancy:fb_borderColor="#FFFFFF"
+                    fancy:fb_borderWidth="0dp"
+                    fancy:fb_defaultColor="#3fb2b4"
+                    fancy:fb_focusColor="#3f51b4"
+                    fancy:fb_radius="15dp"
+                    fancy:fb_text="新部门"
+                    fancy:fb_textColor="#FFFFFF"
+                    fancy:fb_textFont="隶书.ttf"
+                    fancy:fb_textSize="16sp">
+                </mehdi.sakout.fancybuttons.FancyButton>
+
+                <TextView
+                    android:id="@+id/tv_receive_new_dept"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:textSize="15sp"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
+        <include layout="@layout/view_line_between"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_5"
+            >
             <mehdi.sakout.fancybuttons.FancyButton
-                android:id="@+id/btn_turn_over_receiver"
+                android:id="@+id/btn_receive_manager"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -192,41 +269,37 @@
                 android:padding="10dp"
                 fancy:fb_borderColor="#FFFFFF"
                 fancy:fb_borderWidth="0dp"
-                fancy:fb_defaultColor="#3f51b4"
-                fancy:fb_focusColor="#7182e2"
+                fancy:fb_defaultColor="#3fb2b4"
+                fancy:fb_focusColor="#3f51b4"
                 fancy:fb_radius="15dp"
                 fancy:fb_text="接收者"
                 fancy:fb_textColor="#FFFFFF"
                 fancy:fb_textFont="隶书.ttf"
-                fancy:fb_textSize="20sp">
+                fancy:fb_textSize="16sp">
             </mehdi.sakout.fancybuttons.FancyButton>
-
             <TextView
-                android:id="@+id/tv_turn_over_receiver"
-                android:layout_marginTop="@dimen/margin_10"
+                android:id="@+id/tv_receive_new_manager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"/>
+                android:layout_marginTop="@dimen/margin_10"
+                android:textSize="15sp"/>
         </LinearLayout>
-
-        <include layout="@layout/view_line_between"/>
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <RelativeLayout
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1">
 
                 <mehdi.sakout.fancybuttons.FancyButton
                     android:id="@+id/btn_turn_over_ok"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="20dp"
                     android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
                     android:padding="10dp"
                     fancy:fb_borderColor="#FFFFFF"
                     fancy:fb_borderWidth="0dp"
@@ -236,7 +309,7 @@
                     fancy:fb_text="确定"
                     fancy:fb_textColor="#FFFFFF"
                     fancy:fb_textFont="隶书.ttf"
-                    fancy:fb_textSize="20sp">
+                    fancy:fb_textSize="16sp">
                 </mehdi.sakout.fancybuttons.FancyButton>
             </RelativeLayout>
 
