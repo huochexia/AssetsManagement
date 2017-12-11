@@ -1,5 +1,7 @@
 package com.example.administrator.assetsmanagement.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -34,6 +36,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +53,7 @@ import mehdi.sakout.fancybuttons.FancyButton;
  * 登记资产：对原有资产和新购资产进行基本信息登记，资产图片的分两种方式，一是从现有图库中进行选择，
  * 二是现场拍照。资产编号根据登记时的系统时间自动产生，同样资产的编号，在自动产生的编号基础上依据
  * 其数量增加序号，做到一资产一编号。
- *
+ * <p>
  * Created by Administrator on 2017/11/4 0004.
  */
 
@@ -107,6 +110,8 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     private AssetInfo asset;
     private File Imagefile;
     private Uri imageUri;
+    private String assetNumber;
+    private List<AssetInfo> mAssetInfos = new ArrayList<>();
 
     @Override
     public String title() {
@@ -251,6 +256,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                     int quantity = Integer.parseInt(mEtRegisterAssetsQuantity.getText().toString());
                     createAssetNumber(quantity, asset);
                     setAllWidget(true);
+                    turnOrDarcode();
                 }
 
                 break;
@@ -276,6 +282,37 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 }
                 break;
         }
+    }
+
+    /**
+     * 进行资产移交或创建二维码对话框
+     */
+    private void turnOrDarcode() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String[] items = new String[]{"移交","创建二维码"};
+        builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("turn_over",1);
+                        bundle.putSerializable("assets", (Serializable) mAssetInfos);
+                        startActivity(AssetsTurnOverActivity.class,bundle,true);
+                        break;
+                    case 1:
+                        break;
+                }
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
     }
 
     /**
@@ -309,7 +346,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
      * 生成资产编号，一种资产可能有许多个，每一个都有自己的编号。
      */
     private void createAssetNumber(int quantity, AssetInfo asset) {
-        String number = String.valueOf(System.currentTimeMillis());
+        assetNumber = String.valueOf(System.currentTimeMillis());
         int m = quantity / 50; //求模
         int s = quantity % 50;//求余数
         int n = 0;
@@ -321,8 +358,9 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 for (int j = 0; j < 50; j++) {
                     try {
                         AssetInfo asi = (AssetInfo) asset.clone();
-                        asi.setAssetsNum(number + "-" + n);
+                        asi.setAssetsNum(assetNumber + "-" + n);
                         list.add(asi);
+                        mAssetInfos.add(asi);
                     } catch (CloneNotSupportedException e) {
                         e.printStackTrace();
                     }
@@ -346,8 +384,9 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         for (int k = 0; k < s; k++) {
             try {
                 AssetInfo asi = (AssetInfo) asset.clone();
-                asi.setAssetsNum(number + "-" + n);
+                asi.setAssetsNum(assetNumber + "-" + n);
                 list.add(asi);
+                mAssetInfos.add(asi);
             } catch (CloneNotSupportedException e) {
 
             }
@@ -385,7 +424,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         } else if (TextUtils.isEmpty(mEtRegisterAssetsName.getText())) {
             toast("请填入资产名称！");
             return false;
-        } else if (TextUtils.isEmpty(mEtRegisterAssetsQuantity.getText()) && quantity>0) {
+        } else if (TextUtils.isEmpty(mEtRegisterAssetsQuantity.getText()) && quantity > 0) {
             toast("请填写资产数量！");
             return false;
         }
@@ -456,7 +495,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 if (data != null) {
                     Bundle bundle = data.getBundleExtra("assetpicture");
                     asset.setPicture((String) bundle.getSerializable("imageNum"));
-                    Glide.with(this).load(( bundle.getSerializable("imageFile"))).centerCrop().into(mIvRegisterPicture);
+                    Glide.with(this).load((bundle.getSerializable("imageFile"))).centerCrop().into(mIvRegisterPicture);
                 }
                 break;
             case TAKE_PHOTO:
@@ -589,7 +628,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 // TODO Auto-generated method stub
                 AssetPicture picture = new AssetPicture();
                 picture.setCategoryNum(asset.getCategoryNum());
-                String imangNum= System.currentTimeMillis() + "";
+                String imangNum = System.currentTimeMillis() + "";
                 picture.setImageNum(imangNum);
                 picture.setImageFile(bmobFile);
                 asset.setPicture(imangNum);

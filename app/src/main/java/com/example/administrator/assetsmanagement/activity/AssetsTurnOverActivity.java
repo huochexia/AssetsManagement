@@ -110,7 +110,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     private List<AssetInfo> temp_list = new ArrayList<>();
     private AssetRecyclerViewAdapter adapter;
     private RecyclerView mRcTurnOverList;
-
+    private Integer flag;//标志，等于1是为新登记资产。
 
     @Override
     public String title() {
@@ -143,11 +143,24 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         setContentView(R.layout.activity_asset_turn_over);
         ButterKnife.bind(this);
         initNaviView();
+
         initEvent();
         mBtnTurnOverOk.setEnabled(false);
         mRcTurnOverList = (RecyclerView) findViewById(R.id.rc_turn_over_list);
         LinearLayoutManager ll = new LinearLayoutManager(AssetsTurnOverActivity.this);
         mRcTurnOverList.setLayoutManager(ll);
+
+        Bundle bundle =getBundle();
+        if (bundle != null) {
+            flag = bundle.getInt("turn_over");
+            if (flag == 1) {
+                mLlAssetsTurnOverTop.setVisibility(View.GONE);
+                mBtnTurnOverOk.setEnabled(true);
+                select_list = (List<AssetInfo>) bundle.getSerializable("assets");
+                adapter = new AssetRecyclerViewAdapter(this, select_list);
+                mRcTurnOverList.setAdapter(adapter);
+            }
+        }
     }
 
     /**
@@ -254,10 +267,16 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 getSelectedInfo(SelectedTreeNodeActivity.SEARCH_MANAGER, false,REQUEST_RECEIVE_MANAGER);
                 break;
             case R.id.btn_turn_over_ok:
+                //这里增加一个判断，如果是新登记的则应调用添加；如果是原有资产移交则调用更新
                 if (mNewManager != null) {
-                    updateAssetsInfo(select_list);
-                    mBtnTurnOverOk.setEnabled(false);
-                    initAssetsInfo();
+                    if (flag != 1) {
+                        updateAssetsInfo(select_list);
+                        mBtnTurnOverOk.setEnabled(false);
+                        initAssetsInfo();
+                    } else {
+                        //TODO:批量添加
+                    }
+
                 } else {
                     toast("请选择接受人！");
                 }
