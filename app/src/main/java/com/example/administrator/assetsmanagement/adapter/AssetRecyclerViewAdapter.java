@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
 /**
@@ -82,20 +83,22 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
                 title = assetInfoList.get(position).getAssetName();
                 BmobQuery<AssetPicture> query = new BmobQuery<>();
                 query.addWhereEqualTo("imageNum", assetInfoList.get(position).getPicture());
-                query.findObjects(mContext, new FindListener<AssetPicture>() {
+                query.findObjects(new FindListener<AssetPicture>() {
                     @Override
-                    public void onSuccess(List<AssetPicture> list) {
-                        Message msg = new Message();
-                        msg.what = 1;
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("image", (Serializable) list);
-                        msg.setData(bundle);
-                        handler.sendMessage(msg);
-                    }
-
-                    @Override
-                    public void onError(int i, String s) {
-
+                    public void done(final List<AssetPicture> list, BmobException e) {
+                        if (e == null) {
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Message msg = new Message();
+                                    msg.what = 1;
+                                    Bundle bundle = new Bundle();
+                                    bundle.putSerializable("image", (Serializable) list);
+                                    msg.setData(bundle);
+                                    handler.sendMessage(msg);
+                                }
+                            }).start();
+                        }
                     }
                 });
 

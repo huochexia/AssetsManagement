@@ -29,7 +29,6 @@ import butterknife.OnClick;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobQueryResult;
 import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.DeleteListener;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SQLQueryListener;
 import cn.bmob.v3.listener.SaveListener;
@@ -104,7 +103,7 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
      */
     private void getDataFromBmob() {
         String sql = "select * from AssetCategory";
-        new BmobQuery<AssetCategory>().doSQLQuery(this, sql, new SQLQueryListener<AssetCategory>() {
+        new BmobQuery<AssetCategory>().doSQLQuery(sql, new SQLQueryListener<AssetCategory>() {
             @Override
             public void done(BmobQueryResult<AssetCategory> bmobQueryResult, BmobException e) {
                 List<AssetCategory> assetCategories = bmobQueryResult.getResults();
@@ -246,15 +245,14 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
         category.setId(node.getId());
         category.setParentId(node.getpId());
         category.setcategoryName(node.getName());
-        category.save(this, new SaveListener() {
+        category.save(new SaveListener<String>() {
             @Override
-            public void onSuccess() {
-                toast("添加成功！");
-            }
-
-            @Override
-            public void onFailure(int i, String s) {
-                toast("添加失败！！");
+            public void done(String s, BmobException e) {
+                if (e == null) {
+                    toast("添加成功！");
+                } else {
+                    toast("添加失败！");
+                }
             }
         });
     }
@@ -266,54 +264,51 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
     public void updateToBmob(final BaseNode node) {
         BmobQuery<AssetCategory> query = new BmobQuery<>();
         query.addWhereEqualTo("id", node.getId());
-        query.findObjects(this, new FindListener<AssetCategory>() {
+        query.findObjects(new FindListener<AssetCategory>() {
             @Override
-            public void onSuccess(final List<AssetCategory> list) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Message msg = new Message();
-                        msg.what = UPDATE_FLAG;
-                        Bundle bundle = new Bundle();
-                        bundle.putString("objectId", list.get(0).getObjectId());
-                        bundle.putString("name", node.getName());
-                        msg.setData(bundle);
-                        handler.sendMessage(msg);
+            public void done(final List<AssetCategory> list, BmobException e) {
+                if (e == null) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Message msg = new Message();
+                            msg.what = UPDATE_FLAG;
+                            Bundle bundle = new Bundle();
+                            bundle.putString("objectId", list.get(0).getObjectId());
+                            bundle.putString("name", node.getName());
+                            msg.setData(bundle);
+                            handler.sendMessage(msg);
 
-                    }
-                }).start();
+                        }
+                    }).start();
+                }
             }
-            @Override
-            public void onError(int i, String s) {
 
-            }
         });
     }
 
     public void removeFromBmob(BaseNode node) {
         BmobQuery<AssetCategory> query = new BmobQuery<>();
         query.addWhereEqualTo("id", node.getId());
-        query.findObjects(this, new FindListener<AssetCategory>() {
+        query.findObjects(new FindListener<AssetCategory>() {
             @Override
-            public void onSuccess(final List<AssetCategory> list) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Message msg = new Message();
-                        msg.what = DELETE_FLAG;
-                        Bundle bundle = new Bundle();
-                        bundle.putString("objectId", list.get(0).getObjectId());
-                        msg.setData(bundle);
-                        handler.sendMessage(msg);
+            public void done(final List<AssetCategory> list, BmobException e) {
+                if (e == null) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Message msg = new Message();
+                            msg.what = DELETE_FLAG;
+                            Bundle bundle = new Bundle();
+                            bundle.putString("objectId", list.get(0).getObjectId());
+                            msg.setData(bundle);
+                            handler.sendMessage(msg);
 
-                    }
-                }).start();
+                        }
+                    }).start();
+                }
             }
 
-            @Override
-            public void onError(int i, String s) {
-
-            }
         });
     }
 
@@ -333,30 +328,30 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
                     String objectId = msg.getData().getString("objectId");
                     String name = msg.getData().getString("name");
                     category.setcategoryName(name);
-                    category.update(CategorySettingActivity.this,objectId, new UpdateListener() {
+                    category.update(objectId, new UpdateListener() {
                         @Override
-                        public void onSuccess() {
-                            toast("修改成功！");
+                        public void done(BmobException e) {
+                            if (e == null) {
+                                toast("修改成功！");
+                            } else {
+                                toast("修改失败！"+e.toString());
+                            }
                         }
 
-                        @Override
-                        public void onFailure(int i, String s) {
-                            toast("修改失败！"+s);
-                        }
                     });
                     break;
                 case DELETE_FLAG:
                     String objectId1 = msg.getData().getString("objectId");
                     category.setObjectId(objectId1);
-                    category.delete(CategorySettingActivity.this, new DeleteListener() {
+                    category.delete(new UpdateListener() {
                         @Override
-                        public void onSuccess() {
-                            toast("删除成功");
-                        }
+                        public void done(BmobException e) {
+                            if (e == null) {
+                                    toast("删除成功");
+                            }else{
+                                toast("删除失败"+e.toString());
+                            }
 
-                        @Override
-                        public void onFailure(int i, String s) {
-                            toast("删除失败"+s);
                         }
                     });
                     break;

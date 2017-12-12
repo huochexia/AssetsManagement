@@ -31,9 +31,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.bmob.v3.BmobBatch;
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.datatype.BatchResult;
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.QueryListListener;
 import cn.bmob.v3.listener.UpdateListener;
 import mehdi.sakout.fancybuttons.FancyButton;
 
@@ -339,31 +343,30 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     private void searchAssets(String para, String id) {
         BmobQuery<AssetInfo> query = new BmobQuery<>();
         query.addWhereEqualTo(para, id);
-        query.findObjects(AssetsTurnOverActivity.this, new FindListener<AssetInfo>() {
+        query.findObjects(new FindListener<AssetInfo>() {
             @Override
-            public void onSuccess(final List<AssetInfo> list) {
-                if (list != null && list.size() > 0) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Message msg = new Message();
-                            msg.what = 1;
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("assets", (Serializable) list);
-                            msg.setData(bundle);
-                            handler.sendMessage(msg);
-                        }
-                    }).start();
-
+            public void done(final List<AssetInfo> list, BmobException e) {
+                if (e == null) {
+                    if (list != null && list.size() > 0) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Message msg = new Message();
+                                msg.what = 1;
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("assets", (Serializable) list);
+                                msg.setData(bundle);
+                                handler.sendMessage(msg);
+                            }
+                        }).start();
+                    } else {
+                        toast("没有符合条件的资产！");
+                    }
                 } else {
-                    toast("没有符合条件的资产！");
+                    {
+                        toast("查询失败，请稍后再查！");
+                    }
                 }
-
-            }
-
-            @Override
-            public void onError(int i, String s) {
-                toast("查询失败，请稍后再查！");
             }
         });
     }
@@ -463,17 +466,17 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
             objects.add(asset);
         }
         if (objects.size() <= 50) {//如果资产少于等于50时
-            new BmobObject().updateBatch(this, objects, new UpdateListener() {
+            new BmobBatch().updateBatch(objects).doBatch(new QueryListListener<BatchResult>() {
                 @Override
-                public void onSuccess() {
-                    toast("批量更新成功");
-                }
-
-                @Override
-                public void onFailure(int code, String msg) {
-                    toast("批量更新失败:" + msg);
+                public void done(List<BatchResult> list, BmobException e) {
+                    if (e == null) {
+                        toast("批量更新成功");
+                    } else {
+                        toast("批量更新失败:" + e.toString());
+                    }
                 }
             });
+
         } else {
             //TODO:如果资产大于50时分批处理
             batchUpdate(objects);
@@ -493,45 +496,45 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
             final int finalI = i + 1;
             int fromIndex = 50 * i;
             int toIndex = fromIndex + 49;
-            new BmobObject().updateBatch(this, objects.subList(fromIndex, toIndex), new UpdateListener() {
+            new BmobBatch().updateBatch(objects.subList(fromIndex, toIndex)).doBatch(new QueryListListener<BatchResult>(){
                 @Override
-                public void onSuccess() {
-                    toast("第" + finalI + "批量更新成功");
-                }
-
-                @Override
-                public void onFailure(int code, String msg) {
-                    toast("第" + finalI + "批量更新失败:" + msg);
+                public void done(List<BatchResult> list, BmobException e) {
+                    if (e == null) {
+                        toast("第" + finalI + "批量更新成功");
+                    } else {
+                        toast("第" + finalI + "批量更新失败:" + e.toString());
+                    }
                 }
             });
+
         }
         //余数量批量更新
         if (y > 0) {
-            new BmobObject().updateBatch(this, objects.subList(50 * m - 1, size - 1), new UpdateListener() {
+            new BmobBatch().updateBatch(objects.subList(50 * m - 1, size - 1)).doBatch(new QueryListListener<BatchResult>(){
                 @Override
-                public void onSuccess() {
-                    toast("最后一批量更新成功");
-                }
-
-                @Override
-                public void onFailure(int code, String msg) {
-                    toast("最后一批量更新失败:" + msg);
+                public void done(List<BatchResult> list, BmobException e) {
+                    if (e == null) {
+                        toast("最后一批量更新成功");
+                    } else {
+                        toast("最后一批量更新失败:" + e.toString());
+                    }
                 }
             });
+
         }
         //最后一个
         BmobObject object = objects.get(size - 1);
         String objectId = object.getObjectId();
-        object.update(this, objectId, new UpdateListener() {
+        object.update(objectId, new UpdateListener() {
             @Override
-            public void onSuccess() {
-                toast("最后一个更新成功");
+            public void done(BmobException e) {
+                if (e == null) {
+                    toast("最后一个更新成功");
+                } else {
+                    toast("最后一个更新失败:" + e.toString());
+                }
             }
 
-            @Override
-            public void onFailure(int i, String s) {
-                toast("最后一个更新失败:" + s);
-            }
         });
 
     }

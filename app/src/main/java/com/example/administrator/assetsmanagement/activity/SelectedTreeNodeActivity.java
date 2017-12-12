@@ -128,16 +128,14 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
     private  void getLocationFromBmob() {
         BmobQuery<Location> query = new BmobQuery<>();
         query.setLimit(500);
-        query.findObjects(this, new FindListener<Location>() {
+        query.findObjects(new FindListener<Location>() {
             @Override
-            public void onSuccess(List<Location> list) {
-                createMessage((Serializable) list);
+            public void done(List<Location> list, BmobException e) {
+                if (e == null) {
+                    createMessage((Serializable) list);
+                }
             }
 
-            @Override
-            public void onError(int i, String s) {
-
-            }
         });
     }
 
@@ -147,16 +145,15 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
     private  void getDepartmentFromBmob() {
         BmobQuery<Department> query = new BmobQuery<>();
         query.setLimit(500);
-        query.findObjects(this, new FindListener<Department>() {
+        query.findObjects(new FindListener<Department>() {
             @Override
-            public void onSuccess(List<Department> list) {
-                createMessage((Serializable) list);
-            }
-
-            @Override
-            public void onError(int i, String s) {
+            public void done(List<Department> list, BmobException e) {
+                if (e == null) {
+                    createMessage((Serializable) list);
+                }
 
             }
+
         });
     }
 
@@ -166,15 +163,12 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
     private  void getCategoryFromBmob() {
         BmobQuery<AssetCategory> query = new BmobQuery<>();
         query.setLimit(500);
-        query.findObjects(this, new FindListener<AssetCategory>() {
+        query.findObjects(new FindListener<AssetCategory>() {
             @Override
-            public void onSuccess(List<AssetCategory> list) {
-                createMessage((Serializable) list);
-            }
-
-            @Override
-            public void onError(int i, String s) {
-
+            public void done(List<AssetCategory> list, BmobException e) {
+                if (e == null) {
+                    createMessage((Serializable) list);
+                }
             }
         });
     }
@@ -184,15 +178,12 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
     private  void getPersonFromBmob() {
         BmobQuery<Person> query = new BmobQuery<>();
         query.setLimit(500);
-        query.findObjects(this, new FindListener<Person>() {
+        query.findObjects(new FindListener<Person>() {
             @Override
-            public void onSuccess(List<Person> list) {
-                createMessage((Serializable) list);
-            }
-
-            @Override
-            public void onError(int i, String s) {
-
+            public void done(List<Person> list, BmobException e) {
+                if (e == null) {
+                    createMessage((Serializable) list);
+                }
             }
         });
     }

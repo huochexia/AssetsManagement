@@ -23,6 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
 /**
@@ -98,9 +99,9 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
         BmobQuery<AssetPicture> query = new BmobQuery<>();
         query.addWhereEqualTo("categoryNum", categoryNum);
         query.setLimit(500);
-        query.findObjects(this, new FindListener<AssetPicture>() {
+        query.findObjects(new FindListener<AssetPicture>() {
             @Override
-            public void onSuccess(final List<AssetPicture> list) {
+            public void done(final List<AssetPicture> list, BmobException e) {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -112,11 +113,6 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
                         handler.sendMessage(message);
                     }
                 }).start();
-            }
-
-            @Override
-            public void onError(int i, String s) {
-
             }
         });
     }

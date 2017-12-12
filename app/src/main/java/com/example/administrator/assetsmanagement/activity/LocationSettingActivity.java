@@ -28,11 +28,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.datatype.BmobQueryResult;
 import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.DeleteListener;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.SQLQueryListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
@@ -112,21 +109,25 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
 
         BmobQuery<Location> query = new BmobQuery<>();
         query.setLimit(500);
-        query.findObjects(this, new FindListener<Location>() {
+        query.findObjects(new FindListener<Location>() {
             @Override
-            public void onSuccess(List<Location> list) {
-                Message msg = new Message();
-                msg.what = FIND_ALL;
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("list", (Serializable) list);
-                msg.setData(bundle);
-                handler.sendMessage(msg);
+            public void done(final List<Location> list, BmobException e) {
+                if (e == null) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Message msg = new Message();
+                            msg.what = FIND_ALL;
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("list", (Serializable) list);
+                            msg.setData(bundle);
+                            handler.sendMessage(msg);
+                        }
+                    }).start();
+
+                }
             }
 
-            @Override
-            public void onError(int i, String s) {
-
-            }
         });
 
     }
@@ -239,16 +240,16 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
         location.setId(node.getId());
         location.setParentId(node.getpId());
         location.setLocationName(node.getName());
-        location.save(this, new SaveListener() {
+        location.save(new SaveListener<String>() {
             @Override
-            public void onSuccess() {
-                toast("添加成功！");
+            public void done(String s, BmobException e) {
+                if (e == null) {
+                    toast("添加成功！");
+                } else {
+                    toast("添加失败！！");
+                }
             }
 
-            @Override
-            public void onFailure(int i, String s) {
-                toast("添加失败！！");
-            }
         });
     }
 
@@ -259,54 +260,52 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
     public void updateToBmob(final BaseNode node) {
         BmobQuery<Location> query = new BmobQuery<>();
         query.addWhereEqualTo("id", node.getId());
-        query.findObjects(this, new FindListener<Location>() {
+        query.findObjects(new FindListener<Location>() {
             @Override
-            public void onSuccess(final List<Location> list) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Message msg = new Message();
-                        msg.what = UPDATE_FLAG;
-                        Bundle bundle = new Bundle();
-                        bundle.putString("objectId", list.get(0).getObjectId());
-                        bundle.putString("name", node.getName());
-                        msg.setData(bundle);
-                        handler.sendMessage(msg);
+            public void done(final List<Location> list, BmobException e) {
+                if (e == null) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Message msg = new Message();
+                            msg.what = UPDATE_FLAG;
+                            Bundle bundle = new Bundle();
+                            bundle.putString("objectId", list.get(0).getObjectId());
+                            bundle.putString("name", node.getName());
+                            msg.setData(bundle);
+                            handler.sendMessage(msg);
 
-                    }
-                }).start();
+                        }
+                    }).start();
+                }
             }
-            @Override
-            public void onError(int i, String s) {
 
-            }
         });
     }
 
     public void removeFromBmob(BaseNode node) {
         BmobQuery<Location> query = new BmobQuery<>();
         query.addWhereEqualTo("id", node.getId());
-        query.findObjects(this, new FindListener<Location>() {
+        query.findObjects(new FindListener<Location>() {
             @Override
-            public void onSuccess(final List<Location> list) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Message msg = new Message();
-                        msg.what = DELETE_FLAG;
-                        Bundle bundle = new Bundle();
-                        bundle.putString("objectId", list.get(0).getObjectId());
-                        msg.setData(bundle);
-                        handler.sendMessage(msg);
+            public void done(final List<Location> list, BmobException e) {
+                if (e == null) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Message msg = new Message();
+                            msg.what = DELETE_FLAG;
+                            Bundle bundle = new Bundle();
+                            bundle.putString("objectId", list.get(0).getObjectId());
+                            msg.setData(bundle);
+                            handler.sendMessage(msg);
 
-                    }
-                }).start();
+                        }
+                    }).start();
+                }
+
             }
 
-            @Override
-            public void onError(int i, String s) {
-
-            }
         });
     }
 
@@ -332,30 +331,28 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
                     String objectId = msg.getData().getString("objectId");
                     String name = msg.getData().getString("name");
                     location.setLocationName(name);
-                    location.update(LocationSettingActivity.this,objectId, new UpdateListener() {
+                    location.update(objectId, new UpdateListener() {
                         @Override
-                        public void onSuccess() {
-                            toast("修改成功！");
-                        }
-
-                        @Override
-                        public void onFailure(int i, String s) {
-                            toast("修改失败！"+s);
+                        public void done(BmobException e) {
+                            if (e == null) {
+                                toast("修改成功！");
+                            } else {
+                                toast("修改失败！"+e.toString());
+                            }
                         }
                     });
                     break;
                 case DELETE_FLAG:
                     String objectId1 = msg.getData().getString("objectId");
                     location.setObjectId(objectId1);
-                    location.delete(LocationSettingActivity.this, new DeleteListener() {
+                    location.delete(new UpdateListener() {
                         @Override
-                        public void onSuccess() {
-                            toast("删除成功");
-                        }
-
-                        @Override
-                        public void onFailure(int i, String s) {
-                            toast("删除失败"+s);
+                        public void done(BmobException e) {
+                            if (e == null) {
+                                toast("删除成功");
+                            } else {
+                                toast("删除失败"+e.toString());
+                            }
                         }
                     });
                     break;

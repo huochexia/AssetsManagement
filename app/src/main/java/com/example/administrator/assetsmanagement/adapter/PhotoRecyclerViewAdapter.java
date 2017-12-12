@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.DownloadFileListener;
 
 /**
@@ -97,9 +98,14 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
 
         for (final AssetPicture picture : mList) {
             final File imagefile = new File(mContext.getCacheDir() + picture.getImageFile().getFilename());
-            picture.getImageFile().download(mContext, imagefile, new DownloadFileListener() {
+            picture.getImageFile().download(imagefile, new DownloadFileListener() {
                 @Override
-                public void onSuccess(String s) {
+                public void onProgress(Integer integer, long l) {
+
+                }
+
+                @Override
+                public void done(String s, BmobException e) {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -112,13 +118,8 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
                             hanlder.sendMessage(msg);
                         }
                     }).start();
-
                 }
 
-                @Override
-                public void onFailure(int i, String s) {
-
-                }
             });
         }
 

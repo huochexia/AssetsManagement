@@ -29,6 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import mehdi.sakout.fancybuttons.FancyButton;
 
@@ -193,21 +194,20 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                     case SEARCH_STATUS:
                         BmobQuery<AssetInfo> query = new BmobQuery<>();
                         query.addWhereEqualTo("mStatus", 5);
-                        query.findObjects(SearchAssetsActivity.this, new FindListener<AssetInfo>() {
+                        query.findObjects(new FindListener<AssetInfo>() {
                             @Override
-                            public void onSuccess(final List<AssetInfo> list) {
-                                Message msg = new Message();
-                                msg.what = 1;
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable("assets", (Serializable) list);
-                                msg.setData(bundle);
-                                handler.sendMessage(msg);
-
-                            }
-
-                            @Override
-                            public void onError(int i, String s) {
-
+                            public void done(final List<AssetInfo> list, BmobException e) {
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Message msg = new Message();
+                                        msg.what = 1;
+                                        Bundle bundle = new Bundle();
+                                        bundle.putSerializable("assets", (Serializable) list);
+                                        msg.setData(bundle);
+                                        handler.sendMessage(msg);
+                                    }
+                                }).start();
                             }
                         });
                         break;
@@ -235,25 +235,23 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
     private void searchAssets(String para, String id) {
         BmobQuery<AssetInfo> query = new BmobQuery<>();
         query.addWhereEqualTo(para, id);
-        query.findObjects(SearchAssetsActivity.this, new FindListener<AssetInfo>() {
+        query.findObjects(new FindListener<AssetInfo>() {
             @Override
-            public void onSuccess(final List<AssetInfo> list) {
-                if (list != null && list.size() > 0) {
-                    Message msg = new Message();
-                    msg.what = 1;
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("assets", (Serializable) list);
-                    msg.setData(bundle);
-                    handler.sendMessage(msg);
+            public void done(List<AssetInfo> list, BmobException e) {
+                if (e == null) {
+                    if (list != null && list.size() > 0) {
+                        Message msg = new Message();
+                        msg.what = 1;
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("assets", (Serializable) list);
+                        msg.setData(bundle);
+                        handler.sendMessage(msg);
+                    } else {
+                        toast("没有符合条件的资产！");
+                    }
                 } else {
-                    toast("没有符合条件的资产！");
-                }
-
-            }
-
-            @Override
-            public void onError(int i, String s) {
                     toast("查询失败，请稍后再查！");
+                }
             }
         });
     }

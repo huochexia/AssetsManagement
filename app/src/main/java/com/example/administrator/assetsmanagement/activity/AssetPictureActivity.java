@@ -16,6 +16,7 @@ import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.DownloadFileListener;
 
 /**
@@ -70,25 +71,31 @@ public class AssetPictureActivity extends ParentWithNaviActivity {
      */
     private void downloadFile(AssetPicture picture) {
         final File imagefile = new File(this.getCacheDir() + picture.getImageFile().getFilename());
-        picture.getImageFile().download(this, imagefile, new DownloadFileListener() {
+        picture.getImageFile().download(imagefile, new DownloadFileListener() {
             @Override
-            public void onSuccess(String s) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Message msg = new Message();
-                        msg.what = 1;
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("file", imagefile);
-                        msg.setData(bundle);
-                        handler.sendMessage(msg);
-                    }
-                }).start();
-            }
-            @Override
-            public void onFailure(int i, String s) {
+            public void onProgress(Integer integer, long l) {
 
             }
+
+            @Override
+            public void done(String s, BmobException e) {
+                if (e == null) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Message msg = new Message();
+                            msg.what = 1;
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("file", imagefile);
+                            msg.setData(bundle);
+                            handler.sendMessage(msg);
+                        }
+                    }).start();
+                } else {
+                    toast("下载文件失败！"+e.toString());
+                }
+            }
+
         });
 
     }

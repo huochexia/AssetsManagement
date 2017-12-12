@@ -43,8 +43,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.bmob.v3.BmobBatch;
 import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.datatype.BatchResult;
 import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.QueryListListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UploadFileListener;
 import mehdi.sakout.fancybuttons.FancyButton;
@@ -366,16 +370,18 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                     }
                     n++;
                 }
-                new BmobObject().insertBatch(this, list, new SaveListener() {
-                    @Override
-                    public void onSuccess() {
-                    }
+                new BmobBatch().insertBatch(list).doBatch(new QueryListListener<BatchResult>(){
 
                     @Override
-                    public void onFailure(int code, String msg) {
-                        toast("批量添加失败:" + msg);
+                    public void done(List<BatchResult> list, BmobException e) {
+                        if (e == null) {
+
+                        }else {
+                            toast("批量添加失败:" + e.toString());
+                        }
                     }
                 });
+
             }
         } else {
             n++;
@@ -392,17 +398,18 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             }
             n++;
         }
-        new BmobObject().insertBatch(this, list, new SaveListener() {
-            @Override
-            public void onSuccess() {
-
-            }
+        new BmobBatch().insertBatch(list).doBatch(new QueryListListener<BatchResult>(){
 
             @Override
-            public void onFailure(int i, String s) {
+            public void done(List<BatchResult> list, BmobException e) {
+                if (e == null) {
 
+                }else {
+                    toast("批量添加失败:" + e.toString());
+                }
             }
         });
+
     }
 
     /**
@@ -577,18 +584,14 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
      * @throws
      */
     private void insertObject(final BmobObject obj) {
-        obj.save(this, new SaveListener() {
+        obj.save(new SaveListener<String>() {
             @Override
-            public void onSuccess() {
-                // TODO Auto-generated method stub
-                toast("-->上传图片信息成功：");
-
-            }
-
-            @Override
-            public void onFailure(int arg0, String arg1) {
-                // TODO Auto-generated method stub
-                toast("-->上传图片失败：" + arg0 + ",msg = " + arg1);
+            public void done(String s, BmobException e) {
+                if (e == null) {
+                    toast("-->上传图片信息成功：");
+                } else {
+                    toast("-->上传图片失败：" );
+                }
             }
         });
     }
@@ -622,10 +625,14 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
      */
     private void uploadPhotoFile(File file) {
         final BmobFile bmobFile = new BmobFile(file);
-        bmobFile.uploadblock(this, new UploadFileListener() {
-            @Override
-            public void onSuccess() {
+        bmobFile.uploadblock(new UploadFileListener() {
+           @Override
+            public void onProgress(Integer arg0) {
                 // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void done(BmobException e) {
                 AssetPicture picture = new AssetPicture();
                 picture.setCategoryNum(asset.getCategoryNum());
                 String imangNum = System.currentTimeMillis() + "";
@@ -633,18 +640,6 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 picture.setImageFile(bmobFile);
                 asset.setPicture(imangNum);
                 insertObject(picture);
-
-            }
-
-            @Override
-            public void onProgress(Integer arg0) {
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void onFailure(int arg0, String arg1) {
-                // TODO Auto-generated method stub
-
             }
 
         });

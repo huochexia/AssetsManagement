@@ -33,6 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
 
@@ -101,28 +102,26 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
         BmobQuery<Department> query = new BmobQuery<>();
         query.setLimit(500);
         //执行查询方法
-        query.findObjects(this, new FindListener<Department>() {
+        query.findObjects(new FindListener<Department>() {
             @Override
-            public void onSuccess(final List<Department> object) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Message msg = new Message();
-                        msg.what = REQUEST_DEPARTMENT;
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("department", (Serializable) object);
-                        msg.setData(bundle);
-                        handler.sendMessage(msg);
-                    }
-                }).start();
-
+            public void done(final List<Department> list, BmobException e) {
+                if (e == null) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Message msg = new Message();
+                            msg.what = REQUEST_DEPARTMENT;
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("department", (Serializable) list);
+                            msg.setData(bundle);
+                            handler.sendMessage(msg);
+                        }
+                    }).start();
+                } else {
+                    toast("查询部门失败：" + e.toString());
+                }
             }
 
-            @Override
-            public void onError(int code, String msg) {
-                // TODO Auto-generated method stub
-                toast("查询部门失败：" + msg);
-            }
         });
     }
 
@@ -133,30 +132,27 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
         BmobQuery<Person> query = new BmobQuery<>();
         query.setLimit(500);
         //执行查询方法
-        query.findObjects(this, new FindListener<Person>() {
+        query.findObjects(new FindListener<Person>() {
             @Override
-            public void onSuccess(final List<Person> object) {
-                // TODO Auto-generated method stub
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Message msg = new Message();
-                        msg.what = REQUEST_USER;
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("person", (Serializable) object);
-                        msg.setData(bundle);
-                        handler.sendMessage(msg);
-                    }
-                }).start();
-
+            public void done(final List<Person> list, BmobException e) {
+                if (e == null) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Message msg = new Message();
+                            msg.what = REQUEST_USER;
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("person", (Serializable)list);
+                            msg.setData(bundle);
+                            handler.sendMessage(msg);
+                        }
+                    }).start();
+                } else {
+                    toast("查询人员失败：" + e.toString());
+                }
             }
 
-            @Override
-            public void onError(int code, String msg) {
-                // TODO Auto-generated method stub
-                toast("查询人员失败：" + msg);
-            }
+
         });
     }
 
@@ -264,26 +260,23 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
                     setNegativeButton(builder).create().show();
                     BmobQuery<Person> query = new BmobQuery<>();
                     query.addWhereEqualTo("id", mBaseNode.getId());
-                    query.findObjects(this, new FindListener<Person>() {
+                    query.findObjects(new FindListener<Person>() {
                         @Override
-                        public void onSuccess(final List<Person> list) {
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Message msg = new Message();
-                                    msg.what = REPAIR_PERSON_INFO;
-                                    Bundle bundle = new Bundle();
-                                    bundle.putSerializable("one", list.get(0));
-                                    msg.setData(bundle);
-                                    handler.sendMessage(msg);
+                        public void done(final List<Person> list, BmobException e) {
+                            if (e == null) {
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Message msg = new Message();
+                                        msg.what = REPAIR_PERSON_INFO;
+                                        Bundle bundle = new Bundle();
+                                        bundle.putSerializable("one", list.get(0));
+                                        msg.setData(bundle);
+                                        handler.sendMessage(msg);
 
-                                }
-                            }).start();
-                        }
-
-                        @Override
-                        public void onError(int i, String s) {
-
+                                    }
+                                }).start();
+                            }
                         }
                     });
                 } else {
@@ -317,15 +310,14 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
 
     public void addToBmob(Person person) {
         BmobUser user = person;
-        user.signUp(this, new SaveListener() {
+        user.signUp(new SaveListener<String>() {
             @Override
-            public void onSuccess() {
-                toast("添加人员成功！");
-            }
-
-            @Override
-            public void onFailure(int i, String s) {
-                toast("添加人员失败！" + s);
+            public void done(String s, BmobException e) {
+                if (e == null) {
+                    toast("添加人员成功！");
+                } else {
+                    toast("添加人员失败！" + s);
+                }
             }
         });
 
