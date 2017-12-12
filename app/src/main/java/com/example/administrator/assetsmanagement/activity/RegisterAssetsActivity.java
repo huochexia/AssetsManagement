@@ -499,7 +499,8 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 if (data != null) {
                     Bundle bundle = data.getBundleExtra("assetpicture");
                     asset.setPicture((String) bundle.getSerializable("imageNum"));
-                    Glide.with(this).load((bundle.getSerializable("imageFile"))).into(mIvRegisterPicture);
+                    AssetPicture image1 = (AssetPicture) bundle.getSerializable("imageFile");
+                    Glide.with(this).load(image1.getImageUrl()).into(mIvRegisterPicture);
                 }
                 break;
             case TAKE_PHOTO:
@@ -630,13 +631,17 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
             @Override
             public void done(BmobException e) {
-                AssetPicture picture = new AssetPicture();
-                picture.setCategoryNum(asset.getCategoryNum());
-                String imangNum = System.currentTimeMillis() + "";
-                picture.setImageNum(imangNum);
-                picture.setImageFile(bmobFile);
-                asset.setPicture(imangNum);
-                insertObject(picture);
+                if (e == null) {
+                    AssetPicture picture = new AssetPicture();
+                    picture.setCategoryNum(asset.getCategoryNum());
+                    String imangNum = System.currentTimeMillis() + "";
+                    picture.setImageNum(imangNum);
+//                    picture.setImageFile(bmobFile);
+                    picture.setImageUrl(bmobFile.getFileUrl());
+                    asset.setPicture(imangNum);
+                    insertObject(picture);
+                }
+
             }
 
         });

@@ -53,9 +53,18 @@ public class AssetPicture extends BmobObject implements Serializable, Cloneable 
         this.categoryNum = categoryNum;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     /**
      * setter 和getter 方法
      */
+
     public BmobFile getImageFile() {
         return imageFile;
     }

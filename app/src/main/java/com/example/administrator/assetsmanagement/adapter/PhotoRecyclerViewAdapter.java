@@ -39,7 +39,7 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
     LayoutInflater mInflater;
     PhotoSelectedListener listener;
 
-    Map<String, BmobFile> mFileMap = new HashMap<>();
+    Map<String, AssetPicture> mFileMap = new HashMap<>();
 
     public PhotoRecyclerViewAdapter(Context context, List<AssetPicture> list) {
         mContext = context;
@@ -63,7 +63,7 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
         setImageLayoutSize(holder);
 //        Glide.with(mContext).load(mFileMap.get(mPictureList.get(position).getImageNum()))
 //                .centerCrop().into(holder.assetPhoto);
-        Glide.with(mContext).load(mPictureList.get(position).getImageFile().getFileUrl())
+        Glide.with(mContext).load(mPictureList.get(position).getImageUrl())
                 .into(holder.assetPhoto);
         if (mPictureList.get(position).getSelected()) {
             holder.selected.setChecked(true);
@@ -79,7 +79,7 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
                     }
                     mPictureList.get(position).setSelected(true);
                     String imagenum = mPictureList.get(position).getImageNum();
-                    listener.selected(mPictureList.get(position).getImageNum(),mFileMap.get(imagenum));
+                    listener.selected(mPictureList.get(position).getImageNum(),mPictureList.get(position));
                     notifyDataSetChanged();
                 }
             }
@@ -92,41 +92,41 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
         return mPictureList.size();
     }
 
-    /**
-     * 下载BmobFile文件
-     *
-     * @param mList
-     */
-    private void downloadFile(List<AssetPicture> mList) {
-
-        for (final AssetPicture picture : mList) {
-            final File imagefile = new File(mContext.getCacheDir() + picture.getImageFile().getFilename());
-            picture.getImageFile().download(imagefile, new DownloadFileListener() {
-                @Override
-                public void onProgress(Integer integer, long l) {
-
-                }
-
-                @Override
-                public void done(String s, BmobException e) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Message msg = new Message();
-                            msg.what = PHOTO_FILE;
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("file", imagefile);
-                            bundle.putString("imageNum",picture.getImageNum());
-                            msg.setData(bundle);
-                            hanlder.sendMessage(msg);
-                        }
-                    }).start();
-                }
-
-            });
-        }
-
-    }
+//    /**
+//     * 下载BmobFile文件
+//     *
+//     * @param mList
+//     */
+//    private void downloadFile(List<AssetPicture> mList) {
+//
+//        for (final AssetPicture picture : mList) {
+//            final File imagefile = new File(mContext.getCacheDir() + picture.getImageFile().getFilename());
+//            picture.getImageFile().download(imagefile, new DownloadFileListener() {
+//                @Override
+//                public void onProgress(Integer integer, long l) {
+//
+//                }
+//
+//                @Override
+//                public void done(String s, BmobException e) {
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Message msg = new Message();
+//                            msg.what = PHOTO_FILE;
+//                            Bundle bundle = new Bundle();
+//                            bundle.putSerializable("file", imagefile);
+//                            bundle.putString("imageNum",picture.getImageNum());
+//                            msg.setData(bundle);
+//                            hanlder.sendMessage(msg);
+//                        }
+//                    }).start();
+//                }
+//
+//            });
+//        }
+//
+//    }
 
     /**
      * 根据屏幕大小计算并重新设置ImageView容器大小
@@ -163,21 +163,21 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
 
     }
 
-    public static final int PHOTO_FILE = 1;
-    public MyHandler hanlder = new MyHandler();
-
-    class MyHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case PHOTO_FILE:
-                    String imagenum = msg.getData().getString("imageNum");
-                    File imagefile = (File) msg.getData().getSerializable("file");
-                    mFileMap.put(imagenum, imagefile);
-                    notifyDataSetChanged();
-                    break;
-
-            }
-        }
-    }
+//    public static final int PHOTO_FILE = 1;
+//    public MyHandler hanlder = new MyHandler();
+//
+//    class MyHandler extends Handler {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            switch (msg.what) {
+//                case PHOTO_FILE:
+//                    String imagenum = msg.getData().getString("imageNum");
+//                    File imagefile = (File) msg.getData().getSerializable("file");
+////                    mFileMap.put(imagenum, imagefile);
+//                    notifyDataSetChanged();
+//                    break;
+//
+//            }
+//        }
+//    }
 }

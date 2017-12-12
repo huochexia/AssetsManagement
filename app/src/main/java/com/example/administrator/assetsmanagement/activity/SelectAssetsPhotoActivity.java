@@ -15,13 +15,11 @@ import com.example.administrator.assetsmanagement.adapter.PhotoRecyclerViewAdapt
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
@@ -40,7 +38,7 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
     private String categoryNum;
 
     private String imageNum;
-    private File imageFile;
+    private AssetPicture imageFile;
 
     private PhotoRecyclerViewAdapter mAdapter;
     private List<AssetPicture> photoLists;
@@ -131,9 +129,9 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
                     mRcPicturesList.setAdapter(mAdapter);
                     mAdapter.getSelectedListener(new PhotoSelectedListener() {
                         @Override
-                        public void selected(String Num,File image) {
+                        public void selected(String Num, AssetPicture picture) {
                             imageNum =  Num;
-                            imageFile = image;
+                            imageFile = picture;
                         }
                     });
                     break;
