@@ -169,7 +169,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
-                android:src="@drawable/assets_image_default"/>
+                android:src="@drawable/pictures_no"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="0dp"

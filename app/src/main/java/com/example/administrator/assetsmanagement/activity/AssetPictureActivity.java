@@ -61,57 +61,59 @@ public class AssetPictureActivity extends ParentWithNaviActivity {
         Bundle bundle = getBundle();
         title = bundle.getString("title");
         initNaviView();
-        downloadFile((AssetPicture) bundle.getSerializable("picture"));
+        AssetPicture photo = (AssetPicture) bundle.getSerializable("picture");
+        Glide.with(this).load(photo.getImageUrl()).into(ivAssetPicture);
+//        downloadFile((AssetPicture) bundle.getSerializable("picture"));
     }
 
-    /**
-     * 获得图片文件
-     *
-     * @param picture
-     */
-    private void downloadFile(AssetPicture picture) {
-        final File imagefile = new File(this.getCacheDir() + picture.getImageFile().getFilename());
-        picture.getImageFile().download(imagefile, new DownloadFileListener() {
-            @Override
-            public void onProgress(Integer integer, long l) {
-
-            }
-
-            @Override
-            public void done(String s, BmobException e) {
-                if (e == null) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Message msg = new Message();
-                            msg.what = 1;
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("file", imagefile);
-                            msg.setData(bundle);
-                            handler.sendMessage(msg);
-                        }
-                    }).start();
-                } else {
-                    toast("下载文件失败！"+e.toString());
-                }
-            }
-
-        });
-
-    }
-
-    PictureHandler handler = new PictureHandler();
-
-    class PictureHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1:
-                    File file = (File) msg.getData().getSerializable("file");
-                    Glide.with(AssetPictureActivity.this).load(file).centerCrop().into(ivAssetPicture);
-                    break;
-
-            }
-        }
-    }
+//    /**
+//     * 获得图片文件
+//     *
+//     * @param picture
+//     */
+//    private void downloadFile(AssetPicture picture) {
+//        final File imagefile = new File(this.getCacheDir() + picture.getImageFile().getFilename());
+//        picture.getImageFile().download(imagefile, new DownloadFileListener() {
+//            @Override
+//            public void onProgress(Integer integer, long l) {
+//
+//            }
+//
+//            @Override
+//            public void done(String s, BmobException e) {
+//                if (e == null) {
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Message msg = new Message();
+//                            msg.what = 1;
+//                            Bundle bundle = new Bundle();
+//                            bundle.putSerializable("file", imagefile);
+//                            msg.setData(bundle);
+//                            handler.sendMessage(msg);
+//                        }
+//                    }).start();
+//                } else {
+//                    toast("下载文件失败！"+e.toString());
+//                }
+//            }
+//
+//        });
+//
+//    }
+//
+//    PictureHandler handler = new PictureHandler();
+//
+//    class PictureHandler extends Handler {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            switch (msg.what) {
+//                case 1:
+//                    File file = (File) msg.getData().getSerializable("file");
+//                    Glide.with(AssetPictureActivity.this).load(file).centerCrop().into(ivAssetPicture);
+//                    break;
+//
+//            }
+//        }
+//    }
 }

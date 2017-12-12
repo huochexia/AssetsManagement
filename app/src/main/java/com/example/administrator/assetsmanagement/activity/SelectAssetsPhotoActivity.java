@@ -37,7 +37,7 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
     private String title;
     private String categoryNum;
 
-    private String imageNum;
+
     private AssetPicture imageFile;
 
     private PhotoRecyclerViewAdapter mAdapter;
@@ -68,10 +68,9 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
 
             @Override
             public void clickRight() {
-                if (imageNum!=null && imageFile!=null) {
+                if (imageFile!=null) {
                     Intent returnPhoto = new Intent();
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("imageNum",imageNum);
                     bundle.putSerializable("imageFile",imageFile);
                     returnPhoto.putExtra("assetpicture", bundle);
                     setResult(RESULT_OK, returnPhoto);
@@ -129,8 +128,7 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
                     mRcPicturesList.setAdapter(mAdapter);
                     mAdapter.getSelectedListener(new PhotoSelectedListener() {
                         @Override
-                        public void selected(String Num, AssetPicture picture) {
-                            imageNum =  Num;
+                        public void selectPhoto(AssetPicture picture) {
                             imageFile = picture;
                         }
                     });

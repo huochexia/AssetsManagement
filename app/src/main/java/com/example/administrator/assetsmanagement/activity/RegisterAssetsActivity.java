@@ -116,6 +116,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     private Uri imageUri;
     private String assetNumber;
     private List<AssetInfo> mAssetInfos = new ArrayList<>();
+    private boolean hasPhoto = false;//判断是否添加图片
 
     @Override
     public String title() {
@@ -159,6 +160,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         asset.setStatus(0);//初始状态，0正常
         asset.setOldManager("");//初始管理者，为空
         initEvent();
+        mEtRegisterAssetsQuantity.setText("");
         mEtRegisterAssetsDate.setText(TimeUtils.getFormatToday(TimeUtils.FORMAT_DATE));
     }
 
@@ -259,6 +261,9 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 if (checkAlltext()) {
                     int quantity = Integer.parseInt(mEtRegisterAssetsQuantity.getText().toString());
                     createAssetNumber(quantity, asset);
+                    asset.setPicture("");
+                    mIvRegisterPicture.setImageResource(R.drawable.pictures_no);
+                    hasPhoto = false;
                     setAllWidget(true);
                     turnOrDarcode();
                 }
@@ -288,21 +293,83 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REGISTER_LOCATION:
+                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
+                    mBaseNode = (BaseNode) data.getSerializableExtra("node");
+                    mTvRegisterLocation.setText(getNodeAllPathName(mBaseNode));
+                    asset.setLocationNum(mBaseNode.getId());
+                }
+                break;
+            case REGISTER_CATEGORY:
+                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
+                    mBaseNode = (BaseNode) data.getSerializableExtra("node");
+                    mTvRegisterCategory.setText(getNodeAllPathName(mBaseNode));
+                    asset.setCategoryNum(mBaseNode.getId());
+                }
+                break;
+            case REGISTER_DEPARTMENT:
+                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
+                    mBaseNode = (BaseNode) data.getSerializableExtra("node");
+                    mTvRegisterDepartment.setText(getNodeAllPathName(mBaseNode));
+                    asset.setDeptNum(mBaseNode.getId());
+                }
+                break;
+            case CHOOSET_PHOTO:
+                if (data != null) {
+                    Bundle bundle = data.getBundleExtra("assetpicture");
+                    AssetPicture image1 = (AssetPicture) bundle.getSerializable("imageFile");
+                    asset.setPicture(image1.getImageNum());
+                    hasPhoto = true;
+                    Glide.with(this).load(image1.getImageUrl()).into(mIvRegisterPicture);
+                }
+                break;
+            case TAKE_PHOTO:
+                if (resultCode == RESULT_OK) {
+                    try {
+                        //第一步：将拍照得到原始图片存入文件
+                        BitmapFactory.decodeStream(getContentResolver().
+                                openInputStream(imageUri));
+                        //第二步：将文件进行压缩处理后得到新的Bitmap
+                        Bitmap bm = ImageFactory.getSmallBitmap(Imagefile.getPath());
+                        //第三步：创建文件输入流
+                        FileOutputStream baos = new FileOutputStream(Imagefile);
+                        //第四步：将位图以JPG格式，按100比例，再次压缩形成新文件
+                        bm.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+                        baos.flush();
+                        baos.close();
+                        mIvRegisterPicture.setImageBitmap(bm);
+                        uploadPhotoFile(Imagefile);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                break;
+
+        }
+    }
+
     /**
      * 进行资产移交或创建二维码对话框
      */
     private void turnOrDarcode() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        String[] items = new String[]{"移交","创建二维码"};
+        String[] items = new String[]{"移交", "创建二维码"};
         builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
                         Bundle bundle = new Bundle();
-                        bundle.putInt("turn_over",1);
+                        bundle.putInt("turn_over", 1);
                         bundle.putSerializable("assets", (Serializable) mAssetInfos);
-                        startActivity(AssetsTurnOverActivity.class,bundle,true);
+                        startActivity(AssetsTurnOverActivity.class, bundle, true);
                         break;
                     case 1:
                         break;
@@ -370,13 +437,13 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                     }
                     n++;
                 }
-                new BmobBatch().insertBatch(list).doBatch(new QueryListListener<BatchResult>(){
+                new BmobBatch().insertBatch(list).doBatch(new QueryListListener<BatchResult>() {
 
                     @Override
                     public void done(List<BatchResult> list, BmobException e) {
                         if (e == null) {
 
-                        }else {
+                        } else {
                             toast("批量添加失败:" + e.toString());
                         }
                     }
@@ -398,13 +465,13 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             }
             n++;
         }
-        new BmobBatch().insertBatch(list).doBatch(new QueryListListener<BatchResult>(){
+        new BmobBatch().insertBatch(list).doBatch(new QueryListListener<BatchResult>() {
 
             @Override
             public void done(List<BatchResult> list, BmobException e) {
                 if (e == null) {
 
-                }else {
+                } else {
                     toast("批量添加失败:" + e.toString());
                 }
             }
@@ -418,7 +485,10 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
      * @return
      */
     private boolean checkAlltext() {
-        int quantity = Integer.parseInt(mEtRegisterAssetsQuantity.getText().toString());
+        int quantity = 0;
+        if (!TextUtils.isEmpty(mEtRegisterAssetsQuantity.getText())) {
+            quantity = Integer.parseInt(mEtRegisterAssetsQuantity.getText().toString());
+        }
         if (TextUtils.isEmpty(mTvRegisterLocation.getText())) {
             toast("请选择位置！");
             return false;
@@ -431,8 +501,11 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         } else if (TextUtils.isEmpty(mEtRegisterAssetsName.getText())) {
             toast("请填入资产名称！");
             return false;
-        } else if (TextUtils.isEmpty(mEtRegisterAssetsQuantity.getText()) && quantity > 0) {
+        } else if ( quantity ==0) {
             toast("请填写资产数量！");
+            return false;
+        } else if (!hasPhoto) {
+            toast("请添加图片");
             return false;
         }
         return true;
@@ -467,71 +540,10 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             mEtRegisterAssetsName.setText("");
             mEtRegisterAssetsQuantity.setText("");
             etRegisterAssetsComment.setText("");
-            mIvRegisterPicture.setImageResource(R.drawable.assets_image_default);
+            mIvRegisterPicture.setImageResource(R.drawable.pictures_no);
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REGISTER_LOCATION:
-                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    mBaseNode = (BaseNode) data.getSerializableExtra("node");
-                    mTvRegisterLocation.setText(getNodeAllPathName(mBaseNode));
-                    asset.setLocationNum(mBaseNode.getId());
-                }
-                break;
-            case REGISTER_CATEGORY:
-                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    mBaseNode = (BaseNode) data.getSerializableExtra("node");
-                    mTvRegisterCategory.setText(getNodeAllPathName(mBaseNode));
-                    asset.setCategoryNum(mBaseNode.getId());
-                }
-                break;
-            case REGISTER_DEPARTMENT:
-                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    mBaseNode = (BaseNode) data.getSerializableExtra("node");
-                    mTvRegisterDepartment.setText(getNodeAllPathName(mBaseNode));
-                    asset.setDeptNum(mBaseNode.getId());
-                }
-                break;
-            case CHOOSET_PHOTO:
-                if (data != null) {
-                    Bundle bundle = data.getBundleExtra("assetpicture");
-                    asset.setPicture((String) bundle.getSerializable("imageNum"));
-                    AssetPicture image1 = (AssetPicture) bundle.getSerializable("imageFile");
-                    Glide.with(this).load(image1.getImageUrl()).into(mIvRegisterPicture);
-                }
-                break;
-            case TAKE_PHOTO:
-                if (resultCode == RESULT_OK) {
-                    try {
-                        //第一步：将拍照得到原始图片存入文件
-                        BitmapFactory.decodeStream(getContentResolver().
-                                openInputStream(imageUri));
-                        //第二步：将文件进行压缩处理后得到新的Bitmap
-                        Bitmap bm = ImageFactory.getSmallBitmap(Imagefile.getPath());
-                        //第三步：创建文件输入流
-                        FileOutputStream baos = new FileOutputStream(Imagefile);
-                        //第四步：将位图以JPG格式，按100比例，再次压缩形成新文件
-                        bm.compress(Bitmap.CompressFormat.JPEG, 90, baos);
-                        baos.flush();
-                        baos.close();
-                        mIvRegisterPicture.setImageBitmap(bm);
-                        uploadPhotoFile(Imagefile);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-                break;
-            case REQUEST_CROP:
-                break;
-        }
-    }
 
     /**
      * 获得节点的全路径名称
@@ -588,7 +600,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 if (e == null) {
                     toast("-->上传图片信息成功：");
                 } else {
-                    toast("-->上传图片失败：" );
+                    toast("-->上传图片失败：");
                 }
             }
         });
@@ -624,7 +636,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     private void uploadPhotoFile(File file) {
         final BmobFile bmobFile = new BmobFile(file);
         bmobFile.uploadblock(new UploadFileListener() {
-           @Override
+            @Override
             public void onProgress(Integer arg0) {
                 // TODO Auto-generated method stub
             }
@@ -636,10 +648,12 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                     picture.setCategoryNum(asset.getCategoryNum());
                     String imangNum = System.currentTimeMillis() + "";
                     picture.setImageNum(imangNum);
-//                    picture.setImageFile(bmobFile);
                     picture.setImageUrl(bmobFile.getFileUrl());
                     asset.setPicture(imangNum);
+                    hasPhoto = true;
                     insertObject(picture);
+                } else {
+                    toast("加载图片失败！");
                 }
 
             }

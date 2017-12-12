@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:id="@+id/fl_photo"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:orientation="vertical">
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" >
 
     <ImageView
-        android:id="@+id/iv_selected_image"
+        android:id="@+id/iv_item_photo"
         android:layout_width="fill_parent"
-        android:layout_height="130dp"
+        android:layout_height="100dp"
         android:background="@drawable/pictures_no"
         android:scaleType="centerCrop" />
 
     <ImageButton
-        android:id="@+id/rb_selected_photo"
+        android:id="@+id/ib_item_select"
         android:clickable="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,4 +21,5 @@
         android:layout_marginTop="3dp"
         android:background="@null"
         android:src="@drawable/pictures_selected" />
+
 </RelativeLayout>

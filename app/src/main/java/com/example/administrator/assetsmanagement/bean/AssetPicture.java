@@ -13,10 +13,6 @@ import cn.bmob.v3.datatype.BmobFile;
 public class AssetPicture extends BmobObject implements Serializable, Cloneable {
 
     /*
-    图片文件
-     */
-    private BmobFile imageFile;
-    /*
     图片文件全路径
      */
     private String imageUrl;
@@ -47,12 +43,6 @@ public class AssetPicture extends BmobObject implements Serializable, Cloneable 
     public AssetPicture() {
     }
 
-    public AssetPicture(BmobFile imageFile, String imageNum, String categoryNum) {
-        this.imageFile = imageFile;
-        this.imageNum = imageNum;
-        this.categoryNum = categoryNum;
-    }
-
     public String getImageUrl() {
         return imageUrl;
     }
@@ -64,14 +54,6 @@ public class AssetPicture extends BmobObject implements Serializable, Cloneable 
     /**
      * setter 和getter 方法
      */
-
-    public BmobFile getImageFile() {
-        return imageFile;
-    }
-
-    public void setImageFile(BmobFile imageFile) {
-        this.imageFile = imageFile;
-    }
 
     public String getImageNum() {
         return imageNum;

@@ -1,6 +1,7 @@
 package com.example.administrator.assetsmanagement.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 
@@ -39,13 +41,10 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
     LayoutInflater mInflater;
     PhotoSelectedListener listener;
 
-    Map<String, AssetPicture> mFileMap = new HashMap<>();
-
     public PhotoRecyclerViewAdapter(Context context, List<AssetPicture> list) {
         mContext = context;
         mPictureList = list;
         mInflater = LayoutInflater.from(mContext);
-//        downloadFile(mPictureList);
     }
 
     public void getSelectedListener(PhotoSelectedListener listener) {
@@ -60,17 +59,18 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
 
     @Override
     public void onBindViewHolder(final PhotoViewHolder holder, final int position) {
-        setImageLayoutSize(holder);
-//        Glide.with(mContext).load(mFileMap.get(mPictureList.get(position).getImageNum()))
-//                .centerCrop().into(holder.assetPhoto);
         Glide.with(mContext).load(mPictureList.get(position).getImageUrl())
+                .placeholder(R.drawable.pictures_no)
                 .into(holder.assetPhoto);
+        //图片选择与不选择时角图和过滤色不同
         if (mPictureList.get(position).getSelected()) {
-            holder.selected.setChecked(true);
+            holder.selected.setImageResource(R.drawable.pictures_selected);
+            holder.assetPhoto.setColorFilter(null);
         } else {
-            holder.selected.setChecked(false);
+            holder.selected.setImageResource(R.drawable.picture_unselected);
+            holder.assetPhoto.setColorFilter(Color.parseColor("#77000000"));
         }
-        holder.selected.setOnClickListener(new View.OnClickListener() {
+        holder.assetPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!mPictureList.get(position).getSelected()) {
@@ -78,8 +78,7 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
                         mPictureList.get(i).setSelected(false);
                     }
                     mPictureList.get(position).setSelected(true);
-                    String imagenum = mPictureList.get(position).getImageNum();
-                    listener.selected(mPictureList.get(position).getImageNum(),mPictureList.get(position));
+                    listener.selectPhoto(mPictureList.get(position));
                     notifyDataSetChanged();
                 }
             }
@@ -92,92 +91,21 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
         return mPictureList.size();
     }
 
-//    /**
-//     * 下载BmobFile文件
-//     *
-//     * @param mList
-//     */
-//    private void downloadFile(List<AssetPicture> mList) {
-//
-//        for (final AssetPicture picture : mList) {
-//            final File imagefile = new File(mContext.getCacheDir() + picture.getImageFile().getFilename());
-//            picture.getImageFile().download(imagefile, new DownloadFileListener() {
-//                @Override
-//                public void onProgress(Integer integer, long l) {
-//
-//                }
-//
-//                @Override
-//                public void done(String s, BmobException e) {
-//                    new Thread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Message msg = new Message();
-//                            msg.what = PHOTO_FILE;
-//                            Bundle bundle = new Bundle();
-//                            bundle.putSerializable("file", imagefile);
-//                            bundle.putString("imageNum",picture.getImageNum());
-//                            msg.setData(bundle);
-//                            hanlder.sendMessage(msg);
-//                        }
-//                    }).start();
-//                }
-//
-//            });
-//        }
-//
-//    }
-
-    /**
-     * 根据屏幕大小计算并重新设置ImageView容器大小
-     *
-     * @param holder
-     */
-    private void setImageLayoutSize(PhotoViewHolder holder) {
-        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(outMetrics);
-        int width = outMetrics.widthPixels;
-        int height = outMetrics.heightPixels;
-        FrameLayout fl = holder.mFrameLayout;
-        ViewGroup.LayoutParams para = fl.getLayoutParams();
-        para.width = (int) (width / 3.7);
-        para.height = height / 4;
-        fl.setLayoutParams(para);
-    }
 
     /**
      * ViewHolder
      */
     class PhotoViewHolder extends RecyclerView.ViewHolder {
-        RadioButton selected;
+
         ImageView assetPhoto;
-        FrameLayout mFrameLayout;
+        ImageButton selected;
 
         public PhotoViewHolder(View itemView) {
             super(itemView);
-            selected = (RadioButton) itemView.findViewById(R.id.rb_selected_photo);
+            selected = (ImageButton) itemView.findViewById(R.id.rb_selected_photo);
             assetPhoto = (ImageView) itemView.findViewById(R.id.iv_selected_image);
-            mFrameLayout = (FrameLayout) itemView.findViewById(R.id.fl_photo);
         }
 
     }
 
-//    public static final int PHOTO_FILE = 1;
-//    public MyHandler hanlder = new MyHandler();
-//
-//    class MyHandler extends Handler {
-//        @Override
-//        public void handleMessage(Message msg) {
-//            switch (msg.what) {
-//                case PHOTO_FILE:
-//                    String imagenum = msg.getData().getString("imageNum");
-//                    File imagefile = (File) msg.getData().getSerializable("file");
-////                    mFileMap.put(imagenum, imagefile);
-//                    notifyDataSetChanged();
-//                    break;
-//
-//            }
-//        }
-//    }
 }
