@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.DownloadFileListener;
 
@@ -38,13 +39,13 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
     LayoutInflater mInflater;
     PhotoSelectedListener listener;
 
-    Map<String, File> mFileMap = new HashMap<>();
+    Map<String, BmobFile> mFileMap = new HashMap<>();
 
     public PhotoRecyclerViewAdapter(Context context, List<AssetPicture> list) {
         mContext = context;
         mPictureList = list;
         mInflater = LayoutInflater.from(mContext);
-        downloadFile(mPictureList);
+//        downloadFile(mPictureList);
     }
 
     public void getSelectedListener(PhotoSelectedListener listener) {
@@ -60,8 +61,10 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
     @Override
     public void onBindViewHolder(final PhotoViewHolder holder, final int position) {
         setImageLayoutSize(holder);
-        Glide.with(mContext).load(mFileMap.get(mPictureList.get(position).getImageNum()))
-                .centerCrop().into(holder.assetPhoto);
+//        Glide.with(mContext).load(mFileMap.get(mPictureList.get(position).getImageNum()))
+//                .centerCrop().into(holder.assetPhoto);
+        Glide.with(mContext).load(mPictureList.get(position).getImageFile().getFileUrl())
+                .into(holder.assetPhoto);
         if (mPictureList.get(position).getSelected()) {
             holder.selected.setChecked(true);
         } else {

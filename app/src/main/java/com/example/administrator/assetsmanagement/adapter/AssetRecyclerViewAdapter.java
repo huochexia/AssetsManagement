@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -37,15 +38,16 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
     List<AssetInfo> assetInfoList;
     Context mContext;
     LayoutInflater layoutInflater;
-
+    boolean isSearch;
 
 
     String title;
 
-    public AssetRecyclerViewAdapter(Context context, List<AssetInfo> list) {
+    public AssetRecyclerViewAdapter(Context context, List<AssetInfo> list,boolean isSearch) {
         mContext = context;
         assetInfoList = list;
         layoutInflater = LayoutInflater.from(mContext);
+        this.isSearch = isSearch;
     }
 
     @Override
@@ -56,6 +58,12 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
 
     @Override
     public void onBindViewHolder(AssetHolder holder, final int position) {
+        if (isSearch) {
+            holder.selected.setVisibility(View.INVISIBLE);
+        } else {
+            holder.selected.setVisibility(View.VISIBLE);
+        }
+
         holder.serial_number.setText((position + 1) + "");
         holder.assetName.setText(assetInfoList.get(position).getAssetName());
         holder.assetQuantity.setText(assetInfoList.get(position).getQuantity() + "");
@@ -141,7 +149,7 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
         TextView assetName;
         TextView assetQuantity;
         TextView assetStatus;
-
+        CheckBox selected;
         public AssetHolder(View itemView) {
             super(itemView);
             item = (LinearLayout) itemView.findViewById(R.id.ll_asset_item);
@@ -149,6 +157,7 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
             assetName = (TextView) itemView.findViewById(R.id.tv_assets_item_name);
             assetQuantity = (TextView) itemView.findViewById(R.id.tv_assets_item_quantity);
             assetStatus = (TextView) itemView.findViewById(R.id.tv_assets_item_status);
+            selected = (CheckBox) itemView.findViewById(R.id.cb_assets_item);
         }
     }
 

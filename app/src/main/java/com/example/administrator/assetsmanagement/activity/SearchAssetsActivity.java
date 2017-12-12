@@ -265,7 +265,7 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                 case 1:
                     search_result_list = (List<AssetInfo>) msg.getData().getSerializable("assets");
                     adapter = new AssetRecyclerViewAdapter(SearchAssetsActivity.this,
-                            AssetsUtil.mergeAndSum(search_result_list));
+                            AssetsUtil.mergeAndSum(search_result_list),true);
                     searchList.setAdapter(adapter);
                     break;
             }

@@ -161,7 +161,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 mLlAssetsTurnOverTop.setVisibility(View.GONE);
                 mBtnTurnOverOk.setEnabled(true);
                 select_list = (List<AssetInfo>) bundle.getSerializable("assets");
-                adapter = new AssetRecyclerViewAdapter(this, select_list);
+                adapter = new AssetRecyclerViewAdapter(this, select_list,false);
                 mRcTurnOverList.setAdapter(adapter);
             }
         }
@@ -394,7 +394,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
 
                     }
                     adapter = new AssetRecyclerViewAdapter(AssetsTurnOverActivity.this,
-                            AssetsUtil.mergeAndSum(temp_list));
+                            AssetsUtil.mergeAndSum(temp_list),false);
                     mRcTurnOverList.setAdapter(adapter);
                     break;
             }

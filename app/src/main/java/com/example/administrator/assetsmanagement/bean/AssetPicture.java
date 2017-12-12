@@ -17,6 +17,10 @@ public class AssetPicture extends BmobObject implements Serializable, Cloneable 
      */
     private BmobFile imageFile;
     /*
+    图片文件全路径
+     */
+    private String imageUrl;
+    /*
     图片编号
      */
     private String imageNum;
@@ -27,7 +31,6 @@ public class AssetPicture extends BmobObject implements Serializable, Cloneable 
     /*
     是否选择
      */
-
     private Boolean isSelected = false;
 
     public Boolean getSelected() {

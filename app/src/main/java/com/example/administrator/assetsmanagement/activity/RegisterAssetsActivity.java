@@ -478,7 +478,6 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
                     mBaseNode = (BaseNode) data.getSerializableExtra("node");
                     mTvRegisterLocation.setText(getNodeAllPathName(mBaseNode));
-                    //TODO:位置编号赋值给资产对象实例
                     asset.setLocationNum(mBaseNode.getId());
                 }
                 break;
@@ -486,7 +485,6 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
                     mBaseNode = (BaseNode) data.getSerializableExtra("node");
                     mTvRegisterCategory.setText(getNodeAllPathName(mBaseNode));
-                    //TODO:类别编号赋值给资产对象实例
                     asset.setCategoryNum(mBaseNode.getId());
                 }
                 break;
@@ -494,7 +492,6 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
                     mBaseNode = (BaseNode) data.getSerializableExtra("node");
                     mTvRegisterDepartment.setText(getNodeAllPathName(mBaseNode));
-                    //TODO:部门编号赋值给资产对象实例
                     asset.setDeptNum(mBaseNode.getId());
                 }
                 break;
@@ -502,7 +499,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 if (data != null) {
                     Bundle bundle = data.getBundleExtra("assetpicture");
                     asset.setPicture((String) bundle.getSerializable("imageNum"));
-                    Glide.with(this).load((bundle.getSerializable("imageFile"))).centerCrop().into(mIvRegisterPicture);
+                    Glide.with(this).load((bundle.getSerializable("imageFile"))).into(mIvRegisterPicture);
                 }
                 break;
             case TAKE_PHOTO:
