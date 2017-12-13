@@ -26,7 +26,7 @@
                     android:id="@+id/iv_assets_turn_over"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/assets_turn_over"/>
+                    />
             </android.support.v7.widget.CardView>
         </LinearLayout>
         <LinearLayout
@@ -44,7 +44,7 @@
                     android:id="@+id/iv_assets_receive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/assets_receiver"/>
+                    />
             </android.support.v7.widget.CardView>
 
         </LinearLayout>
@@ -68,7 +68,7 @@
                     android:id="@+id/iv_assets_repaired"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/assets_repair"/>
+                    />
             </android.support.v7.widget.CardView>
         </LinearLayout>
         <LinearLayout
@@ -86,7 +86,7 @@
                     android:id="@+id/iv_assets_lose"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/assets_losed" />
+                     />
             </android.support.v7.widget.CardView>
         </LinearLayout>
     </LinearLayout>
@@ -109,7 +109,7 @@
                     android:id="@+id/iv_assets_scrapped"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/assets_baofei"/>
+                    />
             </android.support.v7.widget.CardView>
         </LinearLayout>
         <LinearLayout
@@ -127,7 +127,7 @@
                     android:id="@+id/iv_assets_approval"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/approval"/>
+                    />
             </android.support.v7.widget.CardView>
         </LinearLayout>
     </LinearLayout>
@@ -150,7 +150,7 @@
                     android:id="@+id/iv_assets_recycle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/assets_recycle"/>
+                    />
             </android.support.v7.widget.CardView>
         </LinearLayout>
         <LinearLayout

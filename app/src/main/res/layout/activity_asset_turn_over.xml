@@ -53,58 +53,7 @@
 
         <include layout="@layout/view_line_between"/>
 
-        <RelativeLayout
-            android:id="@+id/rl_single_asset"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:visibility="visible">
-
-            <LinearLayout
-
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/iv_barcode_2d"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:src="@drawable/barcode_2d"/>
-
-                <com.example.administrator.assetsmanagement.utils.LineEditText
-                    android:id="@+id/et_search_asset_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_10"
-                    android:background="@color/transparent"
-                    android:hint="请输入资产编号"
-                    android:textSize="16sp"
-
-                    line:lineColorEt="#1d26de"/>
-            </LinearLayout>
-
-            <mehdi.sakout.fancybuttons.FancyButton
-                android:id="@+id/btn_turn_over_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="10dp"
-                android:padding="10dp"
-                fancy:fb_borderColor="#FFFFFF"
-                fancy:fb_borderWidth="0dp"
-                fancy:fb_defaultColor="#3f51b4"
-                fancy:fb_focusColor="#7182e2"
-                fancy:fb_radius="15dp"
-                fancy:fb_text="查找"
-                fancy:fb_textColor="#FFFFFF"
-                fancy:fb_textFont="隶书.ttf"
-                fancy:fb_textSize="16sp">
-            </mehdi.sakout.fancybuttons.FancyButton>
-        </RelativeLayout>
-
+        <include layout="@layout/single_asset_search"/>
         <LinearLayout
             android:id="@+id/ll_overall_asset"
             android:layout_width="match_parent"
@@ -302,6 +251,7 @@
                     android:layout_marginTop="10dp"
                     android:padding="10dp"
                     fancy:fb_borderColor="#FFFFFF"
+                    fancy:fb_disabledColor="#aeaaaa"
                     fancy:fb_borderWidth="0dp"
                     fancy:fb_defaultColor="#3f51b4"
                     fancy:fb_focusColor="#7182e2"

@@ -20,6 +20,7 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.DownloadFileListener;
 
 /**
+ * 显示某个资产的照片
  * Created by Administrator on 2017/12/8.
  */
 
@@ -62,58 +63,8 @@ public class AssetPictureActivity extends ParentWithNaviActivity {
         title = bundle.getString("title");
         initNaviView();
         AssetPicture photo = (AssetPicture) bundle.getSerializable("picture");
-        Glide.with(this).load(photo.getImageUrl()).into(ivAssetPicture);
-//        downloadFile((AssetPicture) bundle.getSerializable("picture"));
+        Glide.with(this).load(photo.getImageUrl()).placeholder(R.drawable.pictures_no).into(ivAssetPicture);
     }
 
-//    /**
-//     * 获得图片文件
-//     *
-//     * @param picture
-//     */
-//    private void downloadFile(AssetPicture picture) {
-//        final File imagefile = new File(this.getCacheDir() + picture.getImageFile().getFilename());
-//        picture.getImageFile().download(imagefile, new DownloadFileListener() {
-//            @Override
-//            public void onProgress(Integer integer, long l) {
-//
-//            }
-//
-//            @Override
-//            public void done(String s, BmobException e) {
-//                if (e == null) {
-//                    new Thread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Message msg = new Message();
-//                            msg.what = 1;
-//                            Bundle bundle = new Bundle();
-//                            bundle.putSerializable("file", imagefile);
-//                            msg.setData(bundle);
-//                            handler.sendMessage(msg);
-//                        }
-//                    }).start();
-//                } else {
-//                    toast("下载文件失败！"+e.toString());
-//                }
-//            }
-//
-//        });
-//
-//    }
-//
-//    PictureHandler handler = new PictureHandler();
-//
-//    class PictureHandler extends Handler {
-//        @Override
-//        public void handleMessage(Message msg) {
-//            switch (msg.what) {
-//                case 1:
-//                    File file = (File) msg.getData().getSerializable("file");
-//                    Glide.with(AssetPictureActivity.this).load(file).centerCrop().into(ivAssetPicture);
-//                    break;
-//
-//            }
-//        }
-//    }
+
 }

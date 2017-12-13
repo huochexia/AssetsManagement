@@ -47,6 +47,9 @@
         <activity android:name=".activity.SelectAssetsPhotoActivity"/>
         <activity android:name=".activity.AssetPictureActivity"/>
         <activity android:name=".activity.AssetsTurnOverActivity"/>
+        <activity android:name=".activity.AssetRepairActivity"/>
+        <activity android:name=".activity.AssetLoseActivity"/>
+        <activity android:name=".activity.AssetBaofeiActivity"/>
     </application>
 
 </manifest>

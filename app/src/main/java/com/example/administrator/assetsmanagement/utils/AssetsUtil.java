@@ -1,11 +1,17 @@
 package com.example.administrator.assetsmanagement.utils;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.UpdateListener;
 
 /**
  * Created by Administrator on 2017/12/10 0010.
@@ -36,5 +42,24 @@ public class AssetsUtil {
             list.add(map.get(obj));
         }
         return list;
+    }
+
+    /**
+     * 改变单一资产的状态
+     * @param asset
+     * @param status
+     */
+    public static void changeAssetStatus(final Context context, AssetInfo asset, int status) {
+        asset.setStatus(status);
+        asset.update(new UpdateListener() {
+            @Override
+            public void done(BmobException e) {
+                if (e == null) {
+                    Toast.makeText(context, "工作完成！", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context,"网络出现异常，稍后再操作！",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }
