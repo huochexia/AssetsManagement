@@ -42,8 +42,10 @@ import cn.bmob.v3.listener.UpdateListener;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
- * 资产移交，可以单个资产（通过编号或扫码）获得资产，也可以整批（位置、部门和管理员）获得资产进行移
- * 交。选择接收人并确定后，将修改资产的mNewManager属性接收人，同时将状态改为4待移交。
+ * 资产移交，可以单个资产（通过编号或扫码）获得资产，也可以整批（位置和管理员）获得资产进行移
+ * 交。如果某位置的资产只能移交部分，那么就只能采取个别资产移交，因为一资产一编号。对于某一位置
+ * 的可以选择只移交某一种资产。但是这一种资产必须整体移交，如果个别的不移交，则可以先整体然后个别
+ * 的再反移交一次
  * Created by Administrator on 2017/12/8.
  */
 
@@ -201,13 +203,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                         mTvSearchContent.setText("");
                         mBtnSearchLocation.setVisibility(View.VISIBLE);
                         break;
-                    case R.id.rb_turn_over_dept:
-                        changeBtnStatus();
-                        clearLists();
-                        select_type = SEARCH_DEPARTMENT;
-                        mTvSearchContent.setText("");
-                        mBtnSearchDept.setVisibility(View.VISIBLE);
-                        break;
+
                     case R.id.rb_turn_over_manager:
                         changeBtnStatus();
                         clearLists();
@@ -237,7 +233,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
      * @param view
      */
 
-    @OnClick({R.id.btn_turn_over_search, R.id.btn_search_location, R.id.btn_search_manager, R.id.btn_search_dept,
+    @OnClick({R.id.btn_turn_over_search, R.id.btn_search_location, R.id.btn_search_manager,
             R.id.btn_search_start, R.id.btn_receive_manager, R.id.btn_turn_over_ok, R.id.btn_receive_location,
             R.id.btn_receive_dept})
     public void onViewClicked(View view) {
@@ -254,10 +250,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 clearLists();
                 getSelectedInfo(SelectedTreeNodeActivity.SEARCH_MANAGER, true,REQUEST_SELECTED);
                 break;
-            case R.id.btn_search_dept:
-                clearLists();
-                getSelectedInfo(SelectedTreeNodeActivity.SEARCH_DEPARTMENT, false,REQUEST_SELECTED);
-                break;
+
             case R.id.btn_search_start:
                 getSearchResultList();
                 break;

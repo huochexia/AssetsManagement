@@ -37,9 +37,9 @@ public class AssetInfo extends BmobObject implements Cloneable {
      */
     private String mCategoryNum;
     /*
-       资产所属图片编号，它是识别资产是否属于一种的标志
+     资产所属图片编号，它是识别资产是否属于一种的标志
      */
-    private  String mPicture;
+    private  AssetPicture mPicture;
 
     /*
     资产状态：0正常，1损坏，2丢失，3待报废：即管理员提交报废，但还没有得到批准；4待移交，即管理员准
@@ -111,11 +111,11 @@ public class AssetInfo extends BmobObject implements Cloneable {
         mCategoryNum = categoryNum;
     }
 
-    public String getPicture() {
+    public AssetPicture getPicture() {
         return mPicture;
     }
 
-    public void setPicture(String picture) {
+    public void setPicture(AssetPicture picture) {
         mPicture = picture;
     }
 

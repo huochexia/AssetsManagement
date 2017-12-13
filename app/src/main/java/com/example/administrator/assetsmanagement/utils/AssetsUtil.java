@@ -27,7 +27,7 @@ public class AssetsUtil {
         Iterator it = list.iterator();
         while (it.hasNext()) {
             AssetInfo asset = (AssetInfo) it.next();
-            String key = asset.getPicture();
+            String key = asset.getPicture().getImageNum();
             if (map.get(key) == null) {
                 map.put(key, asset);
             } else {

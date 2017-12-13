@@ -235,6 +235,7 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
     private void searchAssets(String para, String id) {
         BmobQuery<AssetInfo> query = new BmobQuery<>();
         query.addWhereEqualTo(para, id);
+        query.include("mPicture");
         query.findObjects(new FindListener<AssetInfo>() {
             @Override
             public void done(List<AssetInfo> list, BmobException e) {

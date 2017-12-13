@@ -24,7 +24,7 @@ public class Person extends BmobUser {
     private Boolean isPerson = true;
 
     private List<String> role;
-
+    private Department department;
 
     public List<String> getRole() {
         return role;
@@ -44,7 +44,13 @@ public class Person extends BmobUser {
         this.nodename = nodename;
     }
 
+    public Department getDepartment() {
+        return department;
+    }
 
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
 
     public Boolean getPerson() {
         return isPerson;

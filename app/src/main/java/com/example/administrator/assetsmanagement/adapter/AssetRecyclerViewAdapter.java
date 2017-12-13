@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.activity.AssetPictureActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
@@ -39,9 +40,6 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
     Context mContext;
     LayoutInflater layoutInflater;
     boolean isSearch;
-
-
-    String title;
 
     public AssetRecyclerViewAdapter(Context context, List<AssetInfo> list,boolean isSearch) {
         mContext = context;
@@ -88,51 +86,17 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
         holder.assetName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                title = assetInfoList.get(position).getAssetName();
-                BmobQuery<AssetPicture> query = new BmobQuery<>();
-                query.addWhereEqualTo("imageNum", assetInfoList.get(position).getPicture());
-                query.findObjects(new FindListener<AssetPicture>() {
-                    @Override
-                    public void done(final List<AssetPicture> list, BmobException e) {
-                        if (e == null) {
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Message msg = new Message();
-                                    msg.what = 1;
-                                    Bundle bundle = new Bundle();
-                                    bundle.putSerializable("image", (Serializable) list);
-                                    msg.setData(bundle);
-                                    handler.sendMessage(msg);
-                                }
-                            }).start();
-                        }
-                    }
-                });
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("picture",assetInfoList.get(position).getPicture());
+                bundle.putString("title", assetInfoList.get(position).getAssetName());
+                Intent intent = new Intent(mContext, AssetPictureActivity.class);
+                intent.putExtra(mContext.getPackageName(), bundle);
+                mContext.startActivity(intent);
 
             }
         });
     }
 
-    CustomHandler handler = new CustomHandler();
-
-    class CustomHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1:
-                    List<AssetPicture> list1 = (List<AssetPicture>) msg.getData().getSerializable("image");
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("picture", list1.get(0));
-                    bundle.putString("title", title);
-                    Intent intent = new Intent(mContext, AssetPictureActivity.class);
-                    intent.putExtra(mContext.getPackageName(), bundle);
-                    mContext.startActivity(intent);
-                    break;
-
-            }
-        }
-    }
 
     @Override
     public int getItemCount() {

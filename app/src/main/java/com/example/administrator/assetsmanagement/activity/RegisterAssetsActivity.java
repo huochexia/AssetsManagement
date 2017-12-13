@@ -261,7 +261,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 if (checkAlltext()) {
                     int quantity = Integer.parseInt(mEtRegisterAssetsQuantity.getText().toString());
                     createAssetNumber(quantity, asset);
-                    asset.setPicture("");
+                    asset.setPicture(null);
                     mIvRegisterPicture.setImageResource(R.drawable.pictures_no);
                     hasPhoto = false;
                     setAllWidget(true);
@@ -321,7 +321,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 if (data != null) {
                     Bundle bundle = data.getBundleExtra("assetpicture");
                     AssetPicture image1 = (AssetPicture) bundle.getSerializable("imageFile");
-                    asset.setPicture(image1.getImageNum());
+                    asset.setPicture(image1);
                     hasPhoto = true;
                     Glide.with(this).load(image1.getImageUrl()).into(mIvRegisterPicture);
                 }
@@ -565,26 +565,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         return buffer.toString();
     }
 
-    /**
-     * 获得节点全路径Id
-     *
-     * @param node
-     * @return
-     */
-    private String getNodeAllPathId(BaseNode node) {
-        StringBuffer buffer = new StringBuffer();
-        List<BaseNode> nodes = new ArrayList<>();
-        NodeHelper.getAllParents(nodes, node);
-        int i = nodes.size();
-        while (i > 0) {
-            i--;
-            buffer.append(nodes.get(i).getId());
-            if (i != 0) {
-                buffer.append("-");
-            }
-        }
-        return buffer.toString();
-    }
+
 
     /**
      * 上传图片信息对象操作
@@ -606,21 +587,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         });
     }
 
-    /**
-     * 裁剪
-     */
-    private void cropImage(Uri uri) {
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setDataAndType(uri, IMAGE_UNSPECIFIED);
-        intent.putExtra("crop", "true");
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
-        intent.putExtra("return-data", false);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
-        intent.putExtra("noFaceDetection", true);
-        startActivityForResult(intent, REQUEST_CROP);
-    }
+
 
     /**
      * 上传指定路径下的图片文件
@@ -649,7 +616,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                     String imangNum = System.currentTimeMillis() + "";
                     picture.setImageNum(imangNum);
                     picture.setImageUrl(bmobFile.getFileUrl());
-                    asset.setPicture(imangNum);
+                    asset.setPicture(picture);
                     hasPhoto = true;
                     insertObject(picture);
                 } else {
