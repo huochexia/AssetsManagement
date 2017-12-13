@@ -336,6 +336,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     private void searchAssets(String para, String id) {
         BmobQuery<AssetInfo> query = new BmobQuery<>();
         query.addWhereEqualTo(para, id);
+        query.include("mPicture");
         query.findObjects(new FindListener<AssetInfo>() {
             @Override
             public void done(final List<AssetInfo> list, BmobException e) {
@@ -364,9 +365,9 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         });
     }
 
-    SelectedHandler handler = new SelectedHandler();
+    SearchHandler handler = new SearchHandler();
 
-    class SelectedHandler extends Handler {
+    class SearchHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {

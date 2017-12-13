@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -40,14 +42,23 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
     Context mContext;
     LayoutInflater layoutInflater;
     boolean isSearch;
+    Map<Integer, Boolean> map = new HashMap<>();
+    List<String> picNum;
 
     public AssetRecyclerViewAdapter(Context context, List<AssetInfo> list,boolean isSearch) {
         mContext = context;
         assetInfoList = list;
         layoutInflater = LayoutInflater.from(mContext);
         this.isSearch = isSearch;
+        picNum = new ArrayList<>();
+        initMap();
     }
 
+    private void initMap() {
+        for(int i = 0;i<assetInfoList.size();i++) {
+            map.put(i, true);
+        }
+    }
     @Override
     public AssetHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = layoutInflater.inflate(R.layout.item_asset, parent, false);
@@ -61,6 +72,23 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
         } else {
             holder.selected.setVisibility(View.VISIBLE);
         }
+        holder.selected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                map.put(position, isChecked);
+                if (isChecked) {
+                     //保存选择的资产图片编号
+                    picNum.add(assetInfoList.get(position).getPicture().getImageNum());
+                } else {
+                    //移除取消选择的资产图片编号
+                    picNum.remove(assetInfoList.get(position).getPicture().getImageNum());
+                }
+            }
+        });
+        if (map.get(position) == null) {
+            map.put(position, false);
+        }
+        holder.selected.setChecked(map.get(position));
 
         holder.serial_number.setText((position + 1) + "");
         holder.assetName.setText(assetInfoList.get(position).getAssetName());
@@ -103,7 +131,13 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
         return assetInfoList.size();
     }
 
-
+    /**
+     * 返回图片编号列表
+     * @return
+     */
+    public List<String> getPicNum() {
+        return picNum;
+    }
     /**
      * 自定义ViewHolder
      */
