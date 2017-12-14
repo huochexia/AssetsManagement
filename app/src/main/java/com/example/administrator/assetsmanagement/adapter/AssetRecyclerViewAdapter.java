@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.assetsmanagement.R;
@@ -44,6 +45,7 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
     boolean isSearch;
     Map<Integer, Boolean> map = new HashMap<>();
     List<String> picNum;
+    int counter;
 
     public AssetRecyclerViewAdapter(Context context, List<AssetInfo> list,boolean isSearch) {
         mContext = context;
@@ -77,14 +79,23 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 map.put(position, isChecked);
                 if (isChecked) {
+                    counter++;
                      //保存选择的资产图片编号
                     picNum.add(assetInfoList.get(position).getPicture().getImageNum());
                 } else {
+                    counter--;
                     //移除取消选择的资产图片编号
                     picNum.remove(assetInfoList.get(position).getPicture().getImageNum());
                 }
+                //因为Bmob批量处理最多50条
+                if (counter > 50) {
+                    Toast.makeText(mContext,"一次选择数量不能超50！",Toast.LENGTH_SHORT).show();
+                    buttonView.setChecked(false);
+                }
             }
         });
+
+
         if (map.get(position) == null) {
             map.put(position, false);
         }

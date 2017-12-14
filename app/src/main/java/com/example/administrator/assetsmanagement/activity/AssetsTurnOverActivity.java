@@ -19,6 +19,7 @@ import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.adapter.AssetRecyclerViewAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
+import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
@@ -54,19 +55,19 @@ import mehdi.sakout.fancybuttons.FancyButton;
 public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     public static final int REQUEST_SELECTED = 100;
     public static final int REQUEST_RECEIVE_LOCATION = 101;
-    public static final int REQUEST_RECEIVE_DEPT= 102;
+    public static final int REQUEST_RECEIVE_DEPT = 102;
     public static final int REQUEST_RECEIVE_MANAGER = 103;
+    public static final int REQUEST_SELECTE_MANAGER = 104;
 
     public static final int SEARCH_LOCATION = 1;
     public static final int SEARCH_DEPARTMENT = 3;
     public static final int SEARCH_MANAGER = 4;
 
 
-
     private BaseNode mNode;//接收传入位置、部门和原管理员信息的节点
-    private BaseNode mNewLocation,mNewDept,mNewManager;
+    private BaseNode mNewLocation, mNewDept;
     private int select_type = SEARCH_LOCATION; //拟选择的类型，位置、部门、管理员
-
+    private Person mOldManager, mNewManager;
     @BindView(R.id.ll_assets_turn_over_top)
     LinearLayout mLlAssetsTurnOverTop;
     @BindView(R.id.et_search_asset_num)
@@ -159,7 +160,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         LinearLayoutManager ll = new LinearLayoutManager(AssetsTurnOverActivity.this);
         mRcTurnOverList.setLayoutManager(ll);
 
-        Bundle bundle =getBundle();
+        Bundle bundle = getBundle();
         if (bundle != null) {
             flag = bundle.getInt("turn_over");
             isSingle = bundle.getBoolean("oneOrAll");
@@ -167,7 +168,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 mLlAssetsTurnOverTop.setVisibility(View.GONE);
                 mBtnTurnOverOk.setEnabled(true);
                 select_list = (List<AssetInfo>) bundle.getSerializable("assets");
-                adapter = new AssetRecyclerViewAdapter(this, select_list,false);
+                adapter = new AssetRecyclerViewAdapter(this, select_list, false);
                 mRcTurnOverList.setAdapter(adapter);
             }
         }
@@ -250,11 +251,13 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 break;
             case R.id.btn_search_location:
                 clearLists();
-                getSelectedInfo(SelectedTreeNodeActivity.SEARCH_LOCATION, false,REQUEST_SELECTED);
+                getSelectedInfo(SelectedTreeNodeActivity.SEARCH_LOCATION, false, REQUEST_SELECTED);
                 break;
             case R.id.btn_search_manager:
                 clearLists();
-                getSelectedInfo(SelectedTreeNodeActivity.SEARCH_MANAGER, true,REQUEST_SELECTED);
+//                getSelectedInfo(SelectedTreeNodeActivity.SEARCH_MANAGER, true,REQUEST_SELECTED);
+                Intent intent = new Intent(AssetsTurnOverActivity.this, ManagerListActivity.class);
+                startActivityForResult(intent, REQUEST_SELECTE_MANAGER);
                 break;
 
             case R.id.btn_search_start:
@@ -262,13 +265,14 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 getSearchResultList();
                 break;
             case R.id.btn_receive_location:
-                getSelectedInfo(SelectedTreeNodeActivity.SEARCH_LOCATION, false,REQUEST_RECEIVE_LOCATION);
+                getSelectedInfo(SelectedTreeNodeActivity.SEARCH_LOCATION, false, REQUEST_RECEIVE_LOCATION);
                 break;
             case R.id.btn_receive_dept:
-                getSelectedInfo(SelectedTreeNodeActivity.SEARCH_DEPARTMENT, false,REQUEST_RECEIVE_DEPT);
+                getSelectedInfo(SelectedTreeNodeActivity.SEARCH_DEPARTMENT, false, REQUEST_RECEIVE_DEPT);
                 break;
             case R.id.btn_receive_manager:
-                getSelectedInfo(SelectedTreeNodeActivity.SEARCH_MANAGER, false,REQUEST_RECEIVE_MANAGER);
+                Intent intent1 = new Intent(AssetsTurnOverActivity.this, ManagerListActivity.class);
+                startActivityForResult(intent1, REQUEST_RECEIVE_MANAGER);
                 break;
             case R.id.btn_turn_over_ok:
                 List<String> imageNumList = adapter.getPicNum();
@@ -301,6 +305,12 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                     mTvSearchContent.setText(NodeHelper.getSearchContentName(mNode));
                 }
                 break;
+            case REQUEST_SELECTE_MANAGER://原管理员
+                if (resultCode == ManagerListActivity.SEARCH_OK) {
+                    mOldManager = (Person) data.getSerializableExtra("manager");
+                    mTvSearchContent.setText(mOldManager.getUsername());
+                }
+                break;
             case REQUEST_RECEIVE_LOCATION:
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
                     mNewLocation = (BaseNode) data.getSerializableExtra("node");
@@ -314,9 +324,9 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 }
                 break;
             case REQUEST_RECEIVE_MANAGER:
-                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    mNewManager = (BaseNode) data.getSerializableExtra("node");
-                    mTvNewManager.setText(NodeHelper.getSearchContentName(mNewManager));
+                if (resultCode == ManagerListActivity.SEARCH_OK) {
+                    mNewManager = (Person) data.getSerializableExtra("manager");
+                    mTvNewManager.setText(mNewManager.getUsername());
                 }
             default:
         }
@@ -328,14 +338,17 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
      * @param type
      * @param isPerson
      */
-    private void getSelectedInfo(int type, boolean isPerson,int requestCode) {
+    private void getSelectedInfo(int type, boolean isPerson, int requestCode) {
         Intent intent = new Intent(AssetsTurnOverActivity.this, SelectedTreeNodeActivity.class);
         intent.putExtra("type", type);
         intent.putExtra("person", isPerson);
         startActivityForResult(intent, requestCode);
     }
 
+    private void getManager(int requestCode) {
+        Intent intent = new Intent(AssetsTurnOverActivity.this, ManagerListActivity.class);
 
+    }
 
     /**
      * 查询资产
@@ -397,7 +410,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
 
                     }
                     adapter = new AssetRecyclerViewAdapter(AssetsTurnOverActivity.this,
-                            AssetsUtil.mergeAndSum(temp_list),false);
+                            AssetsUtil.mergeAndSum(temp_list), false);
                     mRcTurnOverList.setAdapter(adapter);
                     break;
             }
@@ -445,7 +458,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
      */
     private void initAssetsInfo() {
         mNewDept = null;
-        mNewLocation=null;
+        mNewLocation = null;
         mNewManager = null;
         mTvReceiveNewLocation.setText("");
         mTvReceiveNewDept.setText("");
@@ -473,7 +486,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 if (mNewDept != null) {
                     asset.setDeptNum(mNewDept.getId());
                 }
-                asset.setNewManager(mNewManager.getId());
+                asset.setNewManager(mNewManager);
                 asset.setStatus(4);
                 objects.add(assetList.get(key));
             }
@@ -493,6 +506,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
 
     /**
      * 这是整体变更资产信息。因为依据图片编号。要是个别变更，要依据资产编号
+     *
      * @param assets
      */
     private void updateAllAssets(List<AssetInfo> assets, List<String> number) {
@@ -508,7 +522,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                     if (mNewDept != null) {
                         asset.setDeptNum(mNewDept.getId());
                     }
-                    asset.setNewManager(mNewManager.getId());
+                    asset.setNewManager(mNewManager);
                     asset.setStatus(4);
                     objects.add(asset);
                 }
@@ -547,7 +561,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
             final int finalI = i + 1;
             int fromIndex = 50 * i;
             int toIndex = fromIndex + 49;
-            new BmobBatch().updateBatch(objects.subList(fromIndex, toIndex)).doBatch(new QueryListListener<BatchResult>(){
+            new BmobBatch().updateBatch(objects.subList(fromIndex, toIndex)).doBatch(new QueryListListener<BatchResult>() {
                 @Override
                 public void done(List<BatchResult> list, BmobException e) {
                     if (e == null) {
@@ -561,7 +575,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         }
         //余数量批量更新
         if (y > 0) {
-            new BmobBatch().updateBatch(objects.subList(50 * m - 1, size - 1)).doBatch(new QueryListListener<BatchResult>(){
+            new BmobBatch().updateBatch(objects.subList(50 * m - 1, size - 1)).doBatch(new QueryListListener<BatchResult>() {
                 @Override
                 public void done(List<BatchResult> list, BmobException e) {
                     if (e == null) {

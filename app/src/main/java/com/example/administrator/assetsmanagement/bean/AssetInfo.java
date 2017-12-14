@@ -24,14 +24,14 @@ public class AssetInfo extends BmobObject implements Cloneable {
     /*
     新资产管理员编号
      */
-    private String mNewManager;
+    private Person mNewManager;
     /*
     原资产管理员编号,正常情况下新管理员与原管理一致。待移交状态下，新管理员为拟接收的管理员。这
     样设计是为了解决，拟接收人员不能接收资产时，只有新管理员接收了该资产后，旧管理员才会变更为新管理
     员；如果未接收原管理员不变。如果要退回原管理员，则新管理员清空。
     管理员
      */
-    private String mOldManager;
+    private  Person mOldManager;
     /*
     资产类别编号
      */
@@ -43,9 +43,9 @@ public class AssetInfo extends BmobObject implements Cloneable {
 
     /*
     资产状态：0正常，1损坏，2丢失，3待报废：即管理员提交报废，但还没有得到批准；4待移交，即管理员准
-    备移交，但接受者还没有确认
+    备移交，但接受者还没有确认,9新登记
      */
-    private Integer mStatus = 0;
+    private Integer mStatus = 9;
     /*
     资产登记日期（如2017-11-08）
      */
@@ -87,19 +87,19 @@ public class AssetInfo extends BmobObject implements Cloneable {
         mDeptNum = deptNum;
     }
 
-    public String getNewManager() {
+    public Person getNewManager() {
         return mNewManager;
     }
 
-    public void setNewManager(String newManager) {
+    public void setNewManager(Person newManager) {
         mNewManager = newManager;
     }
 
-    public String getOldManager() {
+    public Person getOldManager() {
         return mOldManager;
     }
 
-    public void setOldManager(String oldManager) {
+    public void setOldManager(Person oldManager) {
         mOldManager = oldManager;
     }
 

@@ -162,8 +162,8 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         btnRegisterAddNext.setEnabled(false);
         setTextFonts();
         asset = new AssetInfo();
-        asset.setStatus(0);//初始状态，0正常
-        asset.setOldManager("");//初始管理者，为空
+        asset.setStatus(9);//初始状态，9新登记
+        asset.setOldManager(null);//初始管理者，为空或登记人即当前用户
         initEvent();
         mEtRegisterAssetsQuantity.setText("");
         mEtRegisterAssetsDate.setText(TimeUtils.getFormatToday(TimeUtils.FORMAT_DATE));

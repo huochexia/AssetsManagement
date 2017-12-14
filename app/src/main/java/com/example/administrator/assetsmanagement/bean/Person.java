@@ -5,6 +5,7 @@ import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeIs
 import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeName;
 import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodePId;
 
+import java.io.Serializable;
 import java.util.List;
 
 import cn.bmob.v3.BmobObject;
@@ -13,7 +14,7 @@ import cn.bmob.v3.BmobUser;
 /**
  * 人员信息
  */
-public class Person extends BmobUser {
+public class Person extends BmobUser implements Serializable{
     @TreeNodeId
     private String id;
     @TreeNodePId

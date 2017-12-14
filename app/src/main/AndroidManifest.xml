@@ -50,6 +50,7 @@
         <activity android:name=".activity.AssetRepairActivity"/>
         <activity android:name=".activity.AssetLoseActivity"/>
         <activity android:name=".activity.AssetBaofeiActivity"/>
+        <activity android:name=".activity.ManagerListActivity"/>
     </application>
 
 </manifest>
