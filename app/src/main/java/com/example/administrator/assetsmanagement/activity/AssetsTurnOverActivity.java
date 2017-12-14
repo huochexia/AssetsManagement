@@ -279,11 +279,12 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 if (imageNumList.size() > 0) {
                     if (mNewManager != null) {
                         if (isSingle) {
-                            updateSinglerAssets(select_list, adapter.getMap());
+                            updateSinglerAssets(adapter.getMap());
                         } else {
                             updateAllAssets(select_list, imageNumList);
+                            adapter.removeSelectedItem();
                         }
-                        adapter.removeSelectedItem();
+
                         initAssetsInfo();
                     } else {
                         toast("请选择接受人！");
@@ -468,17 +469,17 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     /**
      * 个别资产更新
      *
-     * @param assetList
+     * @param
      * @param map
      */
-    private void updateSinglerAssets(List<AssetInfo> assetList, Map<Integer, Boolean> map) {
+    private void updateSinglerAssets(Map<Integer, Boolean> map) {
         List<BmobObject> objects = new ArrayList<>();
         Iterator iterator = map.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             int key = (int) entry.getKey();
             Boolean value = (Boolean) entry.getValue();
-            AssetInfo asset = assetList.get(key);
+            AssetInfo asset = select_list.get(key);
             if (value == true) {
                 if (mNewLocation != null) {
                     asset.setLocationNum(mNewLocation.getId());
@@ -488,7 +489,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 }
                 asset.setNewManager(mNewManager);
                 asset.setStatus(4);
-                objects.add(assetList.get(key));
+                objects.add(select_list.get(key));
             }
         }
         new BmobBatch().updateBatch(objects).doBatch(new QueryListListener<BatchResult>() {
@@ -501,6 +502,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 }
             }
         });
+        adapter.removeSelectedItem();
 
     }
 

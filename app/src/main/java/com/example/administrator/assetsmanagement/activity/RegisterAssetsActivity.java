@@ -604,13 +604,6 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     /**
      * 上传指定路径下的图片文件
      *
-     * @param @param type
-     * @param @param i
-     * @param @param file
-     * @return void
-     * @throws
-     * @Title: uploadMovoieFile
-     * @Description: TODO
      */
     private void uploadPhotoFile(File file) {
         final BmobFile bmobFile = new BmobFile(file);
@@ -647,13 +640,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     private void getNewAssets() {
         List<BmobQuery<AssetInfo>> and = new ArrayList<>();
         BmobQuery<AssetInfo> query1 = new BmobQuery<>();
-        query1.addWhereEqualTo("mPicture", asset.getPicture());
-//        and.add(query1);
-//        BmobQuery<AssetInfo> query2 = new BmobQuery<>();
-//        query2.addWhereEqualTo("mRegisterDate", asset.getRegisterDate());
-//        and.add(query2);
-//        BmobQuery<AssetInfo> query = new BmobQuery<>();
-//        query.and(and);
+        query1.addWhereEqualTo("mStatus", 9);
         query1.include("mPicture");
         query1.setLimit(499);
         query1.findObjects(new FindListener<AssetInfo>() {

@@ -43,7 +43,7 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
     Context mContext;
     LayoutInflater layoutInflater;
     boolean isSearch;
-    Map<Integer, Boolean> map = new HashMap<>();
+    Map<Integer, Boolean> map ;
     List<String> picNum;
     int counter;
 
@@ -53,10 +53,11 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
         layoutInflater = LayoutInflater.from(mContext);
         this.isSearch = isSearch;
         picNum = new ArrayList<>();
+
         initMap();
     }
-
     private void initMap() {
+        map = new HashMap<>();
         for(int i = 0;i<assetInfoList.size();i++) {
             map.put(i, false);
         }
@@ -120,6 +121,8 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
             case 4:
                 holder.assetStatus.setText("待移交");
                 break;
+            case 9:
+                holder.assetStatus.setText("新登记");
         }
 
         holder.assetName.setOnClickListener(new View.OnClickListener() {
@@ -167,9 +170,9 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
             Boolean value = (Boolean) entry.getValue();
             if(value==true){
                 assetInfoList.remove(key);
-                map.remove(key);
             }
         }
+        initMap();
         notifyDataSetChanged();
     }
     /**
