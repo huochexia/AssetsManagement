@@ -56,7 +56,7 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
 
     private void initMap() {
         for(int i = 0;i<assetInfoList.size();i++) {
-            map.put(i, true);
+            map.put(i, false);
         }
     }
     @Override
@@ -137,6 +137,29 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
      */
     public List<String> getPicNum() {
         return picNum;
+    }
+
+    /**
+     * 返回Map
+     */
+    public Map<Integer,Boolean> getMap() {
+        return  map;
+    }
+    /**
+     * 删除已选择项,同时将此位置值还原
+     */
+    public void removeSelectedItem() {
+        Iterator iterator=map.entrySet().iterator();
+        while (iterator.hasNext()){
+            Map.Entry entry = (Map.Entry) iterator.next();
+            int key = (int) entry.getKey();
+            Boolean value = (Boolean) entry.getValue();
+            if(value==true){
+                assetInfoList.remove(key);
+                map.remove(key);
+            }
+        }
+        notifyDataSetChanged();
     }
     /**
      * 自定义ViewHolder

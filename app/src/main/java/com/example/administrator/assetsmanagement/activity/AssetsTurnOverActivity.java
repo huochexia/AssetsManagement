@@ -26,7 +26,9 @@ import com.example.administrator.assetsmanagement.utils.LineEditText;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -81,7 +83,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     RadioGroup mRgAssetsTurnOver;
     @BindView(R.id.iv_barcode_2d)
     ImageView mIvBarcode2d;
-    @BindView(R.id.btn_turn_over_search)
+    @BindView(R.id.btn_single_asset_search)
     FancyButton mBtnTurnOverSearch;
     @BindView(R.id.btn_search_location)
     FancyButton mBtnSearchLocation;
@@ -116,7 +118,8 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     private List<AssetInfo> temp_list = new ArrayList<>();
     private AssetRecyclerViewAdapter adapter;
     private RecyclerView mRcTurnOverList;
-    private Integer flag;//标志，等于1是为新登记资产。
+    private Integer flag = 0;//标志，等于1是为新登记资产。
+    private boolean isSingle = true;
 
     @Override
     public String title() {
@@ -159,6 +162,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         Bundle bundle =getBundle();
         if (bundle != null) {
             flag = bundle.getInt("turn_over");
+            isSingle = bundle.getBoolean("oneOrAll");
             if (flag == 1) {
                 mLlAssetsTurnOverTop.setVisibility(View.GONE);
                 mBtnTurnOverOk.setEnabled(true);
@@ -181,12 +185,14 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                         mRlSingleAsset.setVisibility(View.VISIBLE);
                         mLlOverallAsset.setVisibility(View.GONE);
                         mBtnTurnOverOk.setEnabled(false);
+                        isSingle = true;
                         clearLists();
                         break;
                     case R.id.rb_overall_assets:
                         mLlOverallAsset.setVisibility(View.VISIBLE);
                         mRlSingleAsset.setVisibility(View.GONE);
                         mBtnTurnOverOk.setEnabled(false);
+                        isSingle = false;
                         clearLists();
                         break;
                 }
@@ -233,12 +239,12 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
      * @param view
      */
 
-    @OnClick({R.id.btn_turn_over_search, R.id.btn_search_location, R.id.btn_search_manager,
+    @OnClick({R.id.btn_single_asset_search, R.id.btn_search_location, R.id.btn_search_manager,
             R.id.btn_search_start, R.id.btn_receive_manager, R.id.btn_turn_over_ok, R.id.btn_receive_location,
             R.id.btn_receive_dept})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.btn_turn_over_search:
+            case R.id.btn_single_asset_search:
                 clearLists();
                 searchAssets("mAssetsNum", mEtSearchAssetNum.getText().toString().trim());
                 break;
@@ -252,6 +258,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 break;
 
             case R.id.btn_search_start:
+                clearLists();
                 getSearchResultList();
                 break;
             case R.id.btn_receive_location:
@@ -264,20 +271,22 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 getSelectedInfo(SelectedTreeNodeActivity.SEARCH_MANAGER, false,REQUEST_RECEIVE_MANAGER);
                 break;
             case R.id.btn_turn_over_ok:
-                //这里增加一个判断，如果是新登记的则应调用添加；如果是原有资产移交则调用更新
-                if (mNewManager != null) {
-                    if (flag != 1) {
-                        updateAssetsInfo(select_list);
-                        mBtnTurnOverOk.setEnabled(false);
+                List<String> imageNumList = adapter.getPicNum();
+                if (imageNumList.size() > 0) {
+                    if (mNewManager != null) {
+                        if (isSingle) {
+                            updateSinglerAssets(select_list, adapter.getMap());
+                        } else {
+                            updateAllAssets(select_list, imageNumList);
+                        }
+                        adapter.removeSelectedItem();
                         initAssetsInfo();
                     } else {
-                        //TODO:批量添加
+                        toast("请选择接受人！");
                     }
-
                 } else {
-                    toast("请选择接受人！");
+                    toast("没有选择资产！");
                 }
-
                 break;
 
         }
@@ -432,7 +441,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     }
 
     /**
-     * 初始化资产的新信息
+     * 初始化资产的新信息,也就是还原最初状态，避免错误修改
      */
     private void initAssetsInfo() {
         mNewDept = null;
@@ -442,31 +451,79 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         mTvReceiveNewDept.setText("");
         mTvNewManager.setText("");
     }
+
     /**
-     * 变更资产信息
+     * 个别资产更新
+     *
+     * @param assetList
+     * @param map
+     */
+    private void updateSinglerAssets(List<AssetInfo> assetList, Map<Integer, Boolean> map) {
+        List<BmobObject> objects = new ArrayList<>();
+        Iterator iterator = map.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            int key = (int) entry.getKey();
+            Boolean value = (Boolean) entry.getValue();
+            AssetInfo asset = assetList.get(key);
+            if (value == true) {
+                if (mNewLocation != null) {
+                    asset.setLocationNum(mNewLocation.getId());
+                }
+                if (mNewDept != null) {
+                    asset.setDeptNum(mNewDept.getId());
+                }
+                asset.setNewManager(mNewManager.getId());
+                asset.setStatus(4);
+                objects.add(assetList.get(key));
+            }
+        }
+        new BmobBatch().updateBatch(objects).doBatch(new QueryListListener<BatchResult>() {
+            @Override
+            public void done(List<BatchResult> list, BmobException e) {
+                if (e == null) {
+                    toast("移交更新成功");
+                } else {
+                    toast("移交更新失败:" + e.toString());
+                }
+            }
+        });
+
+    }
+
+    /**
+     * 这是整体变更资产信息。因为依据图片编号。要是个别变更，要依据资产编号
      * @param assets
      */
-    private void updateAssetsInfo(List<AssetInfo> assets) {
+    private void updateAllAssets(List<AssetInfo> assets, List<String> number) {
+
         List<BmobObject> objects = new ArrayList<>();
-        for (AssetInfo asset : assets) {
-            if (mNewLocation != null) {
-                asset.setLocationNum(mNewLocation.getId());
+        for (String num : number) {
+            for (AssetInfo asset : assets) {
+                //只对选择的资产变更。比较资产图片编号
+                if (num.equals(asset.getPicture().getImageNum())) {
+                    if (mNewLocation != null) {
+                        asset.setLocationNum(mNewLocation.getId());
+                    }
+                    if (mNewDept != null) {
+                        asset.setDeptNum(mNewDept.getId());
+                    }
+                    asset.setNewManager(mNewManager.getId());
+                    asset.setStatus(4);
+                    objects.add(asset);
+                }
+
             }
-            if (mNewDept != null) {
-                asset.setDeptNum(mNewDept.getId());
-            }
-            asset.setNewManager(mNewManager.getId());
-            asset.setStatus(4);
-            objects.add(asset);
         }
+
         if (objects.size() <= 50) {//如果资产少于等于50时
             new BmobBatch().updateBatch(objects).doBatch(new QueryListListener<BatchResult>() {
                 @Override
                 public void done(List<BatchResult> list, BmobException e) {
                     if (e == null) {
-                        toast("批量更新成功");
+                        toast("移交更新成功");
                     } else {
-                        toast("批量更新失败:" + e.toString());
+                        toast("移交更新失败:" + e.toString());
                     }
                 }
             });

@@ -9,6 +9,8 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
@@ -28,6 +30,7 @@ import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
+import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 import com.example.administrator.assetsmanagement.utils.ImageFactory;
 import com.example.administrator.assetsmanagement.utils.LineEditText;
 import com.example.administrator.assetsmanagement.utils.TimeUtils;
@@ -45,18 +48,20 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobBatch;
 import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BatchResult;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.QueryListListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UploadFileListener;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
- * 登记资产：对原有资产和新购资产进行基本信息登记，资产图片的分两种方式，一是从现有图库中进行选择，
+ * 登记资产：对原有资产和新购资产进行基本信息登记，管理员暂时为登记员。资产图片的分两种方式，一是从现有图库中进行选择，
  * 二是现场拍照。资产编号根据登记时的系统时间自动产生，同样资产的编号，在自动产生的编号基础上依据
- * 其数量增加序号，做到一资产一编号。
+ * 其数量增加序号，做到一资产一编号。登记后可以进行移交，也可以暂不移交。
  * <p>
  * Created by Administrator on 2017/11/4 0004.
  */
@@ -67,8 +72,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     public static final int REGISTER_DEPARTMENT = 4;
     public static final int CHOOSET_PHOTO = 5;
     public static final int TAKE_PHOTO = 6;
-    public static final String IMAGE_UNSPECIFIED = "image/*";
-    public static final int REQUEST_CROP = 1;
+
 
     @BindView(R.id.tv_register_place)
     TextView mTvRegisterLocation;
@@ -117,6 +121,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     private String assetNumber;
     private List<AssetInfo> mAssetInfos = new ArrayList<>();
     private boolean hasPhoto = false;//判断是否添加图片
+    private List<AssetInfo> mNewAssetsList = new ArrayList<>();//返回的登记资产
 
     @Override
     public String title() {
@@ -261,13 +266,13 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 if (checkAlltext()) {
                     int quantity = Integer.parseInt(mEtRegisterAssetsQuantity.getText().toString());
                     createAssetNumber(quantity, asset);
-                    asset.setPicture(null);
                     mIvRegisterPicture.setImageResource(R.drawable.pictures_no);
                     hasPhoto = false;
                     setAllWidget(true);
+                    getNewAssets();
                     turnOrDarcode();
+                    asset.setPicture(null);
                 }
-
                 break;
             case R.id.btn_register_add_next:
                 setAllWidget(false);
@@ -356,11 +361,12 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     }
 
     /**
-     * 进行资产移交或创建二维码对话框
+     * 进行资产移交，从数据库中提取出刚登记的资产进行移交
      */
     private void turnOrDarcode() {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        String[] items = new String[]{"移交", "创建二维码"};
+        String[] items = new String[]{"个别移交", "整体移交"};
         builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -368,16 +374,22 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                     case 0:
                         Bundle bundle = new Bundle();
                         bundle.putInt("turn_over", 1);
-                        bundle.putSerializable("assets", (Serializable) mAssetInfos);
+                        bundle.putBoolean("oneOrAll", true);
+                        bundle.putSerializable("assets", (Serializable) mNewAssetsList);
                         startActivity(AssetsTurnOverActivity.class, bundle, true);
                         break;
                     case 1:
+                        Bundle bundleAll = new Bundle();
+                        bundleAll.putInt("turn_over", 1);
+                        bundleAll.putBoolean("oneOrAll", false);
+                        bundleAll.putSerializable("assets", (Serializable) AssetsUtil.mergeAndSum(mNewAssetsList));
+                        startActivity(AssetsTurnOverActivity.class, bundleAll, true);
                         break;
                 }
                 dialog.dismiss();
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("暂不移交", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -414,7 +426,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     }
 
     /**
-     * 生成资产编号，一种资产可能有许多个，每一个都有自己的编号。
+     * 生成资产编号并保存，一种资产可能有许多个，每一个都有自己的编号。
      */
     private void createAssetNumber(int quantity, AssetInfo asset) {
         assetNumber = String.valueOf(System.currentTimeMillis());
@@ -627,5 +639,51 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
         });
 
+    }
+
+    /**
+     * 获取刚刚登记保存的资产列表，用于移交处理
+     */
+    private void getNewAssets() {
+        List<BmobQuery<AssetInfo>> and = new ArrayList<>();
+        BmobQuery<AssetInfo> query1 = new BmobQuery<>();
+        query1.addWhereEqualTo("mPicture", asset.getPicture());
+//        and.add(query1);
+//        BmobQuery<AssetInfo> query2 = new BmobQuery<>();
+//        query2.addWhereEqualTo("mRegisterDate", asset.getRegisterDate());
+//        and.add(query2);
+//        BmobQuery<AssetInfo> query = new BmobQuery<>();
+//        query.and(and);
+        query1.include("mPicture");
+        query1.setLimit(499);
+        query1.findObjects(new FindListener<AssetInfo>() {
+            @Override
+            public void done(final List<AssetInfo> list, BmobException e) {
+                if (e == null) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Message msg = new Message();
+                            msg.what= 11;
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("newAssets", (Serializable) list);
+                            msg.setData(bundle);
+                            handler.sendMessage(msg);
+                        }
+                    }).start();
+                }
+            }
+        });
+    }
+    NewAssetsHandler handler = new NewAssetsHandler();
+    class NewAssetsHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 11:
+                    mNewAssetsList = (List<AssetInfo>) msg.getData().getSerializable("newAssets");
+                    break;
+            }
+        }
     }
 }

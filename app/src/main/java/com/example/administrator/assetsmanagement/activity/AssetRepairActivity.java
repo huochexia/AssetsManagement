@@ -82,13 +82,13 @@ public class AssetRepairActivity extends ParentWithNaviActivity {
         rvSingleAssetManage.setLayoutManager(ll);
     }
 
-    @OnClick({R.id.iv_barcode_2d, R.id.btn_turn_over_search, R.id.btn_single_asset_manage_ok,
+    @OnClick({R.id.iv_barcode_2d, R.id.btn_single_asset_search, R.id.btn_single_asset_manage_ok,
             R.id.btn_single_asset_manage_cancel})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_barcode_2d:
                 break;
-            case R.id.btn_turn_over_search:
+            case R.id.btn_single_asset_search:
                 searchAssets("mAssetsNum",etSearchAssetNum.getText().toString() );
                 break;
             case R.id.btn_single_asset_manage_ok:
