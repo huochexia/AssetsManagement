@@ -1,4 +1,4 @@
-package com.example.administrator.assetsmanagement.adapter;
+package com.example.administrator.assetsmanagement.Interface;
 
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
 

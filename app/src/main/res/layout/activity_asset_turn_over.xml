@@ -39,14 +39,20 @@
                     android:id="@+id/rb_single_asset"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="个别资产"
+                    android:text="单个"
                     android:textSize="16sp"/>
 
                 <RadioButton
                     android:id="@+id/rb_overall_assets"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="整体资产"
+                    android:text="整体"
+                    android:textSize="16sp"/>
+                <RadioButton
+                    android:id="@+id/rb_new_assets"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="新登记"
                     android:textSize="16sp"/>
             </RadioGroup>
         </LinearLayout>

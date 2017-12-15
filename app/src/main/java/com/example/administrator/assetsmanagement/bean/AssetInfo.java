@@ -59,9 +59,13 @@ public class AssetInfo extends BmobObject implements Cloneable {
      */
     private String mComment;
     /*
-    该资产数量
+    该资产数量，它永远是1。因为一资产一编号，设计它主要是为了方便汇总同类资产
      */
     private Integer quantity = 1;
+    /*
+    资产单价
+     */
+    private Float price =0.0f;
 
     public String getAssetName() {
         return mAssetName;
@@ -149,6 +153,14 @@ public class AssetInfo extends BmobObject implements Cloneable {
 
     public void setComment(String comment) {
         mComment = comment;
+    }
+
+    public Float getPrice() {
+        return price;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
     }
 
     public Integer getQuantity() {

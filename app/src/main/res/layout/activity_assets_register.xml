@@ -11,80 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_5">
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-            <mehdi.sakout.fancybuttons.FancyButton
-                android:id="@+id/btn_register_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginBottom="@dimen/margin_5"
-                android:padding="8dp"
-                fancy:fb_borderColor="#7ed862"
-                fancy:fb_borderWidth="2dp"
-                fancy:fb_focusColor="#ffa8f192"
-                fancy:fb_iconResource="@drawable/ic_room_black_24dp"
-                fancy:fb_radiusBottomRight="10dp"
-                fancy:fb_radiusTopLeft="10dp"
-                fancy:fb_text="位置"
-                fancy:fb_ghost="true"
-                fancy:fb_textColor="#000000"
-                fancy:fb_textFont="隶书.ttf"
-                fancy:fb_textSize="16sp"
-                />
-            <TextView
-                android:id="@+id/tv_register_place"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
 
-                android:hint="必选"
-                android:textSize="16sp"
-                android:gravity="center_vertical"/>
-        </LinearLayout>
 
     </LinearLayout>
     <!--<include layout="@layout/view_line_between"/>-->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_5">
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-            <mehdi.sakout.fancybuttons.FancyButton
-                android:id="@+id/btn_register_department"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginBottom="@dimen/margin_5"
-                android:padding="8dp"
-                fancy:fb_borderColor="#7ed862"
-                fancy:fb_borderWidth="2dp"
-                fancy:fb_focusColor="#ffa8f192"
-                fancy:fb_iconResource="@drawable/ic_room_black_24dp"
-                fancy:fb_radiusBottomRight="10dp"
-                fancy:fb_radiusTopLeft="10dp"
-                fancy:fb_text="部门"
-                fancy:fb_ghost="true"
-                fancy:fb_textColor="#000000"
-                fancy:fb_textFont="隶书.ttf"
-                fancy:fb_textSize="16sp"
-                />
 
-
-            <TextView
-                android:id="@+id/tv_register_department"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-
-                android:hint="必选"
-                android:textSize="16sp"
-                android:gravity="center_vertical"/>
-        </LinearLayout>
-    </LinearLayout>
     <!--<include layout="@layout/view_line_between"/>-->
     <LinearLayout
         android:layout_width="match_parent"
@@ -236,26 +167,51 @@
             android:layout_weight="3">
 
             <TextView
-                android:id="@+id/tv_assets_register_date"
+                android:id="@+id/tv_assets_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="登记日期："
+                android:text="单价："
                 android:textColor="#000000"
                 android:textSize="16sp" />
 
             <com.example.administrator.assetsmanagement.utils.LineEditText
-                android:id="@+id/et_register_assets_date"
-                android:layout_width="wrap_content"
+                android:id="@+id/et_register_asset_price"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@color/transparent"
-                android:inputType="number"
+                android:inputType="numberDecimal"
+                android:hint="0.0"
                 line:lineColorEt="#1d26de" />
         </LinearLayout>
 
     </LinearLayout>
     <!--<include layout="@layout/view_line_between"/>-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <TextView
+            android:id="@+id/tv_assets_register_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="登记日期："
+            android:textColor="#000000"
+            android:textSize="16sp" />
+
+        <com.example.administrator.assetsmanagement.utils.LineEditText
+            android:id="@+id/et_register_assets_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/transparent"
+            android:inputType="date"
+            android:hint="购买或登记日期"
+            line:lineColorEt="#1d26de" />
+    </LinearLayout>
    <LinearLayout
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
@@ -274,7 +230,6 @@
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
            android:background="@color/transparent"
-           android:inputType="date"
            android:textSize="16sp"
            line:lineColorEt="#1d26de" />
    </LinearLayout>
@@ -299,7 +254,7 @@
                 fancy:fb_defaultColor="#3f51b4"
                 fancy:fb_focusColor="#7182e2"
                 fancy:fb_radius="15dp"
-                fancy:fb_text="确     定"
+                fancy:fb_text="确       定"
                 fancy:fb_textFont="隶书.ttf"
                 fancy:fb_textSize="20sp"
                 fancy:fb_textColor="#FFFFFF">

@@ -3,8 +3,6 @@ package com.example.administrator.assetsmanagement.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,22 +13,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import com.example.administrator.assetsmanagement.Interface.AssetSelectedListener;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.activity.AssetPictureActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
-import com.example.administrator.assetsmanagement.bean.AssetPicture;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
 
 /**
  * 资产列表适配器，显示查询资产的名称及数量。传入的资产列表中包含的每一个资产，有些资产属于同样的，
@@ -44,16 +35,16 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
     LayoutInflater layoutInflater;
     boolean isSearch;
     Map<Integer, Boolean> map ;
-    List<String> picNum;
+    List<AssetInfo> checkedList;
     int counter;
     AssetSelectedListener listener;
+
     public AssetRecyclerViewAdapter(Context context, List<AssetInfo> list,boolean isSearch) {
         mContext = context;
         assetInfoList = list;
         layoutInflater = LayoutInflater.from(mContext);
         this.isSearch = isSearch;
-        picNum = new ArrayList<>();
-
+//        picNum = new ArrayList<>();
         initMap();
     }
     private void initMap() {
@@ -63,7 +54,7 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
         }
     }
 
-    public void setAssetSelectListener(AssetSelectedListener listener) {
+    public void getAssetSelectListener(AssetSelectedListener listener) {
         this.listener = listener;
     }
     @Override
@@ -88,11 +79,13 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
                      //保存选择的资产图片编号
 //                    picNum.add(assetInfoList.get(position).getPicture().getImageNum());
                     listener.selectAsset(assetInfoList.get(position));
+//                    checkedList.add(assetInfoList.get(position));
                 } else {
                     counter--;
                     //移除取消选择的资产图片编号
 //                    picNum.remove(assetInfoList.get(position).getPicture().getImageNum());
                     listener.cancelAsset(assetInfoList.get(position));
+//                    checkedList.remove(assetInfoList.get(position));
                 }
                 //因为Bmob批量处理最多50条
                 if (counter > 50) {
@@ -155,8 +148,8 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
      * 返回图片编号列表
      * @return
      */
-    public List<String> getPicNum() {
-        return picNum;
+    public List<AssetInfo> getCheckedList() {
+        return checkedList;
     }
 
     /**

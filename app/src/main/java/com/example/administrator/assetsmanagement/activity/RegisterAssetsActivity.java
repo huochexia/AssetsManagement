@@ -74,16 +74,13 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     public static final int TAKE_PHOTO = 6;
 
 
-    @BindView(R.id.tv_register_place)
-    TextView mTvRegisterLocation;
     @BindView(R.id.tv_register_category)
     TextView mTvRegisterCategory;
     @BindView(R.id.tv_assets_register_name)
     TextView mTvAssetsRegisterName;
     @BindView(R.id.et_register_assets_name)
     EditText mEtRegisterAssetsName;
-    @BindView(R.id.btn_register_location)
-    FancyButton mBtnRegisterLocation;
+
     @BindView(R.id.iv_register_picture)
     ImageView mIvRegisterPicture;
     @BindView(R.id.tv_assets_item_quantity)
@@ -101,10 +98,6 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     FancyButton btnRegisterAddNext;
     @BindView(R.id.btn_register_category)
     FancyButton btnRegisterCategory;
-    @BindView(R.id.btn_register_department)
-    FancyButton mBtnRegisterDepartment;
-    @BindView(R.id.tv_register_department)
-    TextView mTvRegisterDepartment;
     @BindView(R.id.et_register_assets_date)
     LineEditText mEtRegisterAssetsDate;
     @BindView(R.id.tv_assets_register_date)
@@ -113,6 +106,10 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     TextView tvAssetsRegisterComment;
     @BindView(R.id.et_register_assets_comment)
     LineEditText etRegisterAssetsComment;
+    @BindView(R.id.tv_assets_price)
+    TextView mTvAssetsPrice;
+    @BindView(R.id.et_register_asset_price)
+    LineEditText mEtRegisterAssetPrice;
 
     private BaseNode mBaseNode;//临时节点
     private AssetInfo asset;
@@ -187,6 +184,22 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
             }
         });
+        mEtRegisterAssetPrice.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                asset.setPrice(Float.valueOf(s.toString().trim()));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         //赋值登记日期
         mEtRegisterAssetsDate.addTextChangedListener(new TextWatcher() {
             @Override
@@ -235,28 +248,16 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         mEtRegisterAssetsQuantity.setTypeface(typeface);
         mTvAssetsItemPictureLib.setTypeface(typeface);
         mTvAssetsItemCamera.setTypeface(typeface);
-        mTvRegisterLocation.setTypeface(typeface);
-        mTvRegisterDepartment.setTypeface(typeface);
         tvAssetsRegisterDate.setTypeface(typeface);
         tvAssetsRegisterComment.setTypeface(typeface);
+        mTvAssetsPrice.setTypeface(typeface);
         etRegisterAssetsComment.setTypeface(typeface);
     }
 
-    @OnClick({R.id.btn_register_location, R.id.btn_register_category, R.id.btn_register_add_ok,
-            R.id.btn_register_department, R.id.btn_register_add_next, R.id.tv_assets_item_picture_lib,
-            R.id.tv_assets_item_camera})
+    @OnClick({R.id.btn_register_category, R.id.btn_register_add_ok,
+            R.id.btn_register_add_next, R.id.tv_assets_item_picture_lib, R.id.tv_assets_item_camera})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.btn_register_location:
-                Intent intent = new Intent(RegisterAssetsActivity.this, SelectedTreeNodeActivity.class);
-                intent.putExtra("type", SelectedTreeNodeActivity.SEARCH_LOCATION);
-                startActivityForResult(intent, REGISTER_LOCATION);
-                break;
-            case R.id.btn_register_department:
-                Intent intentd = new Intent(RegisterAssetsActivity.this, SelectedTreeNodeActivity.class);
-                intentd.putExtra("type", SelectedTreeNodeActivity.SEARCH_DEPARTMENT);
-                startActivityForResult(intentd, REGISTER_DEPARTMENT);
-                break;
             case R.id.btn_register_category:
                 Intent intent1 = new Intent(RegisterAssetsActivity.this, SelectedTreeNodeActivity.class);
                 intent1.putExtra("type", SelectedTreeNodeActivity.SEARCH_CATEGORY);
@@ -301,13 +302,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case REGISTER_LOCATION:
-                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    mBaseNode = (BaseNode) data.getSerializableExtra("node");
-                    mTvRegisterLocation.setText(getNodeAllPathName(mBaseNode));
-                    asset.setLocationNum(mBaseNode.getId());
-                }
-                break;
+
             case REGISTER_CATEGORY:
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
                     mBaseNode = (BaseNode) data.getSerializableExtra("node");
@@ -315,13 +310,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                     asset.setCategoryNum(mBaseNode.getId());
                 }
                 break;
-            case REGISTER_DEPARTMENT:
-                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    mBaseNode = (BaseNode) data.getSerializableExtra("node");
-                    mTvRegisterDepartment.setText(getNodeAllPathName(mBaseNode));
-                    asset.setDeptNum(mBaseNode.getId());
-                }
-                break;
+
             case CHOOSET_PHOTO:
                 if (data != null) {
                     Bundle bundle = data.getBundleExtra("assetpicture");
@@ -500,20 +489,13 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         int quantity = 0;
         if (!TextUtils.isEmpty(mEtRegisterAssetsQuantity.getText())) {
             quantity = Integer.parseInt(mEtRegisterAssetsQuantity.getText().toString());
-        }
-        if (TextUtils.isEmpty(mTvRegisterLocation.getText())) {
-            toast("请选择位置！");
-            return false;
-        } else if (TextUtils.isEmpty(mTvRegisterDepartment.getText())) {
-            toast("请选择部门！");
-            return false;
         } else if (TextUtils.isEmpty(mTvRegisterCategory.getText())) {
             toast("请选择资产类别！");
             return false;
         } else if (TextUtils.isEmpty(mEtRegisterAssetsName.getText())) {
             toast("请填入资产名称！");
             return false;
-        } else if ( quantity ==0) {
+        } else if (quantity == 0) {
             toast("请填写资产数量！");
             return false;
         } else if (!hasPhoto) {
@@ -533,8 +515,6 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             btnRegisterAddOk.setEnabled(false);
             btnRegisterAddNext.setEnabled(true);
             btnRegisterCategory.setEnabled(false);
-            mBtnRegisterDepartment.setEnabled(false);
-            mBtnRegisterLocation.setEnabled(false);
             mEtRegisterAssetsName.setEnabled(false);
             mEtRegisterAssetsQuantity.setEnabled(false);
             mTvAssetsItemPictureLib.setEnabled(false);
@@ -543,8 +523,6 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             btnRegisterAddOk.setEnabled(true);
             btnRegisterAddNext.setEnabled(false);
             btnRegisterCategory.setEnabled(true);
-            mBtnRegisterLocation.setEnabled(true);
-            mBtnRegisterDepartment.setEnabled(true);
             mEtRegisterAssetsName.setEnabled(true);
             mEtRegisterAssetsQuantity.setEnabled(true);
             mTvAssetsItemPictureLib.setEnabled(true);
@@ -578,7 +556,6 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     }
 
 
-
     /**
      * 上传图片信息对象操作
      * insertObject
@@ -600,10 +577,8 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     }
 
 
-
     /**
      * 上传指定路径下的图片文件
-     *
      */
     private void uploadPhotoFile(File file) {
         final BmobFile bmobFile = new BmobFile(file);
@@ -651,7 +626,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                         @Override
                         public void run() {
                             Message msg = new Message();
-                            msg.what= 11;
+                            msg.what = 11;
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("newAssets", (Serializable) list);
                             msg.setData(bundle);
@@ -662,7 +637,9 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             }
         });
     }
+
     NewAssetsHandler handler = new NewAssetsHandler();
+
     class NewAssetsHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
