@@ -31,13 +31,7 @@ public class ManagerRecyclerViewAdapter extends RecyclerView.Adapter<ManagerRecy
         mContext = context;
         mMangerList = list;
         mInflater = LayoutInflater.from(mContext);
-        initMap();
-    }
 
-    private void initMap() {
-        for(int i = 0; i<mMangerList.size();i++) {
-            map.put(i, false);
-        }
     }
 
     public void setOnClickListener(SelectManagerClickListener listener) {
@@ -52,23 +46,31 @@ public class ManagerRecyclerViewAdapter extends RecyclerView.Adapter<ManagerRecy
     @Override
     public void onBindViewHolder(final ManagerViewHolder holder, final int position) {
         holder.name.setText(mMangerList.get(position).getUsername());
-        holder.cb_select.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    listener.onClick(mMangerList.get(position));
-                    initMap();
-                    map.put(position, true);
-                }else{
-                    map.put(position, false);
-                }
-            }
-        });
-        holder.cb_select.setChecked(map.get(position));
-    }
-
-    public Map<Integer, Boolean> getMap() {
-        return map;
+       holder.cb_select.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               boolean ischeck = holder.cb_select.isChecked();
+               if (ischeck) {
+                   for (int i = 0; i < mMangerList.size(); i++) {
+                       if (i==position) {
+                           mMangerList.get(i).setSelected(ischeck);
+                       } else {
+                           mMangerList.get(i).setSelected(false);
+                       }
+                   }
+                   listener.select(mMangerList.get(position));
+               } else {
+                   for(int j = 0;j<mMangerList.size();j++) {
+                       if (j==position) {
+                           mMangerList.get(j).setSelected(ischeck);
+                       }
+                   }
+                   listener.cancelSelect();
+               }
+               notifyDataSetChanged();
+           }
+       });
+        holder.cb_select.setChecked(mMangerList.get(position).getSelected());
     }
 
     @Override

@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.adapter.AssetRecyclerViewAdapter;
+import com.example.administrator.assetsmanagement.adapter.AssetSelectedListener;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.Person;
@@ -115,8 +116,9 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     RadioGroup mRgAssetsTurnOverRange;
 
 
-    private List<AssetInfo> select_list = new ArrayList<>();
+    private List<AssetInfo> assetsList = new ArrayList<>();
     private List<AssetInfo> temp_list = new ArrayList<>();
+    private List<AssetInfo> selectedAssets = new ArrayList<>();
     private AssetRecyclerViewAdapter adapter;
     private RecyclerView mRcTurnOverList;
     private Integer flag = 0;//标志，等于1是为新登记资产。
@@ -167,8 +169,8 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
             if (flag == 1) {
                 mLlAssetsTurnOverTop.setVisibility(View.GONE);
                 mBtnTurnOverOk.setEnabled(true);
-                select_list = (List<AssetInfo>) bundle.getSerializable("assets");
-                adapter = new AssetRecyclerViewAdapter(this, select_list, false);
+                assetsList = (List<AssetInfo>) bundle.getSerializable("assets");
+                adapter = new AssetRecyclerViewAdapter(this, assetsList, false);
                 mRcTurnOverList.setAdapter(adapter);
             }
         }
@@ -275,17 +277,19 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 startActivityForResult(intent1, REQUEST_RECEIVE_MANAGER);
                 break;
             case R.id.btn_turn_over_ok:
-                List<String> imageNumList = adapter.getPicNum();
-                if (imageNumList.size() > 0) {
+//                List<String> imageNumList = adapter.getPicNum();
+                if (selectedAssets.size()>0) {
                     if (mNewManager != null) {
-                        if (isSingle) {
-                            updateSinglerAssets(adapter.getMap());
-                        } else {
-                            updateAllAssets(select_list, imageNumList);
-                            adapter.removeSelectedItem();
-                        }
-
-                        initAssetsInfo();
+//                        if (isSingle) {
+//                            updateSinglerAssets(adapter.getMap());
+//                        } else {
+//                            updateAllAssets(assetsList, imageNumList);
+//                            adapter.removeSelectedItem();
+//                        }
+//
+//                        initAssetsInfo();
+                        updateBmobLibrary(updateAllSelectedAssetInfo(assetsList,selectedAssets));
+                        adapter.notifyDataSetChanged();
                     } else {
                         toast("请选择接受人！");
                     }
@@ -346,13 +350,10 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         startActivityForResult(intent, requestCode);
     }
 
-    private void getManager(int requestCode) {
-        Intent intent = new Intent(AssetsTurnOverActivity.this, ManagerListActivity.class);
 
-    }
 
     /**
-     * 查询资产
+     * 按编号查询资产
      *
      * @param
      */
@@ -388,6 +389,43 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         });
     }
 
+    /**
+     * 按人员查询
+     *
+     * @param para
+     * @param person
+     */
+    private void searchAssets(String para, Person person) {
+        BmobQuery<AssetInfo> query = new BmobQuery<>();
+        query.addWhereEqualTo(para, person);
+        query.include("mPicture");
+        query.findObjects(new FindListener<AssetInfo>() {
+            @Override
+            public void done(final List<AssetInfo> list, BmobException e) {
+                if (e == null) {
+                    if (list != null && list.size() > 0) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Message msg = new Message();
+                                msg.what = 1;
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("assets", (Serializable) list);
+                                msg.setData(bundle);
+                                handler.sendMessage(msg);
+                            }
+                        }).start();
+                    } else {
+                        toast("没有符合条件的资产！");
+                    }
+                } else {
+                    {
+                        toast("查询失败，请稍后再查！");
+                    }
+                }
+            }
+        });
+    }
     SearchHandler handler = new SearchHandler();
 
     class SearchHandler extends Handler {
@@ -397,11 +435,11 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 case 1:
                     //因为经过适配器处理后的列表是汇总后的，所以要保持原有列表用于修改管理员，这样
                     //就必须复制一份临时列表用于处理显示。
-                    select_list = (List<AssetInfo>) msg.getData().getSerializable("assets");
-                    if (select_list.size() > 0) {
+                    assetsList = (List<AssetInfo>) msg.getData().getSerializable("assets");
+                    if (assetsList.size() > 0) {
                         mBtnTurnOverOk.setEnabled(true);
                     }
-                    for (AssetInfo asset : select_list) {
+                    for (AssetInfo asset : assetsList) {
                         try {
                             AssetInfo ass1 = (AssetInfo) asset.clone();
                             temp_list.add(ass1);
@@ -413,6 +451,18 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                     adapter = new AssetRecyclerViewAdapter(AssetsTurnOverActivity.this,
                             AssetsUtil.mergeAndSum(temp_list), false);
                     mRcTurnOverList.setAdapter(adapter);
+                    adapter.setAssetSelectListener(new AssetSelectedListener() {
+                        @Override
+                        public void selectAsset(AssetInfo assetInfo) {
+                            selectedAssets.add(assetInfo);
+                        }
+
+                        @Override
+                        public void cancelAsset(AssetInfo assetInfo) {
+                            selectedAssets.remove(assetInfo);
+                        }
+                    });
+
                     break;
             }
         }
@@ -423,7 +473,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
      */
     private void clearLists() {
         if (adapter != null) {
-            select_list.clear();
+            assetsList.clear();
             temp_list.clear();
             adapter.notifyDataSetChanged();
             mBtnTurnOverOk.setEnabled(false);
@@ -446,8 +496,8 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 }
                 break;
             case SEARCH_MANAGER:
-                if (mNode != null) {
-                    searchAssets("mOldManager", mNode.getId());
+                if (mOldManager != null) {
+                    searchAssets("mOldManager", mOldManager);
                 }
                 break;
         }
@@ -467,6 +517,76 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     }
 
     /**
+     * 修改资产信息
+     */
+    private void updateAssetInfo(AssetInfo asset) {
+        if (mNewLocation != null) {
+            asset.setLocationNum(mNewLocation.getId());
+        }
+        if (mNewDept != null) {
+            asset.setDeptNum(mNewDept.getId());
+        }
+        asset.setNewManager(mNewManager);
+        asset.setStatus(4);
+    }
+
+    /**
+     * 遍历资产列表，修改所有图片编号等于传入编号的资产，并返回对象列表
+     */
+    private List<BmobObject> updateAllSameImangeNumAssets(List<AssetInfo> list, String imageNum) {
+        List<BmobObject> objects = new ArrayList<>();
+        for (AssetInfo asset : list) {
+            if (imageNum.equals(asset.getPicture().getImageNum())) {
+                updateAssetInfo(asset);
+                objects.add(asset);
+            }
+        }
+        return objects;
+    }
+
+    /**
+     * 遍历所有资产，修改已选择的资产信息
+     */
+    private List<BmobObject> updateAllSelectedAssetInfo(List<AssetInfo> assetsList, List<AssetInfo> selectedAssets) {
+        List<BmobObject> objects = new ArrayList<>();
+        for (AssetInfo asset : selectedAssets) {
+            if (asset.getQuantity() == 1) {
+                updateAssetInfo(asset);
+                objects.add(asset);
+                assetsList.remove(asset);
+            } else {
+                List<BmobObject> selectObject = updateAllSameImangeNumAssets(assetsList,
+                        asset.getPicture().getImageNum());
+                objects.addAll(selectObject);
+                assetsList.remove(objects);
+            }
+        }
+        return objects;
+    }
+
+    /**
+     * 将修改好的资产列表保存入数据库
+     */
+    private void updateBmobLibrary(List<BmobObject> objects) {
+        if (objects.size() <= 50) {//如果资产少于等于50时
+            new BmobBatch().updateBatch(objects).doBatch(new QueryListListener<BatchResult>() {
+                @Override
+                public void done(List<BatchResult> list, BmobException e) {
+                    if (e == null) {
+                        toast("移交更新成功");
+                    } else {
+                        toast("移交更新失败:" + e.toString());
+                    }
+                }
+            });
+
+        } else {
+            //TODO:如果资产大于50时分批处理
+            batchUpdate(objects);
+        }
+
+    }
+    /**
      * 个别资产更新
      *
      * @param
@@ -479,7 +599,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
             Map.Entry entry = (Map.Entry) iterator.next();
             int key = (int) entry.getKey();
             Boolean value = (Boolean) entry.getValue();
-            AssetInfo asset = select_list.get(key);
+            AssetInfo asset = assetsList.get(key);
             if (value == true) {
                 if (mNewLocation != null) {
                     asset.setLocationNum(mNewLocation.getId());
@@ -489,7 +609,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 }
                 asset.setNewManager(mNewManager);
                 asset.setStatus(4);
-                objects.add(select_list.get(key));
+                objects.add(assetsList.get(key));
             }
         }
         new BmobBatch().updateBatch(objects).doBatch(new QueryListListener<BatchResult>() {

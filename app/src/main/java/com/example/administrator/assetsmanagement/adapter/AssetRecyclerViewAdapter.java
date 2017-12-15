@@ -46,7 +46,7 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
     Map<Integer, Boolean> map ;
     List<String> picNum;
     int counter;
-
+    AssetSelectedListener listener;
     public AssetRecyclerViewAdapter(Context context, List<AssetInfo> list,boolean isSearch) {
         mContext = context;
         assetInfoList = list;
@@ -61,6 +61,10 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
         for(int i = 0;i<assetInfoList.size();i++) {
             map.put(i, false);
         }
+    }
+
+    public void setAssetSelectListener(AssetSelectedListener listener) {
+        this.listener = listener;
     }
     @Override
     public AssetHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -82,11 +86,13 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
                 if (isChecked) {
                     counter++;
                      //保存选择的资产图片编号
-                    picNum.add(assetInfoList.get(position).getPicture().getImageNum());
+//                    picNum.add(assetInfoList.get(position).getPicture().getImageNum());
+                    listener.selectAsset(assetInfoList.get(position));
                 } else {
                     counter--;
                     //移除取消选择的资产图片编号
-                    picNum.remove(assetInfoList.get(position).getPicture().getImageNum());
+//                    picNum.remove(assetInfoList.get(position).getPicture().getImageNum());
+                    listener.cancelAsset(assetInfoList.get(position));
                 }
                 //因为Bmob批量处理最多50条
                 if (counter > 50) {

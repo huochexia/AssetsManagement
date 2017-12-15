@@ -40,11 +40,19 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
     List<AssetPicture> mPictureList;
     LayoutInflater mInflater;
     PhotoSelectedListener listener;
-
+    Map<Integer,Boolean> map ;
     public PhotoRecyclerViewAdapter(Context context, List<AssetPicture> list) {
         mContext = context;
         mPictureList = list;
         mInflater = LayoutInflater.from(mContext);
+        initMap();
+    }
+
+    private void initMap() {
+        map = new HashMap<>();
+        for(int i = 0; i<mPictureList.size();i++) {
+            map.put(i, false);
+        }
     }
 
     public void getSelectedListener(PhotoSelectedListener listener) {

@@ -17,6 +17,7 @@ import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.adapter.AssetRecyclerViewAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
+import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
@@ -44,7 +45,7 @@ import mehdi.sakout.fancybuttons.FancyButton;
 public class SearchAssetsActivity extends ParentWithNaviActivity {
 
     public static final int SEARCHASSETS_REQUEST = 110;
-
+    public static final int REQUEST_SELECTE_MANAGER=111;
     public static final int SEARCH_LOCATION = 1;
     public static final int SEARCH_CATEGORY = 2;
     public static final int SEARCH_DEPARTMENT = 3;
@@ -77,6 +78,8 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
     private List<AssetInfo> search_result_list = new ArrayList<>();
     private AssetRecyclerViewAdapter adapter;
     private RecyclerView searchList;
+    private Person person;
+
     @Override
     public String title() {
         return "查找资产";
@@ -184,8 +187,8 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                         }
                         break;
                     case SEARCH_MANAGER:
-                        if (mNode != null) {
-                            searchAssets("mOldManager", mNode.getId());
+                        if (person != null) {
+                            searchAssets("mOldManager", person);
                         }
                         break;
                     case SEARCH_NAME:
@@ -257,6 +260,35 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
         });
     }
 
+    /**
+     * 按管理员查询
+     * @param para
+     * @param id
+     */
+    private void searchAssets(String para, Person id) {
+        BmobQuery<AssetInfo> query = new BmobQuery<>();
+        query.addWhereEqualTo(para, id);
+        query.include("mPicture");
+        query.findObjects(new FindListener<AssetInfo>() {
+            @Override
+            public void done(List<AssetInfo> list, BmobException e) {
+                if (e == null) {
+                    if (list != null && list.size() > 0) {
+                        Message msg = new Message();
+                        msg.what = 1;
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("assets", (Serializable) list);
+                        msg.setData(bundle);
+                        handler.sendMessage(msg);
+                    } else {
+                        toast("没有符合条件的资产！");
+                    }
+                } else {
+                    toast("查询失败，请稍后再查！");
+                }
+            }
+        });
+    }
     MyHandler handler = new MyHandler();
 
     class MyHandler extends Handler {
@@ -306,7 +338,8 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                 break;
             case R.id.btn_search_manager:
                 clearLists();
-                startActivity(SelectedTreeNodeActivity.SEARCH_MANAGER, true);
+                Intent intent = new Intent(SearchAssetsActivity.this, ManagerListActivity.class);
+                startActivityForResult(intent, REQUEST_SELECTE_MANAGER);
                 break;
 
         }
@@ -328,6 +361,11 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                     mTvSearchContent.setText(NodeHelper.getSearchContentName(mNode));
                 }
                 break;
+            case REQUEST_SELECTE_MANAGER:
+                if (resultCode == ManagerListActivity.SEARCH_OK) {
+                    person = (Person) data.getSerializableExtra("manager");
+                    mTvSearchContent.setText(person.getUsername());
+                }
             default:
         }
     }

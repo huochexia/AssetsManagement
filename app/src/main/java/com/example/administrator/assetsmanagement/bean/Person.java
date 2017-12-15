@@ -23,7 +23,7 @@ public class Person extends BmobUser implements Serializable{
     private String nodename;
     @TreeNodeIsLast
     private Boolean isPerson = true;
-
+    private Boolean isSelected = false;
     private List<String> role;
     private Department department;
 
@@ -75,6 +75,14 @@ public class Person extends BmobUser implements Serializable{
 
     public void setParentId(String parentId) {
         this.parentId = parentId;
+    }
+
+    public Boolean getSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(Boolean selected) {
+        isSelected = selected;
     }
 
     /**

@@ -7,5 +7,7 @@ import com.example.administrator.assetsmanagement.bean.Person;
  */
 
 public interface SelectManagerClickListener {
-    void onClick(Person person);
+    void select(Person person);
+
+    void cancelSelect();
 }

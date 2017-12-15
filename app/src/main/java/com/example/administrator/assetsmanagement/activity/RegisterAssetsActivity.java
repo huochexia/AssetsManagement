@@ -270,7 +270,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                     hasPhoto = false;
                     setAllWidget(true);
                     getNewAssets();
-                    turnOrDarcode();
+
                     asset.setPicture(null);
                 }
                 break;
@@ -669,6 +669,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             switch (msg.what) {
                 case 11:
                     mNewAssetsList = (List<AssetInfo>) msg.getData().getSerializable("newAssets");
+                    turnOrDarcode();
                     break;
             }
         }

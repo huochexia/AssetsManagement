@@ -104,10 +104,15 @@ public class ManagerListActivity extends ParentWithNaviActivity {
 
     @OnClick(R.id.btn_manager_select_ok)
     public void onViewClicked() {
-        Intent intent = new Intent();
-        intent.putExtra("manager", manager);
-        setResult(SEARCH_OK, intent);
-        finish();
+        if (manager != null) {
+            Intent intent = new Intent();
+            intent.putExtra("manager", manager);
+            setResult(SEARCH_OK, intent);
+            finish();
+        }else{
+            toast("请选择管理员！");
+        }
+
     }
 
 
@@ -121,9 +126,16 @@ public class ManagerListActivity extends ParentWithNaviActivity {
                     mRecyclerView.setAdapter(adapter);
                     adapter.setOnClickListener(new SelectManagerClickListener() {
                         @Override
-                        public void onClick(Person person) {
+                        public void select(Person person) {
                             manager = person;
                         }
+
+                        @Override
+                        public void cancelSelect() {
+                            manager = null;
+                        }
+
+
                     });
                     break;
             }
