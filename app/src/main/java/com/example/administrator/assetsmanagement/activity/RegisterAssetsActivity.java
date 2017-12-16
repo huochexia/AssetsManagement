@@ -270,7 +270,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                     mIvRegisterPicture.setImageResource(R.drawable.pictures_no);
                     hasPhoto = false;
                     setAllWidget(true);
-                    getNewAssets();
+                    getNewAssets(asset.getPicture());
 
                     asset.setPicture(null);
                 }
@@ -355,24 +355,16 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     private void turnOrDarcode() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        String[] items = new String[]{"个别移交", "整体移交"};
+        String[] items = new String[]{"单体移交", "整体移交"};
         builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
-                        Bundle bundle = new Bundle();
-                        bundle.putInt("turn_over", 1);
-                        bundle.putBoolean("oneOrAll", true);
-                        bundle.putSerializable("assets", (Serializable) mNewAssetsList);
-                        startActivity(AssetsTurnOverActivity.class, bundle, true);
+                        startTurnOverActivity(true,mNewAssetsList);
                         break;
                     case 1:
-                        Bundle bundleAll = new Bundle();
-                        bundleAll.putInt("turn_over", 1);
-                        bundleAll.putBoolean("oneOrAll", false);
-                        bundleAll.putSerializable("assets", (Serializable) AssetsUtil.mergeAndSum(mNewAssetsList));
-                        startActivity(AssetsTurnOverActivity.class, bundleAll, true);
+                        startTurnOverActivity(false,mNewAssetsList);
                         break;
                 }
                 dialog.dismiss();
@@ -385,6 +377,19 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             }
         });
         builder.show();
+    }
+
+    /**
+     * 启动资产移交活动
+     * @param oneOrAll true为单体移交，false为整体移交
+     * @param list
+     */
+    private void startTurnOverActivity(Boolean oneOrAll,List<AssetInfo> list) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("turn_over", 1);
+        bundle.putBoolean("oneOrAll", oneOrAll);
+        bundle.putSerializable("assets", (Serializable) list);
+        startActivity(AssetsTurnOverActivity.class, bundle, true);
     }
 
     /**
@@ -612,13 +617,19 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     /**
      * 获取刚刚登记保存的资产列表，用于移交处理
      */
-    private void getNewAssets() {
+    private void getNewAssets(AssetPicture picture) {
         List<BmobQuery<AssetInfo>> and = new ArrayList<>();
         BmobQuery<AssetInfo> query1 = new BmobQuery<>();
         query1.addWhereEqualTo("mStatus", 9);
-        query1.include("mPicture");
-        query1.setLimit(499);
-        query1.findObjects(new FindListener<AssetInfo>() {
+        BmobQuery<AssetInfo> query2 = new BmobQuery<>();
+        query2.addWhereEqualTo("mPicture", picture);
+        and.add(query1);
+        and.add(query2);
+        BmobQuery<AssetInfo> total =new BmobQuery<>();
+        total.and(and);
+        total.include("mPicture");
+        total.setLimit(499);
+        total.findObjects(new FindListener<AssetInfo>() {
             @Override
             public void done(final List<AssetInfo> list, BmobException e) {
                 if (e == null) {

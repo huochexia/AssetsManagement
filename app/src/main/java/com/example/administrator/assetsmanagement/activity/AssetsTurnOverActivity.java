@@ -14,10 +14,10 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.administrator.assetsmanagement.Interface.AssetSelectedListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.adapter.AssetRecyclerViewAdapter;
-import com.example.administrator.assetsmanagement.Interface.AssetSelectedListener;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.Person;
@@ -113,14 +113,19 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     @BindView(R.id.rg_assets_turn_over_range)
     RadioGroup mRgAssetsTurnOverRange;
 
+    /**
+     * 传入的是原始列表，深度复制为中转列表，如果是整体移交则将中转列表汇总。列表适配器使用的是中转
+     * 列表。用户选择内容的存入选择列表中。然后依据选择列表的内容在原始列表中进行更新，然后在从原始
+     * 列表中去除选择列表
+     */
+    private List<AssetInfo> assetsList = new ArrayList<>();//原始列表
+    private List<AssetInfo> temp_list = new ArrayList<>();//中转列表
+    private List<AssetInfo> selectedAssets = new ArrayList<>();//选择列表
 
-    private List<AssetInfo> assetsList = new ArrayList<>();
-    private List<AssetInfo> temp_list = new ArrayList<>();
-    private List<AssetInfo> selectedAssets = new ArrayList<>();
     private AssetRecyclerViewAdapter adapter;
     private RecyclerView mRcTurnOverList;
     private Integer flag = 0;//标志，等于1是为新登记资产。
-    private boolean isSingle = true;
+    private boolean isSingle = true;//判断是单体还是整体
 
     @Override
     public String title() {
@@ -168,21 +173,34 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 mLlAssetsTurnOverTop.setVisibility(View.GONE);
                 mBtnTurnOverOk.setEnabled(true);
                 assetsList = (List<AssetInfo>) bundle.getSerializable("assets");
-                adapter = new AssetRecyclerViewAdapter(this, assetsList, false);
-                adapter.getAssetSelectListener(new AssetSelectedListener() {
-                    @Override
-                    public void selectAsset(AssetInfo assetInfo) {
-                        selectedAssets.add(assetInfo);
-                    }
-
-                    @Override
-                    public void cancelAsset(AssetInfo assetInfo) {
-                        selectedAssets.remove(assetInfo);
-                    }
-                });
-                mRcTurnOverList.setAdapter(adapter);
+                if (isSingle) {
+                    //单体移交因为不进行汇总操作，所以不需要复制
+                    temp_list.addAll(assetsList);
+                } else {
+                    temp_list.addAll(AssetsUtil.mergeAndSum(AssetsUtil.deepCopy(assetsList)));
+                }
+                setListAdapter();
             }
         }
+    }
+
+    /**
+     * 创建适配器
+     */
+    private void setListAdapter() {
+        adapter = new AssetRecyclerViewAdapter(this, temp_list, false);
+        adapter.getAssetSelectListener(new AssetSelectedListener() {
+            @Override
+            public void selectAsset(AssetInfo assetInfo) {
+                selectedAssets.add(assetInfo);
+            }
+
+            @Override
+            public void cancelAsset(AssetInfo assetInfo) {
+                selectedAssets.remove(assetInfo);
+            }
+        });
+        mRcTurnOverList.setAdapter(adapter);
     }
 
     /**
@@ -299,7 +317,12 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                         } else {
                             updateBmobLibrary(updateAllSelectedAssetInfo(assetsList,selectedAssets));
                             temp_list.clear();
-                            temp_list.addAll(AssetsUtil.mergeAndSum(AssetsUtil.deepCopy(assetsList)));
+                            if (isSingle) {
+                                temp_list.addAll(assetsList);
+                            } else {
+                                temp_list.addAll(AssetsUtil.mergeAndSum(AssetsUtil.deepCopy(assetsList)));
+                            }
+                            adapter.initMap();
                             adapter.notifyDataSetChanged();
                         }
                         initAssetsInfo();
@@ -452,21 +475,8 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                     if (assetsList.size() > 0) {
                         mBtnTurnOverOk.setEnabled(true);
                     }
-                    temp_list = AssetsUtil.mergeAndSum(AssetsUtil.deepCopy(assetsList));
-                    adapter = new AssetRecyclerViewAdapter(AssetsTurnOverActivity.this,
-                            temp_list, false);
-                    adapter.getAssetSelectListener(new AssetSelectedListener() {
-                        @Override
-                        public void selectAsset(AssetInfo assetInfo) {
-                            selectedAssets.add(assetInfo);
-                        }
-
-                        @Override
-                        public void cancelAsset(AssetInfo assetInfo) {
-                            selectedAssets.remove(assetInfo);
-                        }
-                    });
-                    mRcTurnOverList.setAdapter(adapter);
+                    temp_list.addAll(AssetsUtil.mergeAndSum(AssetsUtil.deepCopy(assetsList)));
+                    setListAdapter();
                     break;
             }
         }
@@ -518,6 +528,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         mTvReceiveNewLocation.setText("");
         mTvReceiveNewDept.setText("");
         mTvNewManager.setText("");
+        selectedAssets.clear();
     }
 
     /**
