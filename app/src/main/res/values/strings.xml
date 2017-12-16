@@ -10,4 +10,8 @@
     <string name="repair_password">修改密码</string>
     <string name="icon_like">&#xf087;</string>
     <string name="icon_user"><![CDATA[&#xf007;]]></string>
+    <string name="register">注册</string>
+    <string name="login_telephone_hint">请输入手机号</string>
+    <string name="register_txt1">还没有注册？</string>
+    <string name="register_txt2">立即注册</string>
 </resources>

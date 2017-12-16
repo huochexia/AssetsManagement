@@ -30,7 +30,6 @@ import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
-import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 import com.example.administrator.assetsmanagement.utils.ImageFactory;
 import com.example.administrator.assetsmanagement.utils.LineEditText;
 import com.example.administrator.assetsmanagement.utils.TimeUtils;
@@ -46,30 +45,25 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.bmob.v3.BmobBatch;
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.datatype.BatchResult;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.QueryListListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UploadFileListener;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
- * 登记资产：对原有资产和新购资产进行基本信息登记，管理员暂时为登记员。资产图片的分两种方式，一是从现有图库中进行选择，
+ * 登记资产：对原有资产和新购资产进行基本信息登记，资产图片的分两种方式，一是从现有图库中进行选择，
  * 二是现场拍照。资产编号根据登记时的系统时间自动产生，同样资产的编号，在自动产生的编号基础上依据
- * 其数量增加序号，做到一资产一编号。登记后可以进行移交，也可以暂不移交。
+ * 其数量增加序号，做到一资产一编号。登记后进行移交。
  * <p>
  * Created by Administrator on 2017/11/4 0004.
  */
 
 public class RegisterAssetsActivity extends ParentWithNaviActivity {
-    public static final int REGISTER_LOCATION = 2;
     public static final int REGISTER_CATEGORY = 3;
-    public static final int REGISTER_DEPARTMENT = 4;
     public static final int CHOOSET_PHOTO = 5;
     public static final int TAKE_PHOTO = 6;
 
@@ -118,7 +112,6 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     private String assetNumber;
     private List<AssetInfo> mAssetInfos = new ArrayList<>();
     private boolean hasPhoto = false;//判断是否添加图片
-    private List<AssetInfo> mNewAssetsList = new ArrayList<>();//返回的登记资产
 
     @Override
     public String title() {
@@ -270,13 +263,13 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                     mIvRegisterPicture.setImageResource(R.drawable.pictures_no);
                     hasPhoto = false;
                     setAllWidget(true);
-                    getNewAssets(asset.getPicture());
-
+                    turnOverAssetDialog(mAssetInfos);
                     asset.setPicture(null);
                 }
                 break;
             case R.id.btn_register_add_next:
                 setAllWidget(false);
+                mAssetInfos.clear();
                 break;
             case R.id.tv_assets_item_picture_lib:
                 if (asset.getCategoryNum() != null) {
@@ -352,7 +345,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     /**
      * 进行资产移交，从数据库中提取出刚登记的资产进行移交
      */
-    private void turnOrDarcode() {
+    private void turnOverAssetDialog(final List<AssetInfo> list) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         String[] items = new String[]{"单体移交", "整体移交"};
@@ -361,16 +354,16 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
-                        startTurnOverActivity(true,mNewAssetsList);
+                        startTurnOverActivity(true,list);
                         break;
                     case 1:
-                        startTurnOverActivity(false,mNewAssetsList);
+                        startTurnOverActivity(false,list);
                         break;
                 }
                 dialog.dismiss();
             }
         });
-        builder.setNegativeButton("暂不移交", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -389,7 +382,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         bundle.putInt("turn_over", 1);
         bundle.putBoolean("oneOrAll", oneOrAll);
         bundle.putSerializable("assets", (Serializable) list);
-        startActivity(AssetsTurnOverActivity.class, bundle, true);
+        startActivity(AssetsTurnOverActivity.class, bundle, false);
     }
 
     /**
@@ -420,68 +413,41 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     }
 
     /**
-     * 生成资产编号并保存，一种资产可能有许多个，每一个都有自己的编号。
+     * 生成资产编号并保存资产列表，一种资产可能有许多个，每一个都有自己的编号。
      */
     private void createAssetNumber(int quantity, AssetInfo asset) {
         assetNumber = String.valueOf(System.currentTimeMillis());
         int m = quantity / 50; //求模
         int s = quantity % 50;//求余数
         int n = 0;
-        List<BmobObject> list = new ArrayList<>();
         if (m >= 1) {
             for (int i = 0; i < m; i++) {
-                list.clear();
-                n++;
+                 n++;
                 for (int j = 0; j < 50; j++) {
                     try {
+                        //克隆一份资产，然后赋值编号成为一个资产。
                         AssetInfo asi = (AssetInfo) asset.clone();
                         asi.setAssetsNum(assetNumber + "-" + n);
-                        list.add(asi);
                         mAssetInfos.add(asi);
                     } catch (CloneNotSupportedException e) {
                         e.printStackTrace();
                     }
                     n++;
                 }
-                new BmobBatch().insertBatch(list).doBatch(new QueryListListener<BatchResult>() {
-
-                    @Override
-                    public void done(List<BatchResult> list, BmobException e) {
-                        if (e == null) {
-
-                        } else {
-                            toast("批量添加失败:" + e.toString());
-                        }
-                    }
-                });
-
             }
         } else {
             n++;
         }
-        list.clear();
         for (int k = 0; k < s; k++) {
             try {
                 AssetInfo asi = (AssetInfo) asset.clone();
                 asi.setAssetsNum(assetNumber + "-" + n);
-                list.add(asi);
                 mAssetInfos.add(asi);
             } catch (CloneNotSupportedException e) {
 
             }
             n++;
         }
-        new BmobBatch().insertBatch(list).doBatch(new QueryListListener<BatchResult>() {
-
-            @Override
-            public void done(List<BatchResult> list, BmobException e) {
-                if (e == null) {
-
-                } else {
-                    toast("批量添加失败:" + e.toString());
-                }
-            }
-        });
 
     }
 
@@ -614,52 +580,5 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
     }
 
-    /**
-     * 获取刚刚登记保存的资产列表，用于移交处理
-     */
-    private void getNewAssets(AssetPicture picture) {
-        List<BmobQuery<AssetInfo>> and = new ArrayList<>();
-        BmobQuery<AssetInfo> query1 = new BmobQuery<>();
-        query1.addWhereEqualTo("mStatus", 9);
-        BmobQuery<AssetInfo> query2 = new BmobQuery<>();
-        query2.addWhereEqualTo("mPicture", picture);
-        and.add(query1);
-        and.add(query2);
-        BmobQuery<AssetInfo> total =new BmobQuery<>();
-        total.and(and);
-        total.include("mPicture");
-        total.setLimit(499);
-        total.findObjects(new FindListener<AssetInfo>() {
-            @Override
-            public void done(final List<AssetInfo> list, BmobException e) {
-                if (e == null) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Message msg = new Message();
-                            msg.what = 11;
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("newAssets", (Serializable) list);
-                            msg.setData(bundle);
-                            handler.sendMessage(msg);
-                        }
-                    }).start();
-                }
-            }
-        });
-    }
 
-    NewAssetsHandler handler = new NewAssetsHandler();
-
-    class NewAssetsHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 11:
-                    mNewAssetsList = (List<AssetInfo>) msg.getData().getSerializable("newAssets");
-                    turnOrDarcode();
-                    break;
-            }
-        }
-    }
 }

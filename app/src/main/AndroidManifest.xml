@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
+        android:name=".AssetManagerApplication"
         android:allowBackup="true"
         android:icon="@mipmap/supplies"
         android:label="@string/app_name"
@@ -28,7 +29,7 @@
 
         </provider>
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,6 +52,8 @@
         <activity android:name=".activity.AssetLoseActivity"/>
         <activity android:name=".activity.AssetBaofeiActivity"/>
         <activity android:name=".activity.ManagerListActivity"/>
+        <activity android:name=".MainActivity"/>
+        <activity android:name=".RegisterManagerActivity"/>
     </application>
 
 </manifest>

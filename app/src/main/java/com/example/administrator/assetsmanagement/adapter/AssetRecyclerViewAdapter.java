@@ -36,7 +36,6 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
     boolean isSearch;
     Map<Integer, Boolean> map =new HashMap<>();
     List<AssetInfo> checkedList;
-    int counter;
     AssetSelectedListener listener;
 
     public AssetRecyclerViewAdapter(Context context, List<AssetInfo> list,boolean isSearch) {
@@ -62,31 +61,42 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
     }
 
     @Override
-    public void onBindViewHolder(AssetHolder holder, final int position) {
+    public void onBindViewHolder(final AssetHolder holder, final int position) {
         if (isSearch) {
             holder.selected.setVisibility(View.INVISIBLE);
         } else {
             holder.selected.setVisibility(View.VISIBLE);
         }
-        holder.selected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        holder.selected.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                map.put(position, isChecked);
-                if (isChecked) {
-                    counter++;
+            public void onClick(View v) {
+                boolean ischeck = holder.selected.isChecked();
+                map.put(position, ischeck);
+                if (ischeck) {
                     listener.selectAsset(assetInfoList.get(position));
                 } else {
-                    counter--;
                     listener.cancelAsset(assetInfoList.get(position));
-                }
-                //因为Bmob批量处理最多50条
-                if (counter > 50) {
-                    Toast.makeText(mContext,"一次选择数量不能超50！",Toast.LENGTH_SHORT).show();
-                    buttonView.setChecked(false);
                 }
             }
         });
-
+//        holder.selected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                map.put(position, isChecked);
+//                if (isChecked) {
+//                    counter++;
+//                    listener.selectAsset(assetInfoList.get(position));
+//                } else {
+//                    counter--;
+//                    listener.cancelAsset(assetInfoList.get(position));
+//                }
+//                //因为Bmob批量处理最多50条
+//                if (counter > 50) {
+//                    Toast.makeText(mContext,"一次选择数量不能超50！",Toast.LENGTH_SHORT).show();
+//                    buttonView.setChecked(false);
+//                }
+//            }
+//        });
 
         if (map.get(position) == null) {
             map.put(position, false);

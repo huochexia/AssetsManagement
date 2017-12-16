@@ -59,7 +59,7 @@ public class MainActivity extends ParentWithNaviActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Bmob.initialize(this, "facbe328bdb28e7864f448ba3321339f");
+//        Bmob.initialize(this, "facbe328bdb28e7864f448ba3321339f");
         ButterKnife.bind(this);
 
         initNaviView();
