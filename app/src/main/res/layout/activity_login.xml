@@ -42,18 +42,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:background="@mipmap/base_horization_line" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <EditText
+                    android:id="@+id/et_password"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/height_title"
+                    android:background="@color/transparent"
+                    android:drawableLeft="@mipmap/login_icon_password"
+                    android:drawablePadding="25dip"
+                    android:hint="@string/login_password_hint"
+                    android:inputType="textPassword"
+                    android:paddingLeft="15dip"
+                    android:textColorHint="#ffdddddd" />
+                <TextView
+                    android:id="@+id/tv_forget_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/margin_10"
+                    android:text="@string/forget_password"/>
+            </RelativeLayout>
 
-            <EditText
-                android:id="@+id/et_password"
-                android:layout_width="fill_parent"
-                android:layout_height="@dimen/height_title"
-                android:background="@color/transparent"
-                android:drawableLeft="@mipmap/login_icon_password"
-                android:drawablePadding="25dip"
-                android:hint="@string/login_password_hint"
-                android:inputType="textPassword"
-                android:paddingLeft="15dip"
-                android:textColorHint="#ffdddddd" />
         </LinearLayout>
 
         <Button

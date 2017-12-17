@@ -2,8 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              xmlns:line="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
-              android:background="@mipmap/login_bg" >
+              android:background="@mipmap/login_bg">
 
     <include layout="@layout/include_navi"/>
     <LinearLayout
@@ -79,7 +80,26 @@
             android:textColorHint="#ffdddddd" />
 
     </LinearLayout>
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btn_register_department"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/height_title"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:background="@drawable/btn_login_selector"
+            android:gravity="center"
+            android:text="@string/department"
+            android:textColor="@color/base_color_text_white"
+            android:textSize="@dimen/text_size_large" />
+        <TextView
+            android:id="@+id/tv_register_department"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="18sp"/>
+    </LinearLayout>
     <Button
         android:id="@+id/btn_register"
         android:layout_width="match_parent"

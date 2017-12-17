@@ -59,7 +59,7 @@ public class BaseSettingFragment extends BaseFragment {
                 startActivity(DepartmentSettingActivity.class,null);
                 break;
             case R.id.iv_base_set_person:
-                startActivity(PersonSettingActivity.class,null);
+//                startActivity(PersonSettingActivity.class,null);
                 break;
             case R.id.iv_base_set_categray:
                 startActivity(CategorySettingActivity.class,null);
