@@ -23,6 +23,8 @@ import static cn.bmob.v3.BmobUser.getCurrentUser;
  */
 
 public class LoginActivity extends BaseActivity {
+
+
     @BindView(R.id.et_username)
     EditText mEtUsername;
     @BindView(R.id.et_password)

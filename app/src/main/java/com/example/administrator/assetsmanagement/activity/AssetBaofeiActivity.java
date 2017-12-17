@@ -16,15 +16,12 @@ import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 import com.example.administrator.assetsmanagement.utils.LineEditText;
 
-import java.io.Serializable;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.BmobUser;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
@@ -89,56 +86,23 @@ public class AssetBaofeiActivity extends ParentWithNaviActivity {
             case R.id.iv_barcode_2d:
                 break;
             case R.id.btn_single_asset_search:
-                searchAssets("mAssetsNum",etSearchAssetNum.getText().toString() );
+                String number = etSearchAssetNum.getText().toString();
+                AssetsUtil.QuaryAssets(this,"mAssetsNum",number,handler);
+//                searchAssets("mAssetsNum",etSearchAssetNum.getText().toString() );
                 break;
             case R.id.btn_single_asset_manage_ok:
                 AssetsUtil.changeAssetStatus(this,list.get(0),3);
                 list.clear();
-                searchAssets("mAssetsNum",etSearchAssetNum.getText().toString() );
+                adapter.notifyDataSetChanged();
                 break;
             case R.id.btn_single_asset_manage_cancel:
                 AssetsUtil.changeAssetStatus(this,list.get(0),0);
                 list.clear();
-                searchAssets("mAssetsNum",etSearchAssetNum.getText().toString() );
+                adapter.notifyDataSetChanged();
                 break;
         }
     }
 
-    /**
-     * 查询资产
-     *
-     * @param
-     */
-    private void searchAssets(String para, String id) {
-        BmobQuery<AssetInfo> query = new BmobQuery<>();
-        query.addWhereEqualTo(para, id);
-        query.findObjects(new FindListener<AssetInfo>() {
-            @Override
-            public void done(final List<AssetInfo> list, BmobException e) {
-                if (e == null) {
-                    if (list != null && list.size() > 0) {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Message msg = new Message();
-                                msg.what = 1;
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable("assets", (Serializable) list);
-                                msg.setData(bundle);
-                                handler.sendMessage(msg);
-                            }
-                        }).start();
-                    } else {
-                        toast("没有符合条件的资产！");
-                    }
-                } else {
-                    {
-                        toast("查询失败，请稍后再查！");
-                    }
-                }
-            }
-        });
-    }
 
     RepairHandler handler = new RepairHandler();
 
@@ -149,16 +113,22 @@ public class AssetBaofeiActivity extends ParentWithNaviActivity {
                 case 1:
                     list = (List<AssetInfo>) msg.getData().getSerializable("assets");
                     AssetInfo asset = list.get(0);
-                    //如果有资产且其状态为待报废时，“重用”按钮可用；丢失状态和待移交状态下的资产均不能进行待报废处
-                    // 理。
-                    if (asset != null && asset.getStatus() == 3) {
-                        btnSingleAssetManageCancel.setEnabled(true);
-                    } else if(asset != null && asset.getStatus()!=2 && asset.getStatus()!=4) {
-                        btnSingleAssetManageOk.setEnabled(true);
-                    }
+                    //如果有资产且其状态为待报废时，“重用”按钮可用；丢失状态和待移交状态下的资产均
+                    // 不能进行待报废处理。
                     adapter = new AssetRecyclerViewAdapter(AssetBaofeiActivity.this,
-                            list, true);
+                    list, true);
                     rvSingleAssetManage.setAdapter(adapter);
+                    String manager = asset.getOldManager().getObjectId();
+                    if (!manager.equals(BmobUser.getCurrentUser().getObjectId())) {
+                        toast("对不起，您不是该资产管理员！");
+                        return;
+                    } else {
+                        if (asset.getStatus() == 3) {
+                            btnSingleAssetManageCancel.setEnabled(true);
+                        } else if(asset.getStatus()!=2 && asset.getStatus()!=4) {
+                            btnSingleAssetManageOk.setEnabled(true);
+                        }
+                    }
                     break;
             }
         }

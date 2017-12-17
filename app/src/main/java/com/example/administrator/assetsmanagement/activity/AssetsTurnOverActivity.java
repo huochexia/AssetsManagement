@@ -1,5 +1,6 @@
 package com.example.administrator.assetsmanagement.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,9 +14,11 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.administrator.assetsmanagement.Interface.AssetSelectedListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
+import com.example.administrator.assetsmanagement.MainActivity;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.adapter.AssetRecyclerViewAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
@@ -278,7 +281,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         switch (view.getId()) {
             case R.id.btn_single_asset_search:
                 clearLists();
-                searchAssets("mAssetsNum", mEtSearchAssetNum.getText().toString().trim());
+                AssetsUtil.QuaryAssets(this,"mAssetsNum",mEtSearchAssetNum.getText().toString().trim(),handler);
                 break;
             case R.id.btn_search_location:
                 clearLists();
@@ -312,9 +315,9 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                             toast("新登记资产必须分配位置和部门！");
                         } else {
                             if (flag == 1) {//新登记资产为添加
-                                insertBmobLibrary(updateAllSelectedAssetInfo(assetsList, selectedAssets));
+                                AssetsUtil.insertBmobLibrary(this,updateAllSelectedAssetInfo(assetsList, selectedAssets));
                             } else {//原有资产移交为变更
-                                updateBmobLibrary(updateAllSelectedAssetInfo(assetsList, selectedAssets));
+                                AssetsUtil.updateBmobLibrary(this,updateAllSelectedAssetInfo(assetsList, selectedAssets));
                             }
                             temp_list.clear();
                             if (isSingle) {
@@ -386,89 +389,16 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         startActivityForResult(intent, requestCode);
     }
 
-
     /**
-     * 按编号查询资产
-     *
-     * @param
+     * 用于处理查询结果的异步处理器
      */
-    private void searchAssets(String para, String id) {
-        BmobQuery<AssetInfo> query = new BmobQuery<>();
-        query.addWhereEqualTo(para, id);
-        query.include("mPicture");
-        query.findObjects(new FindListener<AssetInfo>() {
-            @Override
-            public void done(final List<AssetInfo> list, BmobException e) {
-                if (e == null) {
-                    if (list != null && list.size() > 0) {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Message msg = new Message();
-                                msg.what = 1;
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable("assets", (Serializable) list);
-                                msg.setData(bundle);
-                                handler.sendMessage(msg);
-                            }
-                        }).start();
-                    } else {
-                        toast("没有符合条件的资产！");
-                    }
-                } else {
-                    {
-                        toast("查询失败，请稍后再查！");
-                    }
-                }
-            }
-        });
-    }
-
-    /**
-     * 按人员查询
-     *
-     * @param para
-     * @param person
-     */
-    private void searchAssets(String para, Person person) {
-        BmobQuery<AssetInfo> query = new BmobQuery<>();
-        query.addWhereEqualTo(para, person);
-        query.include("mPicture");
-        query.findObjects(new FindListener<AssetInfo>() {
-            @Override
-            public void done(final List<AssetInfo> list, BmobException e) {
-                if (e == null) {
-                    if (list != null && list.size() > 0) {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Message msg = new Message();
-                                msg.what = 1;
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable("assets", (Serializable) list);
-                                msg.setData(bundle);
-                                handler.sendMessage(msg);
-                            }
-                        }).start();
-                    } else {
-                        toast("没有符合条件的资产！");
-                    }
-                } else {
-                    {
-                        toast("查询失败，请稍后再查！");
-                    }
-                }
-            }
-        });
-    }
-
     SearchHandler handler = new SearchHandler();
 
     class SearchHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case 1:
+                case AssetsUtil.SEARCH_ONE_ASSET:
                     //因为经过适配器处理后的列表是汇总后的，所以要保持原有列表用于修改管理员，这样
                     //就必须复制一份临时列表用于处理显示。
                     assetsList = (List<AssetInfo>) msg.getData().getSerializable("assets");
@@ -498,20 +428,21 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
      * 获取查询结果
      */
     private void getSearchResultList() {
+        Person current = MainActivity.getCurrentPerson();
         switch (select_type) {
             case SEARCH_LOCATION:
                 if (mNode != null) {
-                    searchAssets("mLocationNum", mNode.getId());
+                    AssetsUtil.QuaryAssets(this,"mLocationNum", mNode.getId(),"mOldManager",current,handler);
                 }
                 break;
             case SEARCH_DEPARTMENT:
                 if (mNode != null) {
-                    searchAssets("mDeptNum", mNode.getId());
+                    AssetsUtil.QuaryAssets(this,"mDeptNum", mNode.getId(),"mOldManager",current,handler);
                 }
                 break;
             case SEARCH_MANAGER:
                 if (mOldManager != null) {
-                    searchAssets("mOldManager", mOldManager);
+                    AssetsUtil.QuaryAssets(this,"mOldManager", mOldManager,handler);
                 }
                 break;
         }
@@ -581,160 +512,5 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         return objects;
     }
 
-    /**
-     * 将修改好的资产列表保存入数据库
-     */
-    private void updateBmobLibrary(List<BmobObject> objects) {
-        if (objects.size() <= 50) {//如果资产少于等于50时
-            new BmobBatch().updateBatch(objects).doBatch(new QueryListListener<BatchResult>() {
-                @Override
-                public void done(List<BatchResult> list, BmobException e) {
-                    if (e == null) {
-                        toast("移交更新成功");
-                    } else {
-                        toast("移交更新失败:" + e.toString());
-                    }
-                }
-            });
 
-        } else {
-            //TODO:如果资产大于50时分批处理
-            batchUpdate(objects);
-        }
-
-    }
-
-    /**
-     * 分批处理修改,求出50的倍数和余数。先是倍数，如果余数，再处理余数的，最后处理最后一个。因为List
-     * 的subList(fromIndex,toIndex)中不包含toIndex.
-     */
-    private void batchUpdate(List<BmobObject> objects) {
-        int size = objects.size();
-        int m = size / 50;//倍数
-        int y = size % 50;//余数
-        //整50的倍数量更新
-        for (int i = 0; i < m; i++) {
-            final int finalI = i + 1;
-            int fromIndex = 50 * i;
-            int toIndex = fromIndex + 49;
-            new BmobBatch().updateBatch(objects.subList(fromIndex, toIndex)).doBatch(new QueryListListener<BatchResult>() {
-                @Override
-                public void done(List<BatchResult> list, BmobException e) {
-                    if (e == null) {
-                        toast("第" + finalI + "批量更新成功");
-                    } else {
-                        toast("第" + finalI + "批量更新失败:" + e.toString());
-                    }
-                }
-            });
-
-        }
-        //余数量批量更新
-        if (y > 0) {
-            new BmobBatch().updateBatch(objects.subList(50 * m - 1, size - 1)).doBatch(new QueryListListener<BatchResult>() {
-                @Override
-                public void done(List<BatchResult> list, BmobException e) {
-                    if (e == null) {
-                        toast("最后一批量更新成功");
-                    } else {
-                        toast("最后一批量更新失败:" + e.toString());
-                    }
-                }
-            });
-
-        }
-        //最后一个
-        BmobObject object = objects.get(size - 1);
-        String objectId = object.getObjectId();
-        object.update(objectId, new UpdateListener() {
-            @Override
-            public void done(BmobException e) {
-                if (e == null) {
-                    toast("最后一个更新成功");
-                } else {
-                    toast("最后一个更新失败:" + e.toString());
-                }
-            }
-
-        });
-    }
-
-    /**
-     * 将新增加的资产添加入数据库
-     *
-     * @param objects
-     */
-    private void insertBmobLibrary(List<BmobObject> objects) {
-        if (objects.size() <= 50) {//如果资产少于等于50时
-            new BmobBatch().insertBatch(objects).doBatch(new QueryListListener<BatchResult>() {
-                @Override
-                public void done(List<BatchResult> list, BmobException e) {
-                    if (e == null) {
-                        toast("移交更新成功");
-                    } else {
-                        toast("移交更新失败:" + e.toString());
-                    }
-                }
-            });
-
-        } else {
-            //TODO:如果资产大于50时分批处理
-            batchInsert(objects);
-        }
-
-    }
-
-    /**
-     * 当资产数量大于50时
-     *
-     * @param objects
-     */
-    private void batchInsert(List<BmobObject> objects) {
-        int size = objects.size();
-        int m = size / 50;//倍数
-        int y = size % 50;//余数
-        //整50的倍数量更新
-        for (int i = 0; i < m; i++) {
-            final int finalI = i + 1;
-            int fromIndex = 50 * i;
-            int toIndex = fromIndex + 49;
-            new BmobBatch().insertBatch(objects.subList(fromIndex, toIndex)).doBatch(new QueryListListener<BatchResult>() {
-                @Override
-                public void done(List<BatchResult> list, BmobException e) {
-                    if (e == null) {
-                        toast("第" + finalI + "批量更新成功");
-                    } else {
-                        toast("第" + finalI + "批量更新失败:" + e.toString());
-                    }
-                }
-            });
-
-        }
-        //余数量批量更新
-        if (y > 0) {
-            new BmobBatch().insertBatch(objects.subList(50 * m - 1, size - 1)).doBatch(new QueryListListener<BatchResult>() {
-                @Override
-                public void done(List<BatchResult> list, BmobException e) {
-                    if (e == null) {
-                        toast("最后一批量更新成功");
-                    } else {
-                        toast("最后一批量更新失败:" + e.toString());
-                    }
-                }
-            });
-
-        }
-        //最后一个
-        BmobObject object = objects.get(size - 1);
-        object.save(new SaveListener<String>() {
-            @Override
-            public void done(String s, BmobException e) {
-                if (e == null) {
-                    toast("最后一个更新成功");
-                } else {
-                    toast("最后一个更新失败:" + e.toString());
-                }
-            }
-        });
-    }
 }

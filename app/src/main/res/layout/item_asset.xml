@@ -3,80 +3,88 @@
     xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:id="@+id/ll_asset_item">
-
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:layout_gravity="center">
-        <TextView
-            android:gravity="center"
-            android:id="@+id/tv_assets_item_serial"
-            android:layout_width="match_parent"
+        >
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            tool:text="1"
-            android:textSize="16sp"
-           />
-    </LinearLayout>
+            android:layout_weight="2"
+            android:layout_gravity="center">
+            <TextView
+                android:gravity="center"
+                android:id="@+id/tv_assets_item_serial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                tool:text="1"
+                android:textSize="16sp"
+                />
+        </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="6"
-        android:layout_gravity="center">
-        <TextView
-            android:gravity="center"
-            android:id="@+id/tv_assets_item_name"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            tool:text="桌子"
-            android:textSize="18sp"/>
-    </LinearLayout>
+            android:layout_weight="6"
+            android:layout_gravity="center">
+            <TextView
+                android:gravity="center"
+                android:id="@+id/tv_assets_item_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                tool:text="桌子"
+                android:textSize="18sp"/>
+        </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:layout_gravity="center">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:layout_gravity="center">
 
-        <TextView
-            android:gravity="center"
-            android:id="@+id/tv_assets_item_quantity"
-            android:layout_width="match_parent"
+            <TextView
+                android:gravity="center"
+                android:id="@+id/tv_assets_item_quantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                tool:text="10"
+                android:textSize="16sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            tool:text="10"
-            android:textSize="16sp" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:layout_gravity="center">
+            android:layout_weight="2"
+            android:layout_gravity="center">
 
-        <TextView
-            android:gravity="center"
-            android:id="@+id/tv_assets_item_status"
-            android:layout_width="match_parent"
+            <TextView
+                android:gravity="center"
+                android:id="@+id/tv_assets_item_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                tool:text="10"
+                android:textSize="16sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            tool:text="10"
-            android:textSize="16sp" />
+            android:layout_weight="2"
+            android:layout_gravity="center">
+            <CheckBox
+                android:gravity="center"
+                android:id="@+id/cb_assets_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"/>
+        </LinearLayout>
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:layout_gravity="center">
-        <CheckBox
-            android:gravity="center"
-            android:id="@+id/cb_assets_item"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"/>
-    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white"/>
 </LinearLayout>

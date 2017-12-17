@@ -13,6 +13,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
+import com.example.administrator.assetsmanagement.MainActivity;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.adapter.AssetRecyclerViewAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
@@ -160,7 +161,7 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                     case R.id.rb_assets_search_scrap:
                         allSetGone();
                         clearLists();
-                        mTvSearchContent.setText("所有报废资产");
+                        mTvSearchContent.setText("非正常资产");
                         mTvSearchContent.setTextSize(25);
                         search_type = SEARCH_STATUS;
                         break;
@@ -170,51 +171,79 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
         btnSearchStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Person current = MainActivity.getCurrentPerson();
                 switch (search_type) {
                     case SEARCH_LOCATION:
                         if (mNode != null) {
-                            searchAssets("mLocationNum", mNode.getId());
+                            AssetsUtil.QuaryAssets(SearchAssetsActivity.this,
+                                    "mLoationNum",mNode.getId(),"mOldManager",current,handler);
                         }
                         break;
                     case SEARCH_CATEGORY:
                         if (mNode != null) {
-                            searchAssets("mCategoryNum", mNode.getId());
+                            AssetsUtil.QuaryAssets(SearchAssetsActivity.this,
+                                    "mCategoryNum",mNode.getId(),"mOldManager",current,handler);
+
                         }
                         break;
                     case SEARCH_DEPARTMENT:
                         if (mNode != null) {
-                            searchAssets("mDeptNum", mNode.getId());
-                        }
+                            AssetsUtil.QuaryAssets(SearchAssetsActivity.this,
+                                    "mDeptNum",mNode.getId(),"mOldManager",current,handler);
+                                                  }
                         break;
                     case SEARCH_MANAGER:
                         if (person != null) {
-                            searchAssets("mOldManager", person);
+                            AssetsUtil.QuaryAssets(SearchAssetsActivity.this,
+                                    "mOldManager",mNode.getId(),"mOldManager",current,handler);
                         }
                         break;
                     case SEARCH_NAME:
-                        searchAssets("mAssetName",mTvSearchContent.getText().toString());
+
                         break;
                     case SEARCH_STATUS:
-                        BmobQuery<AssetInfo> query = new BmobQuery<>();
-                        query.addWhereEqualTo("mStatus", 5);
-                        query.findObjects(new FindListener<AssetInfo>() {
-                            @Override
-                            public void done(final List<AssetInfo> list, BmobException e) {
-                                new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Message msg = new Message();
-                                        msg.what = 1;
-                                        Bundle bundle = new Bundle();
-                                        bundle.putSerializable("assets", (Serializable) list);
-                                        msg.setData(bundle);
-                                        handler.sendMessage(msg);
-                                    }
-                                }).start();
-                            }
-                        });
+                        queryStatus(current);
                         break;
                 }
+            }
+        });
+    }
+
+    /**
+     * 非正常状态下资产
+     * @param current
+     */
+    private void queryStatus(Person current) {
+        List<BmobQuery<AssetInfo>> and = new ArrayList<>();
+        BmobQuery<AssetInfo> query1 = new BmobQuery<>();
+        query1.addWhereEqualTo("mOldManager", current);
+        BmobQuery<AssetInfo> query2 = new BmobQuery<>();
+        query2.addWhereNotEqualTo("mStatus", 0);
+        and.add(query1);
+        and.add(query2);
+        BmobQuery<AssetInfo> query = new BmobQuery<>();
+        query.and(and);
+        query.setLimit(500);
+        query.include("mPicture");
+        query.findObjects(new FindListener<AssetInfo>() {
+            @Override
+            public void done(final List<AssetInfo> list, BmobException e) {
+                if (e == null && list.size() > 0) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Message msg = new Message();
+                            msg.what = 2;
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("assets", (Serializable) list);
+                            msg.setData(bundle);
+                            handler.sendMessage(msg);
+                        }
+                    }).start();
+                } else {
+                    toast("没有符合条件的资产！");
+                }
+
             }
         });
     }
@@ -230,77 +259,24 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
 
     }
 
-    /**
-     * 查询资产
-     *
-     * @param
-     */
-    private void searchAssets(String para, String id) {
-        BmobQuery<AssetInfo> query = new BmobQuery<>();
-        query.addWhereEqualTo(para, id);
-        query.include("mPicture");
-        query.findObjects(new FindListener<AssetInfo>() {
-            @Override
-            public void done(List<AssetInfo> list, BmobException e) {
-                if (e == null) {
-                    if (list != null && list.size() > 0) {
-                        Message msg = new Message();
-                        msg.what = 1;
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("assets", (Serializable) list);
-                        msg.setData(bundle);
-                        handler.sendMessage(msg);
-                    } else {
-                        toast("没有符合条件的资产！");
-                    }
-                } else {
-                    toast("查询失败，请稍后再查！");
-                }
-            }
-        });
-    }
 
-    /**
-     * 按管理员查询
-     * @param para
-     * @param id
-     */
-    private void searchAssets(String para, Person id) {
-        BmobQuery<AssetInfo> query = new BmobQuery<>();
-        query.addWhereEqualTo(para, id);
-        query.include("mPicture");
-        query.findObjects(new FindListener<AssetInfo>() {
-            @Override
-            public void done(List<AssetInfo> list, BmobException e) {
-                if (e == null) {
-                    if (list != null && list.size() > 0) {
-                        Message msg = new Message();
-                        msg.what = 1;
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("assets", (Serializable) list);
-                        msg.setData(bundle);
-                        handler.sendMessage(msg);
-                    } else {
-                        toast("没有符合条件的资产！");
-                    }
-                } else {
-                    toast("查询失败，请稍后再查！");
-                }
-            }
-        });
-    }
     MyHandler handler = new MyHandler();
 
     class MyHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case 1:
+                case AssetsUtil.SEARCH_ONE_ASSET:
                     search_result_list = (List<AssetInfo>) msg.getData().getSerializable("assets");
                     adapter = new AssetRecyclerViewAdapter(SearchAssetsActivity.this,
                             AssetsUtil.mergeAndSum(search_result_list),true);
                     searchList.setAdapter(adapter);
                     break;
+                case 2:
+                    search_result_list = (List<AssetInfo>) msg.getData().getSerializable("assets");
+                    adapter = new AssetRecyclerViewAdapter(SearchAssetsActivity.this,
+                            search_result_list, true);
+                    searchList.setAdapter(adapter);
             }
         }
     }

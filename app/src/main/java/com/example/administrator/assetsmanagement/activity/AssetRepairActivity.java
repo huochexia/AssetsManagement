@@ -1,5 +1,7 @@
 package com.example.administrator.assetsmanagement.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,18 +18,19 @@ import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 import com.example.administrator.assetsmanagement.utils.LineEditText;
 
-import java.io.Serializable;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.BmobUser;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
+ * 资产报修处理：查找资产确定报修，只能对管理员（当前用户）名下的资产进行报修。然后选择是否移送。
+ * 如果移送则选择接收人。接收人在接收资产中进行确认，则该资产归维修人管理。
+ * 当维修人修理完后，如果该资产归自己名下，则选择是否移送。如果移送则该资产需要接收人进行确认。
+ * <p>
  * Created by Administrator on 2017/12/13.
  */
 
@@ -89,55 +92,46 @@ public class AssetRepairActivity extends ParentWithNaviActivity {
             case R.id.iv_barcode_2d:
                 break;
             case R.id.btn_single_asset_search:
-                searchAssets("mAssetsNum",etSearchAssetNum.getText().toString() );
+                String number = etSearchAssetNum.getText().toString();
+                AssetsUtil.QuaryAssets(this, "mAssetsNum", number, handler);
                 break;
             case R.id.btn_single_asset_manage_ok:
-                AssetsUtil.changeAssetStatus(this,list.get(0),1);
+                AssetsUtil.changeAssetStatus(this, list.get(0), 1);
+                turnOverDialog();
                 list.clear();
-                searchAssets("mAssetsNum",etSearchAssetNum.getText().toString() );
+                adapter.notifyDataSetChanged();
                 break;
             case R.id.btn_single_asset_manage_cancel:
-                AssetsUtil.changeAssetStatus(this,list.get(0),0);
+                AssetsUtil.changeAssetStatus(this, list.get(0), 0);
+                String m1=list.get(0).getOldManager().getObjectId();
+                String currentUser = BmobUser.getCurrentUser().getObjectId();
+                if (m1.equals(currentUser)) {
+                    turnOverDialog();
+                }
                 list.clear();
-                searchAssets("mAssetsNum",etSearchAssetNum.getText().toString() );
+                adapter.notifyDataSetChanged();
                 break;
         }
     }
 
     /**
-     * 查询资产
-     *
-     * @param
+     * 是否移送对话框
      */
-    private void searchAssets(String para, String id) {
-        BmobQuery<AssetInfo> query = new BmobQuery<>();
-        query.addWhereEqualTo(para, id);
-        query.findObjects(new FindListener<AssetInfo>() {
+    private void turnOverDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("是否移送?");
+        builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
             @Override
-            public void done(final List<AssetInfo> list, BmobException e) {
-                if (e == null) {
-                    if (list != null && list.size() > 0) {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Message msg = new Message();
-                                msg.what = 1;
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable("assets", (Serializable) list);
-                                msg.setData(bundle);
-                                handler.sendMessage(msg);
-                            }
-                        }).start();
-                    } else {
-                        toast("没有符合条件的资产！");
-                    }
-                } else {
-                    {
-                        toast("查询失败，请稍后再查！");
-                    }
-                }
+            public void onClick(DialogInterface dialog, int which) {
+
             }
         });
+        builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        }).show();
     }
 
     RepairHandler handler = new RepairHandler();
@@ -146,22 +140,29 @@ public class AssetRepairActivity extends ParentWithNaviActivity {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case 1:
+                case AssetsUtil.SEARCH_ONE_ASSET:
                     list = (List<AssetInfo>) msg.getData().getSerializable("assets");
                     AssetInfo asset = list.get(0);
                     //如果有资产且其状态为损坏时，修好按钮可用；只有正常状态下的资产可以报修，待移交、
                     //待报废等非正常状态下的资产不能报修
-                    if (asset != null && asset.getStatus() == 1) {
-                        btnSingleAssetManageCancel.setEnabled(true);
-                    } else if(asset != null && asset.getStatus()==0) {
-                        btnSingleAssetManageOk.setEnabled(true);
-                    }else {
-                        btnSingleAssetManageOk.setEnabled(false);
-                        btnSingleAssetManageCancel.setEnabled(false);
-                    }
                     adapter = new AssetRecyclerViewAdapter(AssetRepairActivity.this,
                             list, true);
                     rvSingleAssetManage.setAdapter(adapter);
+                    if (asset.getStatus() == 1) {
+                        btnSingleAssetManageCancel.setEnabled(true);
+                    } else if (asset.getStatus() == 0) {
+                        String manager = asset.getOldManager().getObjectId();
+                        if (!manager.equals(BmobUser.getCurrentUser().getObjectId())) {
+                            toast("对不起，您不是该资产管理员！");
+                            return;
+                        } else {
+                            btnSingleAssetManageOk.setEnabled(true);
+                        }
+                    } else {
+                        btnSingleAssetManageOk.setEnabled(false);
+                        btnSingleAssetManageCancel.setEnabled(false);
+                    }
+
                     break;
             }
         }

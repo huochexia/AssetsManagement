@@ -70,7 +70,7 @@
                 android:id="@+id/rb_assets_search_scrap"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="报     废"
+                android:text="非正常"
                 android:textSize="16sp"/>
 
         </RadioGroup>

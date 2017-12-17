@@ -24,10 +24,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
+import com.example.administrator.assetsmanagement.MainActivity;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
+import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
 import com.example.administrator.assetsmanagement.utils.ImageFactory;
@@ -47,6 +49,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
@@ -66,7 +69,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     public static final int REGISTER_CATEGORY = 3;
     public static final int CHOOSET_PHOTO = 5;
     public static final int TAKE_PHOTO = 6;
-
+    public static final int REQUEST_PERSON =1;
 
     @BindView(R.id.tv_register_category)
     TextView mTvRegisterCategory;
@@ -153,11 +156,14 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         setTextFonts();
         asset = new AssetInfo();
         asset.setStatus(9);//初始状态，9新登记
-        asset.setOldManager(null);//初始管理者，为空或登记人即当前用户
+        asset.setOldManager(MainActivity.getCurrentPerson());//初始管理者，为空或登记人即当前用户
+//        getPerson();
         initEvent();
         mEtRegisterAssetsQuantity.setText("");
         mEtRegisterAssetsDate.setText(TimeUtils.getFormatToday(TimeUtils.FORMAT_DATE));
     }
+
+
 
     public void initEvent() {
         //赋值资产名称
@@ -579,6 +585,45 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         });
 
     }
-
+    /**
+     * 获取当前用户的Person对象
+     */
+    private void getPerson() {
+        BmobQuery<Person> queryPerson = new BmobQuery<>();
+        String id = BmobUser.getCurrentUser().getObjectId();
+        queryPerson.addWhereEqualTo("objectId", id);
+        queryPerson.findObjects(new FindListener<Person>() {
+            @Override
+            public void done(final List<Person> list, BmobException e) {
+                if (e == null && list.size() > 0) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Message msg = new Message();
+                            msg.what = REQUEST_PERSON;
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("person", list.get(0));
+                            msg.setData(bundle);
+                            handler.sendMessage(msg);
+                        }
+                    }).start();
+                } else {
+                    toast("当前用户不存在！");
+                }
+            }
+        });
+    }
+    PersonHandler handler = new PersonHandler();
+    class PersonHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case REQUEST_PERSON:
+                    Person manager = (Person) msg.getData().getSerializable("person");
+                    asset.setOldManager(manager);
+                    break;
+            }
+        }
+    }
 
 }

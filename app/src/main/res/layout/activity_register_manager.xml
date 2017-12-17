@@ -21,7 +21,7 @@
             android:background="@color/transparent"
             android:drawableLeft="@mipmap/login_icon_account"
             android:drawablePadding="25dip"
-            android:hint="@string/login_username_hint"
+            android:hint="@string/register_username_hint"
             android:paddingLeft="15dip"
             android:shadowDx="0.0"
             android:shadowDy="1.0"

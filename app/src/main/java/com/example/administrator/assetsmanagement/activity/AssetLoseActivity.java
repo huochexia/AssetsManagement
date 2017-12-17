@@ -16,15 +16,12 @@ import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 import com.example.administrator.assetsmanagement.utils.LineEditText;
 
-import java.io.Serializable;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.BmobUser;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
@@ -89,56 +86,23 @@ public class AssetLoseActivity extends ParentWithNaviActivity {
             case R.id.iv_barcode_2d:
                 break;
             case R.id.btn_single_asset_search:
-                searchAssets("mAssetsNum",etSearchAssetNum.getText().toString() );
+                 String num =etSearchAssetNum.getText().toString();
+                AssetsUtil.QuaryAssets(this,"mAssetsNum",num,handler);
                 break;
             case R.id.btn_single_asset_manage_ok:
                 AssetsUtil.changeAssetStatus(this,list.get(0),2);
                 list.clear();
-                searchAssets("mAssetsNum",etSearchAssetNum.getText().toString() );
+                adapter.notifyDataSetChanged();
                 break;
             case R.id.btn_single_asset_manage_cancel:
                 AssetsUtil.changeAssetStatus(this,list.get(0),0);
                 list.clear();
-                searchAssets("mAssetsNum",etSearchAssetNum.getText().toString() );
+                adapter.notifyDataSetChanged();
                 break;
         }
     }
 
-    /**
-     * 查询资产
-     *
-     * @param
-     */
-    private void searchAssets(String para, String id) {
-        BmobQuery<AssetInfo> query = new BmobQuery<>();
-        query.addWhereEqualTo(para, id);
-        query.findObjects(new FindListener<AssetInfo>() {
-            @Override
-            public void done(final List<AssetInfo> list, BmobException e) {
-                if (e == null) {
-                    if (list != null && list.size() > 0) {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Message msg = new Message();
-                                msg.what = 1;
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable("assets", (Serializable) list);
-                                msg.setData(bundle);
-                                handler.sendMessage(msg);
-                            }
-                        }).start();
-                    } else {
-                        toast("没有符合条件的资产！");
-                    }
-                } else {
-                    {
-                        toast("查询失败，请稍后再查！");
-                    }
-                }
-            }
-        });
-    }
+
 
     RepairHandler handler = new RepairHandler();
 
@@ -150,14 +114,20 @@ public class AssetLoseActivity extends ParentWithNaviActivity {
                     list = (List<AssetInfo>) msg.getData().getSerializable("assets");
                     AssetInfo asset = list.get(0);
                     //如果有资产且其状态为丢失时，找回按钮可用；任何状态下的资产均可能发生丢失
-                    if (asset != null && asset.getStatus() == 2) {
-                        btnSingleAssetManageCancel.setEnabled(true);
-                    } else  {
-                        btnSingleAssetManageOk.setEnabled(true);
-                    }
                     adapter = new AssetRecyclerViewAdapter(AssetLoseActivity.this,
                             list, true);
                     rvSingleAssetManage.setAdapter(adapter);
+                    String manager = asset.getOldManager().getObjectId();
+                    if (!manager.equals(BmobUser.getCurrentUser().getObjectId())) {
+                        toast("对不起，您不是该资产管理员！");
+                        return;
+                    } else {
+                        if ( asset.getStatus() == 2) {
+                            btnSingleAssetManageCancel.setEnabled(true);
+                        } else  {
+                            btnSingleAssetManageOk.setEnabled(true);
+                        }
+                    }
                     break;
             }
         }

@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.activity.ManageAssetsActivity;
@@ -12,6 +13,7 @@ import com.example.administrator.assetsmanagement.activity.RegisterAssetsActivit
 import com.example.administrator.assetsmanagement.activity.SearchAssetsActivity;
 import com.example.administrator.assetsmanagement.base.BaseFragment;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
@@ -23,6 +25,8 @@ import butterknife.Unbinder;
 
 public class AssetsManagementFragment extends BaseFragment {
     Unbinder unbinder;
+    @BindView(R.id.iv_assets_register)
+    ImageView mIvAssetsRegister;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,15 +57,15 @@ public class AssetsManagementFragment extends BaseFragment {
         switch (view.getId()) {
             case R.id.iv_assets_register:
                 //启动资产登记活动
-                startActivity(RegisterAssetsActivity.class,null);
+                startActivity(RegisterAssetsActivity.class, null);
                 break;
             case R.id.iv_assets_management:
                 //启动资产管理活动
-                startActivity(ManageAssetsActivity.class,null);
+                startActivity(ManageAssetsActivity.class, null);
                 break;
             case R.id.iv_assets_search:
                 //启动资产查询活动
-                startActivity(SearchAssetsActivity.class,null);
+                startActivity(SearchAssetsActivity.class, null);
                 break;
         }
     }

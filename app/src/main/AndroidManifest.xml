@@ -54,6 +54,7 @@
         <activity android:name=".activity.ManagerListActivity"/>
         <activity android:name=".MainActivity"/>
         <activity android:name=".RegisterManagerActivity"/>
+        <activity android:name=".activity.AssetReceiverActivity"/>
     </application>
 
 </manifest>

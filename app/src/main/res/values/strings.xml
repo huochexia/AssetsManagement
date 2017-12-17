@@ -4,6 +4,7 @@
     <string name="title_base_set">基础设置</string>
     <string name="title_person_set">个人设置</string>
     <string name="login_username_hint">用户名/手机号&#8230;</string>
+    <string name="register_username_hint">用户名&#8230;</string>
     <string name="login_password_hint">请输入密码&#8230;</string>
     <string name="login">登录</string>
     <string name="logout">退出</string>

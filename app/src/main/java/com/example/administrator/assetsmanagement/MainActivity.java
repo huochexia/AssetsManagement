@@ -1,6 +1,8 @@
 package com.example.administrator.assetsmanagement;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.ViewPager;
@@ -10,17 +12,25 @@ import android.widget.TextView;
 
 import com.ToxicBakery.viewpager.transforms.RotateDownTransformer;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
+import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.fragment.AssetsManagementFragment;
 import com.example.administrator.assetsmanagement.fragment.BaseSettingFragment;
 import com.example.administrator.assetsmanagement.fragment.PersonSettingFragment;
 import com.example.administrator.assetsmanagement.adapter.ViewPagerAdapter;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.bmob.v3.Bmob;
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 
 public class MainActivity extends ParentWithNaviActivity {
-
+    public static final int REQUEST_PERSON =1;
+    private static Person currentPerson;
 
     @BindView(R.id.viewpager)
     ViewPager mViewpager;
@@ -59,9 +69,8 @@ public class MainActivity extends ParentWithNaviActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        Bmob.initialize(this, "facbe328bdb28e7864f448ba3321339f");
         ButterKnife.bind(this);
-
+        getPerson();
         initNaviView();
         mViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -121,5 +130,45 @@ public class MainActivity extends ParentWithNaviActivity {
         return super.onKeyDown(keyCode, event);
     }
 
+    public static Person getCurrentPerson() {
+        return currentPerson;
+    }
+    /**
+     * 获取当前用户的Person对象
+     */
+    private void getPerson() {
+        BmobQuery<Person> queryPerson = new BmobQuery<>();
+        String id = BmobUser.getCurrentUser().getObjectId();
+        queryPerson.addWhereEqualTo("objectId", id);
+        queryPerson.findObjects(new FindListener<Person>() {
+            @Override
+            public void done(final List<Person> list, BmobException e) {
+                if (e == null && list.size() > 0) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Message msg = new Message();
+                            msg.what = REQUEST_PERSON;
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("person", list.get(0));
+                            msg.setData(bundle);
+                            handler.sendMessage(msg);
+                        }
+                    }).start();
+                }
+            }
+        });
+    }
+    PersonHandler handler = new PersonHandler();
+    class PersonHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case REQUEST_PERSON:
+                    currentPerson = (Person) msg.getData().getSerializable("person");
+                    break;
+            }
+        }
+    }
 
 }
