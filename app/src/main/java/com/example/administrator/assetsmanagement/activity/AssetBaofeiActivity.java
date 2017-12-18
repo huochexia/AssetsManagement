@@ -87,7 +87,7 @@ public class AssetBaofeiActivity extends ParentWithNaviActivity {
                 break;
             case R.id.btn_single_asset_search:
                 String number = etSearchAssetNum.getText().toString();
-                AssetsUtil.QuaryAssets(this,"mAssetsNum",number,handler);
+                AssetsUtil.AndQueryAssets(this,"mAssetsNum",number,handler);
 //                searchAssets("mAssetsNum",etSearchAssetNum.getText().toString() );
                 break;
             case R.id.btn_single_asset_manage_ok:

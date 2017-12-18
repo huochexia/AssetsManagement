@@ -87,7 +87,7 @@ public class AssetLoseActivity extends ParentWithNaviActivity {
                 break;
             case R.id.btn_single_asset_search:
                  String num =etSearchAssetNum.getText().toString();
-                AssetsUtil.QuaryAssets(this,"mAssetsNum",num,handler);
+                AssetsUtil.AndQueryAssets(this,"mAssetsNum",num,handler);
                 break;
             case R.id.btn_single_asset_manage_ok:
                 AssetsUtil.changeAssetStatus(this,list.get(0),2);

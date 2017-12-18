@@ -171,26 +171,26 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                 switch (search_type) {
                     case SEARCH_LOCATION:
                         if (mNode != null) {
-                            AssetsUtil.QuaryAssets(SearchAssetsActivity.this,
+                            AssetsUtil.AndQueryAssets(SearchAssetsActivity.this,
                                     "mLoationNum",mNode.getId(),handler);
                         }
                         break;
                     case SEARCH_CATEGORY:
                         if (mNode != null) {
-                            AssetsUtil.QuaryAssets(SearchAssetsActivity.this,
+                            AssetsUtil.AndQueryAssets(SearchAssetsActivity.this,
                                     "mCategoryNum",mNode.getId(),handler);
 
                         }
                         break;
                     case SEARCH_DEPARTMENT:
                         if (mNode != null) {
-                            AssetsUtil.QuaryAssets(SearchAssetsActivity.this,
+                            AssetsUtil.AndQueryAssets(SearchAssetsActivity.this,
                                     "mDeptNum",mNode.getId(),handler);
                                                   }
                         break;
                     case SEARCH_MANAGER:
                         if (person != null) {
-                            AssetsUtil.QuaryAssets(SearchAssetsActivity.this,
+                            AssetsUtil.AndQueryAssets(SearchAssetsActivity.this,
                                     "mOldManager",mNode.getId(),handler);
                         }
                         break;
@@ -199,7 +199,7 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                         break;
                     case SEARCH_STATUS:
                         //所有已批准报废，所有丢失资产
-                        AssetsUtil.QuaryAssets(SearchAssetsActivity.this,
+                        AssetsUtil.AndQueryAssets(SearchAssetsActivity.this,
                                 "mStatus",2,"mStatus",5,sHandler);
                         break;
                 }

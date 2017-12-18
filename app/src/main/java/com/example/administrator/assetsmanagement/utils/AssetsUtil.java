@@ -119,7 +119,7 @@ public class AssetsUtil {
      *
      * @param
      */
-    public static void QuaryAssets(final Context context, String para, Object value, final Handler handler) {
+    public static void AndQueryAssets(final Context context, String para, Object value, final Handler handler) {
         BmobQuery<AssetInfo> query = new BmobQuery<>();
         query.addWhereEqualTo(para, value);
         query.setLimit(500);
@@ -157,8 +157,8 @@ public class AssetsUtil {
      *
      * @param
      */
-    public static void QuaryAssets(final Context context, String para1, Object value1,
-                                   String para2,Object value2, final Handler handler) {
+    public static void AndQueryAssets(final Context context, String para1, Object value1,
+                                      String para2, Object value2, final Handler handler) {
         List<BmobQuery<AssetInfo>> and = new ArrayList<>();
         BmobQuery<AssetInfo> query1= new BmobQuery<>();
         query1.addWhereEqualTo(para1, value1);
@@ -166,6 +166,57 @@ public class AssetsUtil {
         BmobQuery<AssetInfo> query2= new BmobQuery<>();
         query1.addWhereEqualTo(para2, value2);
         and.add(query2);
+        BmobQuery<AssetInfo> query= new BmobQuery<>();
+        query.and(and);
+        query.setLimit(500);
+        query.include("mPicture");
+        query.findObjects(new FindListener<AssetInfo>() {
+            @Override
+            public void done(final List<AssetInfo> list, BmobException e) {
+                if (e == null) {
+                    if (list != null && list.size() > 0) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Message msg = new Message();
+                                msg.what = AssetsUtil.SEARCH_ONE_ASSET;
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("assets", (Serializable) list);
+                                msg.setData(bundle);
+                                handler.sendMessage(msg);
+                            }
+                        }).start();
+                    } else {
+                        Toast.makeText(context, "没有符合条件的资产!", Toast.LENGTH_SHORT).show();
+
+                    }
+                } else {
+                    {
+                        Toast.makeText(context, "查询失败，请稍后再查！", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+    }
+    /**
+     * 依据某三个参数组合，查询资产
+     *
+     * @param
+     */
+    public static void AndQueryAssets(final Context context, String para1, Object value1,
+                                      String para2, Object value2,String para3,Object value3,
+                                      final Handler handler) {
+        List<BmobQuery<AssetInfo>> and = new ArrayList<>();
+        BmobQuery<AssetInfo> query1= new BmobQuery<>();
+        query1.addWhereEqualTo(para1, value1);
+        and.add(query1);
+        BmobQuery<AssetInfo> query2= new BmobQuery<>();
+        query1.addWhereEqualTo(para2, value2);
+        and.add(query2);
+        BmobQuery<AssetInfo> query3= new BmobQuery<>();
+        query1.addWhereEqualTo(para3, value3);
+        and.add(query3);
+
         BmobQuery<AssetInfo> query= new BmobQuery<>();
         query.and(and);
         query.setLimit(500);

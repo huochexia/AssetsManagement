@@ -1,6 +1,5 @@
 package com.example.administrator.assetsmanagement.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.administrator.assetsmanagement.Interface.AssetSelectedListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
@@ -29,22 +27,13 @@ import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 import com.example.administrator.assetsmanagement.utils.LineEditText;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.bmob.v3.BmobBatch;
 import cn.bmob.v3.BmobObject;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.datatype.BatchResult;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.QueryListListener;
-import cn.bmob.v3.listener.SaveListener;
-import cn.bmob.v3.listener.UpdateListener;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
@@ -281,7 +270,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         switch (view.getId()) {
             case R.id.btn_single_asset_search:
                 clearLists();
-                AssetsUtil.QuaryAssets(this,"mAssetsNum",mEtSearchAssetNum.getText().toString().trim(),handler);
+                AssetsUtil.AndQueryAssets(this,"mAssetsNum",mEtSearchAssetNum.getText().toString().trim(),handler);
                 break;
             case R.id.btn_search_location:
                 clearLists();
@@ -432,17 +421,17 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         switch (select_type) {
             case SEARCH_LOCATION:
                 if (mNode != null) {
-                    AssetsUtil.QuaryAssets(this,"mLocationNum", mNode.getId(),"mOldManager",current,handler);
+                    AssetsUtil.AndQueryAssets(this,"mLocationNum", mNode.getId(),"mOldManager",current,handler);
                 }
                 break;
             case SEARCH_DEPARTMENT:
                 if (mNode != null) {
-                    AssetsUtil.QuaryAssets(this,"mDeptNum", mNode.getId(),"mOldManager",current,handler);
+                    AssetsUtil.AndQueryAssets(this,"mDeptNum", mNode.getId(),"mOldManager",current,handler);
                 }
                 break;
             case SEARCH_MANAGER:
                 if (mOldManager != null) {
-                    AssetsUtil.QuaryAssets(this,"mOldManager", mOldManager,handler);
+                    AssetsUtil.AndQueryAssets(this,"mOldManager", mOldManager,handler);
                 }
                 break;
         }

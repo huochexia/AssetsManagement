@@ -93,7 +93,7 @@ public class AssetRepairActivity extends ParentWithNaviActivity {
                 break;
             case R.id.btn_single_asset_search:
                 String number = etSearchAssetNum.getText().toString();
-                AssetsUtil.QuaryAssets(this, "mAssetsNum", number, handler);
+                AssetsUtil.AndQueryAssets(this, "mAssetsNum", number, handler);
                 break;
             case R.id.btn_single_asset_manage_ok:
                 AssetsUtil.changeAssetStatus(this, list.get(0), 1);
