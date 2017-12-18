@@ -2,7 +2,7 @@
     <string name="app_name">资产管理系统</string>
     <string name="title_assets_manage">资产管理</string>
     <string name="title_base_set">基础设置</string>
-    <string name="title_person_set">个人设置</string>
+    <string name="title_person_set">我的</string>
     <string name="login_username_hint">用户名/手机号&#8230;</string>
     <string name="register_username_hint">用户名&#8230;</string>
     <string name="login_password_hint">请输入密码&#8230;</string>
@@ -17,4 +17,21 @@
     <string name="register_txt2">立即注册</string>
     <string name="forget_password">忘记密码</string>
     <string name="department">所属部门</string>
+    <string name="query_my_assets">我管理的资产</string>
+    <string name="update_my_info">个人信息</string>
+    <string name="update_my_department">变更所属部门</string>
+    <string name="turn_over_scope">移交范围：</string>
+    <string name="location">位置</string>
+    <string name="manager">管理员</string>
+    <string name="btn_new_location_text">新位置</string>
+    <string name="btn_new_department_text">新部门</string>
+    <string name="btn_new_receiver_text">接收者</string>
+    <string name="btn_confirm">确     定</string>
+    <string name="rb_single_text">单个</string>
+    <string name="rb_overall_text">整体</string>
+    <string name="turn_over_content">移交内容：</string>
+    <string name="btn_search_text">查找</string>
+    <string name="editview_hint_text">请输入资产编号</string>
+    <string name="btn_next_text">下 一 个</string>
+    <string name="btn_category_text">类别</string>
 </resources>

@@ -499,15 +499,22 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     private List<BmobObject> updateAllSelectedAssetInfo(List<AssetInfo> assetsList, List<AssetInfo> selectedAssets) {
         List<BmobObject> objects = new ArrayList<>();
         for (AssetInfo asset : selectedAssets) {
-            if (asset.getQuantity() == 1) {
-                updateAssetInfo(asset);
-                objects.add(asset);
-                assetsList.remove(asset);
+            if (flag == 1) {
+                if (asset.getQuantity() == 1) {
+                    updateAssetInfo(asset);
+                    objects.add(asset);
+                    assetsList.remove(asset);
+                } else {
+                    List<BmobObject> selectObject = updateAllSameImangeNumAssets(assetsList,
+                            asset.getPicture().getImageNum());
+                    objects.addAll(selectObject);
+                }
             } else {
                 List<BmobObject> selectObject = updateAllSameImangeNumAssets(assetsList,
                         asset.getPicture().getImageNum());
                 objects.addAll(selectObject);
             }
+
         }
         return objects;
     }

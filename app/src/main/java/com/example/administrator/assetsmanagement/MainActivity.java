@@ -15,14 +15,13 @@ import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.fragment.AssetsManagementFragment;
 import com.example.administrator.assetsmanagement.fragment.BaseSettingFragment;
-import com.example.administrator.assetsmanagement.fragment.PersonSettingFragment;
+import com.example.administrator.assetsmanagement.fragment.MySettingFragment;
 import com.example.administrator.assetsmanagement.adapter.ViewPagerAdapter;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
@@ -108,7 +107,7 @@ public class MainActivity extends ParentWithNaviActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(AssetsManagementFragment.newInstance());
         adapter.addFragment(BaseSettingFragment.newInstance());
-        adapter.addFragment(PersonSettingFragment.newInstance());
+        adapter.addFragment(MySettingFragment.newInstance());
         viewpager.setAdapter(adapter);
     }
     /**

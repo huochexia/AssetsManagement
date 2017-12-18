@@ -79,24 +79,7 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
                 }
             }
         });
-//        holder.selected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                map.put(position, isChecked);
-//                if (isChecked) {
-//                    counter++;
-//                    listener.selectAsset(assetInfoList.get(position));
-//                } else {
-//                    counter--;
-//                    listener.cancelAsset(assetInfoList.get(position));
-//                }
-//                //因为Bmob批量处理最多50条
-//                if (counter > 50) {
-//                    Toast.makeText(mContext,"一次选择数量不能超50！",Toast.LENGTH_SHORT).show();
-//                    buttonView.setChecked(false);
-//                }
-//            }
-//        });
+
 
         if (map.get(position) == null) {
             map.put(position, false);
@@ -122,8 +105,8 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
             case 4:
                 holder.assetStatus.setText("待移交");
                 break;
-            case 9:
-                holder.assetStatus.setText("新登记");
+            case 5:
+                holder.assetStatus.setText("送修");
         }
 
         holder.assetName.setOnClickListener(new View.OnClickListener() {
@@ -146,36 +129,7 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
         return assetInfoList.size();
     }
 
-    /**
-     * 返回图片编号列表
-     * @return
-     */
-    public List<AssetInfo> getCheckedList() {
-        return checkedList;
-    }
 
-    /**
-     * 返回Map
-     */
-    public Map<Integer,Boolean> getMap() {
-        return  map;
-    }
-    /**
-     * 删除已选择项,同时将此位置值还原
-     */
-    public void removeSelectedItem() {
-        Iterator iterator=map.entrySet().iterator();
-        while (iterator.hasNext()){
-            Map.Entry entry = (Map.Entry) iterator.next();
-            int key = (int) entry.getKey();
-            Boolean value = (Boolean) entry.getValue();
-            if(value==true){
-                assetInfoList.remove(key);
-            }
-        }
-        initMap();
-        notifyDataSetChanged();
-    }
     /**
      * 自定义ViewHolder
      */

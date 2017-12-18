@@ -25,7 +25,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="移交内容："
+                android:text="@string/turn_over_content"
                 android:textSize="18sp"/>
 
             <RadioGroup
@@ -38,14 +38,14 @@
                     android:id="@+id/rb_single_asset"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="单个"
+                    android:text="@string/rb_single_text"
                     android:textSize="16sp"/>
 
                 <RadioButton
                     android:id="@+id/rb_overall_assets"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="整体"
+                    android:text="@string/rb_overall_text"
                     android:textSize="16sp"/>
             </RadioGroup>
         </LinearLayout>
@@ -70,7 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="移交范围："
+                    android:text="@string/turn_over_scope"
                     android:textSize="18sp"/>
 
                 <RadioGroup
@@ -84,14 +84,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
-                        android:text="位置"
+                        android:text="@string/location"
                         android:textSize="16sp"/>
 
                     <RadioButton
                         android:id="@+id/rb_turn_over_manager"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="管理员"
+                        android:text="@string/manager"
                         android:textSize="16sp"/>
                 </RadioGroup>
 
@@ -151,7 +151,7 @@
                     fancy:fb_defaultColor="#3fb2b4"
                     fancy:fb_focusColor="#3f51b4"
                     fancy:fb_radius="15dp"
-                    fancy:fb_text="新位置"
+                    fancy:fb_text="@string/btn_new_location_text"
                     fancy:fb_textColor="#FFFFFF"
                     fancy:fb_textFont="隶书.ttf"
                     fancy:fb_textSize="16sp">
@@ -183,7 +183,7 @@
                     fancy:fb_defaultColor="#3fb2b4"
                     fancy:fb_focusColor="#3f51b4"
                     fancy:fb_radius="15dp"
-                    fancy:fb_text="新部门"
+                    fancy:fb_text="@string/btn_new_department_text"
                     fancy:fb_textColor="#FFFFFF"
                     fancy:fb_textFont="隶书.ttf"
                     fancy:fb_textSize="16sp">
@@ -220,7 +220,7 @@
                 fancy:fb_defaultColor="#3fb2b4"
                 fancy:fb_focusColor="#3f51b4"
                 fancy:fb_radius="15dp"
-                fancy:fb_text="接收者"
+                fancy:fb_text="@string/btn_new_receiver_text"
                 fancy:fb_textColor="#FFFFFF"
                 fancy:fb_textFont="隶书.ttf"
                 fancy:fb_textSize="16sp">
@@ -257,7 +257,7 @@
                     fancy:fb_disabledColor="#aeaaaa"
                     fancy:fb_focusColor="#7182e2"
                     fancy:fb_radius="15dp"
-                    fancy:fb_text="确定"
+                    fancy:fb_text="@string/btn_confirm"
                     fancy:fb_textColor="#FFFFFF"
                     fancy:fb_textFont="隶书.ttf"
                     fancy:fb_textSize="16sp">

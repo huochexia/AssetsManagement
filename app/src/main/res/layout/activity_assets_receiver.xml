@@ -40,7 +40,7 @@
             fancy:fb_disabledColor="#aeaaaa"
             fancy:fb_focusColor="#7182e2"
             fancy:fb_radius="15dp"
-            fancy:fb_text="确定"
+            fancy:fb_text="@string/btn_confirm"
             fancy:fb_textColor="#FFFFFF"
             fancy:fb_textFont="隶书.ttf"
             fancy:fb_textSize="18sp"/>

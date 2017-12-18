@@ -18,7 +18,7 @@ import cn.bmob.v3.BmobUser;
  * Created by Administrator on 2017/11/4 0004.
  */
 
-public class PersonSettingFragment extends BaseFragment {
+public class MySettingFragment extends BaseFragment {
     Unbinder unbinder;
 
     @Override
@@ -34,8 +34,8 @@ public class PersonSettingFragment extends BaseFragment {
         return view;
     }
 
-    public static PersonSettingFragment newInstance() {
-        PersonSettingFragment fragment = new PersonSettingFragment();
+    public static MySettingFragment newInstance() {
+        MySettingFragment fragment = new MySettingFragment();
         return fragment;
     }
 
@@ -45,10 +45,14 @@ public class PersonSettingFragment extends BaseFragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.btn_repair_password, R.id.btn_logout})
+
+
+    @OnClick({R.id.btn_query_my_assets, R.id.btn_update_my_info, R.id.btn_logout})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.btn_repair_password:
+            case R.id.btn_query_my_assets:
+                break;
+            case R.id.btn_update_my_info:
                 break;
             case R.id.btn_logout:
                 BmobUser.logOut();

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/background">
+    <include layout="@layout/include_navi"/>
     <Button
         android:id="@+id/btn_query_my_assets"
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
         android:layout_margin="@dimen/activity_vertical_margin"
         android:background="@drawable/btn_login_selector"
         android:gravity="center"
-        android:text="@string/query_my_assets"
+        android:text="@string/repair_password"
         android:textColor="@color/base_color_text_white"
         android:textSize="@dimen/text_size_large" />
     <Button
@@ -23,21 +23,12 @@
         android:layout_margin="@dimen/activity_vertical_margin"
         android:background="@drawable/btn_login_selector"
         android:gravity="center"
-        android:text="@string/update_my_info"
+        android:text="@string/update_my_department"
         android:textColor="@color/base_color_text_white"
         android:textSize="@dimen/text_size_large" />
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@mipmap/base_horization_line"/>
-    <Button
-        android:id="@+id/btn_logout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/height_title"
-        android:layout_margin="@dimen/activity_vertical_margin"
-        android:background="@drawable/btn_logout_selector"
-        android:gravity="center"
-        android:text="@string/logout"
-        android:textColor="@color/base_color_text_white"
-        android:textSize="@dimen/text_size_large" />
+
 </LinearLayout>
