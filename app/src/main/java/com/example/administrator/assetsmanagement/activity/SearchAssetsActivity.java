@@ -23,16 +23,12 @@ import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
@@ -176,74 +172,37 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                     case SEARCH_LOCATION:
                         if (mNode != null) {
                             AssetsUtil.QuaryAssets(SearchAssetsActivity.this,
-                                    "mLoationNum",mNode.getId(),"mOldManager",current,handler);
+                                    "mLoationNum",mNode.getId(),handler);
                         }
                         break;
                     case SEARCH_CATEGORY:
                         if (mNode != null) {
                             AssetsUtil.QuaryAssets(SearchAssetsActivity.this,
-                                    "mCategoryNum",mNode.getId(),"mOldManager",current,handler);
+                                    "mCategoryNum",mNode.getId(),handler);
 
                         }
                         break;
                     case SEARCH_DEPARTMENT:
                         if (mNode != null) {
                             AssetsUtil.QuaryAssets(SearchAssetsActivity.this,
-                                    "mDeptNum",mNode.getId(),"mOldManager",current,handler);
+                                    "mDeptNum",mNode.getId(),handler);
                                                   }
                         break;
                     case SEARCH_MANAGER:
                         if (person != null) {
                             AssetsUtil.QuaryAssets(SearchAssetsActivity.this,
-                                    "mOldManager",mNode.getId(),"mOldManager",current,handler);
+                                    "mOldManager",mNode.getId(),handler);
                         }
                         break;
                     case SEARCH_NAME:
 
                         break;
                     case SEARCH_STATUS:
-                        queryStatus(current);
+                        //所有已批准报废，所有丢失资产
+                        AssetsUtil.QuaryAssets(SearchAssetsActivity.this,
+                                "mStatus",2,"mStatus",5,sHandler);
                         break;
                 }
-            }
-        });
-    }
-
-    /**
-     * 非正常状态下资产
-     * @param current
-     */
-    private void queryStatus(Person current) {
-        List<BmobQuery<AssetInfo>> and = new ArrayList<>();
-        BmobQuery<AssetInfo> query1 = new BmobQuery<>();
-        query1.addWhereEqualTo("mOldManager", current);
-        BmobQuery<AssetInfo> query2 = new BmobQuery<>();
-        query2.addWhereNotEqualTo("mStatus", 0);
-        and.add(query1);
-        and.add(query2);
-        BmobQuery<AssetInfo> query = new BmobQuery<>();
-        query.and(and);
-        query.setLimit(500);
-        query.include("mPicture");
-        query.findObjects(new FindListener<AssetInfo>() {
-            @Override
-            public void done(final List<AssetInfo> list, BmobException e) {
-                if (e == null && list.size() > 0) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Message msg = new Message();
-                            msg.what = 2;
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("assets", (Serializable) list);
-                            msg.setData(bundle);
-                            handler.sendMessage(msg);
-                        }
-                    }).start();
-                } else {
-                    toast("没有符合条件的资产！");
-                }
-
             }
         });
     }
@@ -260,9 +219,9 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
     }
 
 
-    MyHandler handler = new MyHandler();
+    mergeListHandler handler = new mergeListHandler();
 
-    class MyHandler extends Handler {
+    class mergeListHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -272,11 +231,22 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                             AssetsUtil.mergeAndSum(search_result_list),true);
                     searchList.setAdapter(adapter);
                     break;
-                case 2:
+
+            }
+        }
+    }
+    SingleListHandler sHandler = new SingleListHandler();
+    class SingleListHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case AssetsUtil.SEARCH_ONE_ASSET:
                     search_result_list = (List<AssetInfo>) msg.getData().getSerializable("assets");
                     adapter = new AssetRecyclerViewAdapter(SearchAssetsActivity.this,
-                            search_result_list, true);
+                            search_result_list,true);
                     searchList.setAdapter(adapter);
+                    break;
+
             }
         }
     }
