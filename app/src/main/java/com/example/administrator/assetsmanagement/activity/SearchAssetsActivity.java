@@ -13,11 +13,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
-import com.example.administrator.assetsmanagement.MainActivity;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.adapter.AssetRecyclerViewAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
+import com.example.administrator.assetsmanagement.bean.AssetPicture;
 import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
@@ -42,7 +42,8 @@ import mehdi.sakout.fancybuttons.FancyButton;
 public class SearchAssetsActivity extends ParentWithNaviActivity {
 
     public static final int SEARCHASSETS_REQUEST = 110;
-    public static final int REQUEST_SELECTE_MANAGER=111;
+    public static final int REQUEST_SELECTE_MANAGER = 111;
+    public static final int REQUEST_PICTURE = 112;
     public static final int SEARCH_LOCATION = 1;
     public static final int SEARCH_CATEGORY = 2;
     public static final int SEARCH_DEPARTMENT = 3;
@@ -76,6 +77,7 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
     private AssetRecyclerViewAdapter adapter;
     private RecyclerView searchList;
     private Person person;
+    private AssetPicture mPicture;
 
     @Override
     public String title() {
@@ -167,40 +169,42 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
         btnSearchStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Person current = MainActivity.getCurrentPerson();
                 switch (search_type) {
                     case SEARCH_LOCATION:
                         if (mNode != null) {
                             AssetsUtil.AndQueryAssets(SearchAssetsActivity.this,
-                                    "mLoationNum",mNode.getId(),handler);
+                                    "mLoationNum", mNode.getId(), handler);
                         }
                         break;
                     case SEARCH_CATEGORY:
                         if (mNode != null) {
                             AssetsUtil.AndQueryAssets(SearchAssetsActivity.this,
-                                    "mCategoryNum",mNode.getId(),handler);
+                                    "mCategoryNum", mNode.getId(), handler);
 
                         }
                         break;
                     case SEARCH_DEPARTMENT:
                         if (mNode != null) {
                             AssetsUtil.AndQueryAssets(SearchAssetsActivity.this,
-                                    "mDeptNum",mNode.getId(),handler);
-                                                  }
+                                    "mDeptNum", mNode.getId(), handler);
+                        }
                         break;
                     case SEARCH_MANAGER:
                         if (person != null) {
                             AssetsUtil.AndQueryAssets(SearchAssetsActivity.this,
-                                    "mOldManager",mNode.getId(),handler);
+                                    "mOldManager", person, handler);
                         }
                         break;
                     case SEARCH_NAME:
-
+                        if (mPicture != null) {
+                            AssetsUtil.AndQueryAssets(SearchAssetsActivity.this,
+                                    "mPicture", mPicture, handler);
+                        }
                         break;
                     case SEARCH_STATUS:
                         //所有已批准报废，所有丢失资产
                         AssetsUtil.AndQueryAssets(SearchAssetsActivity.this,
-                                "mStatus",2,"mStatus",5,sHandler);
+                                "mStatus", 2, "mStatus", 5, sHandler);
                         break;
                 }
             }
@@ -228,14 +232,16 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                 case AssetsUtil.SEARCH_ONE_ASSET:
                     search_result_list = (List<AssetInfo>) msg.getData().getSerializable("assets");
                     adapter = new AssetRecyclerViewAdapter(SearchAssetsActivity.this,
-                            AssetsUtil.mergeAndSum(search_result_list),true);
+                            AssetsUtil.mergeAndSum(search_result_list), true);
                     searchList.setAdapter(adapter);
                     break;
 
             }
         }
     }
+
     SingleListHandler sHandler = new SingleListHandler();
+
     class SingleListHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
@@ -243,7 +249,7 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                 case AssetsUtil.SEARCH_ONE_ASSET:
                     search_result_list = (List<AssetInfo>) msg.getData().getSerializable("assets");
                     adapter = new AssetRecyclerViewAdapter(SearchAssetsActivity.this,
-                            search_result_list,true);
+                            search_result_list, true);
                     searchList.setAdapter(adapter);
                     break;
 
@@ -277,6 +283,10 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                 break;
             case R.id.btn_search_name:
                 clearLists();
+                //TODO:应该传入类别，否则图片量太大
+//                Intent intentPhoto = new Intent(this, SelectAssetsPhotoActivity.class);
+//                intentPhoto.putExtra("isRegister", false);
+//                startActivityForResult(intentPhoto, REQUEST_PICTURE);
                 break;
             case R.id.btn_search_dept:
                 clearLists();
@@ -312,10 +322,17 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                     person = (Person) data.getSerializableExtra("manager");
                     mTvSearchContent.setText(person.getUsername());
                 }
+                break;
+            case REQUEST_PICTURE:
+                if (resultCode == SelectAssetsPhotoActivity.RESULT_OK) {
+                    Bundle bundle = data.getBundleExtra("assetpicture");
+                    mPicture = (AssetPicture) bundle.getSerializable("imageFile");
+                    mTvSearchContent.setText(mPicture.getImageNum());
+                }
+                break;
             default:
         }
     }
-
 
 
 }

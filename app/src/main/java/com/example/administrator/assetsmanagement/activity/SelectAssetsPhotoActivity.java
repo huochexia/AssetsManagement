@@ -10,19 +10,26 @@ import android.support.v7.widget.RecyclerView;
 
 import com.example.administrator.assetsmanagement.Interface.PhotoSelectedListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
+import com.example.administrator.assetsmanagement.MainActivity;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.adapter.PhotoRecyclerViewAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
+import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
+import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+
+import static com.example.administrator.assetsmanagement.utils.AssetsUtil.SEARCH_ONE_ASSET;
 
 /**
  * 依据资产类别编号下载图片列表，选择图片后，返回图片信息对象
@@ -36,13 +43,12 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
 
     private String title;
     private String categoryNum;
-
-
     private AssetPicture imageFile;
 
     private PhotoRecyclerViewAdapter mAdapter;
-    private List<AssetPicture> photoLists;
-    private AssetPicture selectedPicture;
+    private List<AssetPicture> photoLists=new ArrayList<>();
+    private boolean isRegister;
+
     @Override
     public String title() {
         return title;
@@ -68,16 +74,17 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
 
             @Override
             public void clickRight() {
-                if (imageFile!=null) {
+                if (imageFile != null) {
                     Intent returnPhoto = new Intent();
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("imageFile",imageFile);
+                    bundle.putSerializable("imageFile", imageFile);
                     returnPhoto.putExtra("assetpicture", bundle);
                     setResult(RESULT_OK, returnPhoto);
                     finish();
                 } else {
                     toast("请选择图片！");
                 }
+
             }
         };
     }
@@ -87,14 +94,31 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_photo);
         ButterKnife.bind(this);
-        Intent intent = getIntent();
-        title = intent.getStringExtra("category_name");
-        categoryNum = intent.getStringExtra("category_num");
-        initNaviView();
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         mRcPicturesList.setLayoutManager(layoutManager);
+        Intent intent = getIntent();
+        isRegister = intent.getBooleanExtra("isRegister",true);
+        if (isRegister) {
+            title = intent.getStringExtra("category_name");
+            categoryNum = intent.getStringExtra("category_num");
+            getPictureList("categoryNum", categoryNum, handler);
+        } else {
+            title = "我的资产图片";
+            AssetsUtil.AndQueryAssets(this,"mOldManager", MainActivity.getCurrentPerson(),handler);
+        }
+
+        initNaviView();
+    }
+
+    /**
+     * 根据类别查询图片
+     * @param para
+     * @param value
+     * @param handler
+     */
+    private void getPictureList(String para, Object value, final Handler handler) {
         BmobQuery<AssetPicture> query = new BmobQuery<>();
-        query.addWhereEqualTo("categoryNum", categoryNum);
+        query.addWhereEqualTo(para, value);
         query.setLimit(500);
         query.findObjects(new FindListener<AssetPicture>() {
             @Override
@@ -103,7 +127,7 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
                     @Override
                     public void run() {
                         Message message = new Message();
-                        message.what= TAKE_PHOTO;
+                        message.what = TAKE_PHOTO;
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("photo", (Serializable) list);
                         message.setData(bundle);
@@ -115,25 +139,34 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
     }
 
 
-    public static final int TAKE_PHOTO=0;
-    public MyHandler handler= new MyHandler();
+
+    public static final int TAKE_PHOTO = 0;
+    public MyHandler handler = new MyHandler();
+
     class MyHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case TAKE_PHOTO:
-
                     photoLists = (List<AssetPicture>) msg.getData().getSerializable("photo");
-                    mAdapter = new PhotoRecyclerViewAdapter(SelectAssetsPhotoActivity.this, photoLists);
-                    mRcPicturesList.setAdapter(mAdapter);
-                    mAdapter.getSelectedListener(new PhotoSelectedListener() {
-                        @Override
-                        public void selectPhoto(AssetPicture picture) {
-                            imageFile = picture;
-                        }
-                    });
+                    break;
+                case SEARCH_ONE_ASSET :
+                    List<AssetInfo> list = (List<AssetInfo>) msg.getData().getSerializable("assets");
+                    List<AssetInfo> mergeList = AssetsUtil.mergeAndSum(list);
+                    for (AssetInfo asset : mergeList) {
+                        photoLists.add(asset.getPicture());
+                    }
                     break;
             }
+            mAdapter = new PhotoRecyclerViewAdapter(SelectAssetsPhotoActivity.this, photoLists);
+            mRcPicturesList.setAdapter(mAdapter);
+            mAdapter.getSelectedListener(new PhotoSelectedListener() {
+                @Override
+                public void selectPhoto(AssetPicture picture) {
+                    imageFile = picture;
+                }
+
+            });
         }
     }
 }

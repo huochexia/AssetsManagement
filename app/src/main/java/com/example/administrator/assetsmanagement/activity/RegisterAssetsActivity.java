@@ -69,7 +69,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     public static final int REGISTER_CATEGORY = 3;
     public static final int CHOOSET_PHOTO = 5;
     public static final int TAKE_PHOTO = 6;
-    public static final int REQUEST_PERSON =1;
+    public static final int REQUEST_PERSON = 1;
 
     @BindView(R.id.tv_register_category)
     TextView mTvRegisterCategory;
@@ -162,7 +162,6 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         mEtRegisterAssetsQuantity.setText("");
         mEtRegisterAssetsDate.setText(TimeUtils.getFormatToday(TimeUtils.FORMAT_DATE));
     }
-
 
 
     public void initEvent() {
@@ -360,10 +359,10 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
-                        startTurnOverActivity(true,list);
+                        startTurnOverActivity(true, list);
                         break;
                     case 1:
-                        startTurnOverActivity(false,list);
+                        startTurnOverActivity(false, list);
                         break;
                 }
                 dialog.dismiss();
@@ -380,10 +379,11 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
     /**
      * 启动资产移交活动
+     *
      * @param oneOrAll true为单体移交，false为整体移交
      * @param list
      */
-    private void startTurnOverActivity(Boolean oneOrAll,List<AssetInfo> list) {
+    private void startTurnOverActivity(Boolean oneOrAll, List<AssetInfo> list) {
         Bundle bundle = new Bundle();
         bundle.putInt("turn_over", 1);
         bundle.putBoolean("oneOrAll", oneOrAll);
@@ -428,7 +428,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         int n = 0;
         if (m >= 1) {
             for (int i = 0; i < m; i++) {
-                 n++;
+                n++;
                 for (int j = 0; j < 50; j++) {
                     try {
                         //克隆一份资产，然后赋值编号成为一个资产。
@@ -463,19 +463,28 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
      * @return
      */
     private boolean checkAlltext() {
-        int quantity = 0;
+
         if (!TextUtils.isEmpty(mEtRegisterAssetsQuantity.getText())) {
-            quantity = Integer.parseInt(mEtRegisterAssetsQuantity.getText().toString());
-        } else if (TextUtils.isEmpty(mTvRegisterCategory.getText())) {
-            toast("请选择资产类别！");
-            return false;
-        } else if (TextUtils.isEmpty(mEtRegisterAssetsName.getText())) {
-            toast("请填入资产名称！");
-            return false;
-        } else if (quantity == 0) {
+            int quantity = Integer.parseInt(mEtRegisterAssetsQuantity.getText().toString());
+            if (quantity == 0) {
+                toast("请填写资产数量！");
+                return false;
+            }
+        }
+        if (TextUtils.isEmpty(mEtRegisterAssetsQuantity.getText())) {
             toast("请填写资产数量！");
             return false;
-        } else if (!hasPhoto) {
+        }
+
+        if (TextUtils.isEmpty(mTvRegisterCategory.getText())) {
+            toast("请选择资产类别！");
+            return false;
+        }
+        if (TextUtils.isEmpty(mEtRegisterAssetsName.getText())) {
+            toast("请填入资产名称！");
+            return false;
+        }
+        if (!hasPhoto) {
             toast("请添加图片");
             return false;
         }
@@ -585,6 +594,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         });
 
     }
+
     /**
      * 获取当前用户的Person对象
      */
@@ -613,7 +623,9 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             }
         });
     }
+
     PersonHandler handler = new PersonHandler();
+
     class PersonHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {

@@ -34,8 +34,8 @@ import mehdi.sakout.fancybuttons.FancyButton;
 public class AssetReceiverActivity extends ParentWithNaviActivity {
     @BindView(R.id.rc_receiver_assets)
     RecyclerView mRcReceiverAssets;
-    List<AssetInfo> mAssetInfoList =new ArrayList<>();
-    List<AssetInfo> temp_list=new ArrayList<>();
+    List<AssetInfo> mAssetInfoList = new ArrayList<>();
+    List<AssetInfo> temp_list = new ArrayList<>();
     List<AssetInfo> selectedList = new ArrayList<>();
     AssetRecyclerViewAdapter adapter;
     @BindView(R.id.btn_receiver_ok)
@@ -77,12 +77,12 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
         LinearLayoutManager ll = new LinearLayoutManager(this);
         mRcReceiverAssets.setLayoutManager(ll);
         Person person = MainActivity.getCurrentPerson();
-        AssetsUtil.AndQueryAssets(this,"mNewManager",person,"mStatus",4,handler);
+        AssetsUtil.AndQueryAssets(this, "mNewManager", person, "mStatus", 4, handler);
     }
 
     @OnClick(R.id.btn_receiver_ok)
     public void onViewClicked(View view) {
-        AssetsUtil.updateBmobLibrary(this,updateAllSelectedAssetInfo(mAssetInfoList, selectedList));
+        AssetsUtil.updateBmobLibrary(this, updateAllSelectedAssetInfo(mAssetInfoList, selectedList));
         temp_list.clear();
         temp_list.addAll(AssetsUtil.mergeAndSum(AssetsUtil.deepCopy(mAssetInfoList)));
         adapter.initMap();
@@ -111,6 +111,7 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
             }
         }
     }
+
     /**
      * 创建适配器
      */
@@ -129,6 +130,7 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
         });
         mRcReceiverAssets.setAdapter(adapter);
     }
+
     /**
      * 修改资产信息
      */
@@ -162,15 +164,10 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
     private List<BmobObject> updateAllSelectedAssetInfo(List<AssetInfo> assetsList, List<AssetInfo> selectedAssets) {
         List<BmobObject> objects = new ArrayList<>();
         for (AssetInfo asset : selectedAssets) {
-            if (asset.getQuantity() == 1) {
-                updateAssetInfo(asset);
-                objects.add(asset);
-                assetsList.remove(asset);
-            } else {
-                List<BmobObject> selectObject = updateAllSameImangeNumAssets(assetsList,
-                        asset.getPicture().getImageNum());
-                objects.addAll(selectObject);
-            }
+            List<BmobObject> selectObject = updateAllSameImangeNumAssets(assetsList,
+                    asset.getPicture().getImageNum());
+            objects.addAll(selectObject);
+
         }
         return objects;
     }

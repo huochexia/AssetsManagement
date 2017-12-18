@@ -31,7 +31,7 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.DownloadFileListener;
 
 /**
- * 照片适配器:主要用于资产登记图片选择列表
+ * 照片适配器:主要用于资产登记图片选择列表,
  * Created by Administrator on 2017/11/19 0019.
  */
 
@@ -81,14 +81,16 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
         holder.assetPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!mPictureList.get(position).getSelected()) {
-                    for (int i = 0; i < mPictureList.size(); i++) {
-                        mPictureList.get(i).setSelected(false);
+
+                    if (!mPictureList.get(position).getSelected()) {
+                        for (int i = 0; i < mPictureList.size(); i++) {
+                            mPictureList.get(i).setSelected(false);
+                        }
+                        mPictureList.get(position).setSelected(true);
+                        listener.selectPhoto(mPictureList.get(position));
+                        notifyDataSetChanged();
                     }
-                    mPictureList.get(position).setSelected(true);
-                    listener.selectPhoto(mPictureList.get(position));
-                    notifyDataSetChanged();
-                }
+
             }
         });
 

@@ -21,6 +21,7 @@ import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.adapter.AssetRecyclerViewAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
+import com.example.administrator.assetsmanagement.bean.AssetPicture;
 import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
@@ -37,10 +38,10 @@ import cn.bmob.v3.BmobObject;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
- * 资产移交，可以单个资产（通过编号或扫码）获得资产，也可以整批（位置和管理员）获得资产进行移
- * 交。如果某位置的资产只能移交部分，那么就只能采取个别资产移交，因为一资产一编号。对于某一位置
- * 的可以选择只移交某一种资产。但是这一种资产必须整体移交，如果个别的不移交，则可以先整体然后个别
- * 的再反移交一次
+ * 资产移交，整批（位置、名称或全部）获得资产进行移交。只有正常状态下的资产才可以移交，非正常资产只
+ * 有转变为正常或者通过扫码单独移交。如果某位置的资产只能移交部分，那么就只能采取个别资产移交，因为
+ * 一资产一编号。对于某一位置的可以选择只移交某一种资产。但是这一种资产必须整体移交，如果个别的不移交，
+ * 则可以先整体然后个别的再反移交一次
  * Created by Administrator on 2017/12/8.
  */
 
@@ -49,21 +50,21 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     public static final int REQUEST_RECEIVE_LOCATION = 101;
     public static final int REQUEST_RECEIVE_DEPT = 102;
     public static final int REQUEST_RECEIVE_MANAGER = 103;
-    public static final int REQUEST_SELECTE_MANAGER = 104;
+    public static final int REQUEST_NAME =104;
 
     public static final int SEARCH_LOCATION = 1;
-    public static final int SEARCH_DEPARTMENT = 3;
-    public static final int SEARCH_MANAGER = 4;
+    public static final int SEARCH_NAME= 2;
+    public static final int SEARCH_ALL = 3;
 
 
-    private BaseNode mNode;//接收传入位置、部门和原管理员信息的节点
+
+    private BaseNode mNode;//接收传入位置信息的节点
     private BaseNode mNewLocation, mNewDept;
-    private int select_type = SEARCH_LOCATION; //拟选择的类型，位置、部门、管理员
-    private Person mOldManager, mNewManager;
+    private int select_type = SEARCH_LOCATION; //拟选择的类型，位置、名称或全部
+    private Person  mNewManager;
     @BindView(R.id.ll_assets_turn_over_top)
     LinearLayout mLlAssetsTurnOverTop;
-    @BindView(R.id.et_search_asset_num)
-    LineEditText mEtSearchAssetNum;
+
     @BindView(R.id.tv_receive_new_location)
     TextView mTvReceiveNewLocation;
     @BindView(R.id.tv_receive_new_dept)
@@ -72,22 +73,10 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     TextView mTvNewManager;
     @BindView(R.id.iv_left_navi)
     ImageView ivLeftNavi;
-    @BindView(R.id.rg_assets_turn_over)
-    RadioGroup mRgAssetsTurnOver;
-    @BindView(R.id.iv_barcode_2d)
-    ImageView mIvBarcode2d;
-    @BindView(R.id.btn_single_asset_search)
-    FancyButton mBtnTurnOverSearch;
-    @BindView(R.id.btn_search_location)
-    FancyButton mBtnSearchLocation;
-    @BindView(R.id.btn_register_category)
-    FancyButton mBtnRegisterCategory;
     @BindView(R.id.btn_search_name)
     FancyButton mBtnSearchName;
-    @BindView(R.id.btn_search_manager)
-    FancyButton mBtnSearchManager;
-    @BindView(R.id.btn_search_dept)
-    FancyButton mBtnSearchDept;
+    @BindView(R.id.btn_search_location)
+    FancyButton mBtnSearchLocation;
     @BindView(R.id.tv_search_content)
     TextView mTvSearchContent;
     @BindView(R.id.btn_search_start)
@@ -99,8 +88,6 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     @BindView(R.id.btn_turn_over_ok)
     FancyButton mBtnTurnOverOk;
 
-    @BindView(R.id.rl_single_asset)
-    RelativeLayout mRlSingleAsset;
     @BindView(R.id.ll_overall_asset)
     LinearLayout mLlOverallAsset;
     @BindView(R.id.rg_assets_turn_over_range)
@@ -118,7 +105,9 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     private AssetRecyclerViewAdapter adapter;
     private RecyclerView mRcTurnOverList;
     private Integer flag = 0;//标志，等于1是为新登记资产。
-    private boolean isSingle = true;//判断是单体还是整体
+    private boolean isSingle = false;//判断是单体还是整体
+    private AssetPicture mPicture;
+
 
     @Override
     public String title() {
@@ -200,28 +189,6 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
      * 初始化事件
      */
     private void initEvent() {
-        mRgAssetsTurnOver.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.rb_single_asset:
-                        mRlSingleAsset.setVisibility(View.VISIBLE);
-                        mLlOverallAsset.setVisibility(View.GONE);
-                        mBtnTurnOverOk.setEnabled(false);
-                        isSingle = true;
-                        clearLists();
-                        break;
-                    case R.id.rb_overall_assets:
-                        mLlOverallAsset.setVisibility(View.VISIBLE);
-                        mRlSingleAsset.setVisibility(View.GONE);
-                        mBtnTurnOverOk.setEnabled(false);
-                        isSingle = false;
-                        clearLists();
-                        break;
-
-                }
-            }
-        });
         mRgAssetsTurnOverRange.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -234,13 +201,19 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                         mBtnSearchLocation.setVisibility(View.VISIBLE);
                         break;
 
-                    case R.id.rb_turn_over_manager:
+                    case R.id.rb_turn_over_picture:
                         changeBtnStatus();
                         clearLists();
-                        select_type = SEARCH_MANAGER;
+                        select_type = SEARCH_NAME;
                         mTvSearchContent.setText("");
-                        mBtnSearchManager.setVisibility(View.VISIBLE);
+                        mBtnSearchName.setVisibility(View.VISIBLE);
                         break;
+                    case R.id.rb_turn_over_all:
+                        changeBtnStatus();
+                        clearLists();
+                        select_type= SEARCH_ALL;
+                        mTvSearchContent.setText("全部正常资产");
+                       break;
 
                 }
             }
@@ -252,8 +225,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
      */
     private void changeBtnStatus() {
         mBtnSearchLocation.setVisibility(View.GONE);
-        mBtnSearchManager.setVisibility(View.GONE);
-        mBtnSearchDept.setVisibility(View.GONE);
+        mBtnSearchName.setVisibility(View.GONE);
         mBtnTurnOverOk.setEnabled(false);
     }
 
@@ -263,25 +235,21 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
      * @param view
      */
 
-    @OnClick({R.id.btn_single_asset_search, R.id.btn_search_location, R.id.btn_search_manager,
-            R.id.btn_search_start, R.id.btn_receive_manager, R.id.btn_turn_over_ok, R.id.btn_receive_location,
+    @OnClick({ R.id.btn_search_location,R.id.btn_search_name,R.id.btn_search_start,
+            R.id.btn_receive_manager, R.id.btn_turn_over_ok, R.id.btn_receive_location,
             R.id.btn_receive_dept})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.btn_single_asset_search:
-                clearLists();
-                AssetsUtil.AndQueryAssets(this,"mAssetsNum",mEtSearchAssetNum.getText().toString().trim(),handler);
-                break;
             case R.id.btn_search_location:
                 clearLists();
                 getSelectedInfo(SelectedTreeNodeActivity.SEARCH_LOCATION, false, REQUEST_SELECTED);
                 break;
-            case R.id.btn_search_manager:
+            case R.id.btn_search_name:
                 clearLists();
-                Intent intent = new Intent(AssetsTurnOverActivity.this, ManagerListActivity.class);
-                startActivityForResult(intent, REQUEST_SELECTE_MANAGER);
+                Intent intentPhoto = new Intent(this, SelectAssetsPhotoActivity.class);
+                intentPhoto.putExtra("isRegister", false);
+                startActivityForResult(intentPhoto,REQUEST_NAME );
                 break;
-
             case R.id.btn_search_start:
                 clearLists();
                 getSearchResultList();
@@ -304,9 +272,9 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                             toast("新登记资产必须分配位置和部门！");
                         } else {
                             if (flag == 1) {//新登记资产为添加
-                                AssetsUtil.insertBmobLibrary(this,updateAllSelectedAssetInfo(assetsList, selectedAssets));
+                                AssetsUtil.insertBmobLibrary(this, updateAllSelectedAssetInfo(assetsList, selectedAssets));
                             } else {//原有资产移交为变更
-                                AssetsUtil.updateBmobLibrary(this,updateAllSelectedAssetInfo(assetsList, selectedAssets));
+                                AssetsUtil.updateBmobLibrary(this, updateAllSelectedAssetInfo(assetsList, selectedAssets));
                             }
                             temp_list.clear();
                             if (isSingle) {
@@ -338,10 +306,11 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                     mTvSearchContent.setText(NodeHelper.getSearchContentName(mNode));
                 }
                 break;
-            case REQUEST_SELECTE_MANAGER://原管理员
-                if (resultCode == ManagerListActivity.SEARCH_OK) {
-                    mOldManager = (Person) data.getSerializableExtra("manager");
-                    mTvSearchContent.setText(mOldManager.getUsername());
+            case REQUEST_NAME:
+                if (resultCode == SelectAssetsPhotoActivity.RESULT_OK) {
+                    Bundle  bundle = data.getBundleExtra("assetpicture");
+                    mPicture = (AssetPicture) bundle.getSerializable("imageFile");
+                    mTvSearchContent.setText(mPicture.getImageNum());
                 }
                 break;
             case REQUEST_RECEIVE_LOCATION:
@@ -421,18 +390,17 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         switch (select_type) {
             case SEARCH_LOCATION:
                 if (mNode != null) {
-                    AssetsUtil.AndQueryAssets(this,"mLocationNum", mNode.getId(),"mOldManager",current,handler);
+                    AssetsUtil.AndQueryAssets(this, "mLocationNum", mNode.getId(),
+                            "mOldManager", current,"mStatus",0, handler);
                 }
                 break;
-            case SEARCH_DEPARTMENT:
-                if (mNode != null) {
-                    AssetsUtil.AndQueryAssets(this,"mDeptNum", mNode.getId(),"mOldManager",current,handler);
-                }
+            case SEARCH_NAME:
+                AssetsUtil.AndQueryAssets(this, "mPicture",mPicture,
+                        "mOldManager", current,"mStatus",0, handler);
                 break;
-            case SEARCH_MANAGER:
-                if (mOldManager != null) {
-                    AssetsUtil.AndQueryAssets(this,"mOldManager", mOldManager,handler);
-                }
+            case SEARCH_ALL:
+                AssetsUtil.AndQueryAssets(this, "mStatus",0,
+                        "mOldManager", current, handler);
                 break;
         }
 

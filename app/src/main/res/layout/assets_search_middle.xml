@@ -84,7 +84,7 @@
             fancy:fb_iconResource="@drawable/ic_perm_identity_black_24dp"
             fancy:fb_radiusBottomRight="10dp"
             fancy:fb_radiusTopLeft="10dp"
-            fancy:fb_text="@string/department"
+            fancy:fb_text="@string/manager"
             fancy:fb_ghost="true"
             fancy:fb_textColor="#000000"
             fancy:fb_textFont="隶书.ttf"

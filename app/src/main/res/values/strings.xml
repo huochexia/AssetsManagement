@@ -34,4 +34,6 @@
     <string name="editview_hint_text">请输入资产编号</string>
     <string name="btn_next_text">下 一 个</string>
     <string name="btn_category_text">类别</string>
+    <string name="name_and_image">名称（图）</string>
+    <string name="all_text">全部</string>
 </resources>

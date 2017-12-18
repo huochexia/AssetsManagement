@@ -64,6 +64,12 @@ public class MainActivity extends ParentWithNaviActivity {
     public String title() {
         return "欢迎使用资产管理系统";
     }
+
+    @Override
+    public Object right() {
+        return R.drawable.barcode_2d;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

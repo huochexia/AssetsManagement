@@ -12,54 +12,15 @@
         android:id="@+id/ll_assets_turn_over_top"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4"
+        android:layout_weight="3"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/turn_over_content"
-                android:textSize="18sp"/>
-
-            <RadioGroup
-                android:id="@+id/rg_assets_turn_over"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/rb_single_asset"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/rb_single_text"
-                    android:textSize="16sp"/>
-
-                <RadioButton
-                    android:id="@+id/rb_overall_assets"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/rb_overall_text"
-                    android:textSize="16sp"/>
-            </RadioGroup>
-        </LinearLayout>
-
         <include layout="@layout/view_line_between"/>
-
-        <include layout="@layout/single_asset_search"/>
-
         <LinearLayout
             android:id="@+id/ll_overall_asset"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -86,12 +47,17 @@
                         android:checked="true"
                         android:text="@string/location"
                         android:textSize="16sp"/>
-
                     <RadioButton
-                        android:id="@+id/rb_turn_over_manager"
+                        android:id="@+id/rb_turn_over_picture"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/manager"
+                        android:text="@string/name_and_image"
+                        android:textSize="16sp"/>
+                    <RadioButton
+                        android:id="@+id/rb_turn_over_all"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/all_text"
                         android:textSize="16sp"/>
                 </RadioGroup>
 
