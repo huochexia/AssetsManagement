@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.ToxicBakery.viewpager.transforms.RotateDownTransformer;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.activity.CustomScanActivity;
+import com.example.administrator.assetsmanagement.activity.SingleAssetInfoActivity;
 import com.example.administrator.assetsmanagement.adapter.ViewPagerAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.Person;
@@ -217,6 +218,9 @@ public class MainActivity extends ParentWithNaviActivity {
                 Toast.makeText(this, "扫描成功", Toast.LENGTH_LONG).show();
                 // ScanResult 为 获取到的字符串
                 String ScanResult = intentResult.getContents();
+                Bundle bundle = new Bundle();
+                bundle.putString("assetNum", ScanResult);
+                startActivity(SingleAssetInfoActivity.class,bundle,false);
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);

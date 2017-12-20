@@ -50,6 +50,7 @@
                 android:id="@+id/tv_scan_asset_manager"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
                 android:textSize="16sp" />
         </LinearLayout>
         <LinearLayout
@@ -73,6 +74,7 @@
                 android:id="@+id/tv_scan_asset_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
                 android:textSize="16sp" />
         </LinearLayout>
         <LinearLayout
@@ -96,6 +98,7 @@
                 android:id="@+id/tv_scan_asset_department"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -116,6 +119,7 @@
                 android:id="@+id/tv_scan_asset_register_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -134,29 +138,13 @@
 
             <TextView
                 android:id="@+id/tv_scan_asset_state"
+                android:layout_marginLeft="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp" />
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="2dp"
-            android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="总数量"
-                android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/tv_scan_asset_summer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp" />
-        </LinearLayout>
 
     </LinearLayout>
 

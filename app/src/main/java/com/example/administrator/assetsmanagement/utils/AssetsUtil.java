@@ -123,7 +123,7 @@ public class AssetsUtil {
         BmobQuery<AssetInfo> query = new BmobQuery<>();
         query.addWhereEqualTo(para, value);
         query.setLimit(500);
-        query.include("mPicture");
+        query.include("mPicture,mOldManager");
         query.findObjects(new FindListener<AssetInfo>() {
             @Override
             public void done(final List<AssetInfo> list, BmobException e) {

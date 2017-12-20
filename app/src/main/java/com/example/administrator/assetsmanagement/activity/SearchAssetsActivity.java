@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
@@ -22,6 +23,8 @@ import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -173,7 +176,7 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                     case SEARCH_LOCATION:
                         if (mNode != null) {
                             AssetsUtil.AndQueryAssets(SearchAssetsActivity.this,
-                                    "mLoationNum", mNode.getId(), handler);
+                                    "mLocationNum", mNode.getId(), handler);
                         }
                         break;
                     case SEARCH_CATEGORY:
@@ -287,6 +290,7 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
 //                Intent intentPhoto = new Intent(this, SelectAssetsPhotoActivity.class);
 //                intentPhoto.putExtra("isRegister", false);
 //                startActivityForResult(intentPhoto, REQUEST_PICTURE);
+                customScan();
                 break;
             case R.id.btn_search_dept:
                 clearLists();
@@ -331,8 +335,30 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                 }
                 break;
             default:
+                IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+                if (intentResult != null) {
+                    if (intentResult.getContents() == null) {
+                        Toast.makeText(this, "内容为空", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "扫描成功", Toast.LENGTH_LONG).show();
+                        // ScanResult 为 获取到的字符串
+                        String ScanResult = intentResult.getContents();
+                        mTvSearchContent.setText("资产编号"+ScanResult);
+
+                    }
+                } else {
+                    super.onActivityResult(requestCode, resultCode, data);
+                }
         }
     }
 
-
+    /**
+     * 扫描二维码点击事件
+     */
+    public void customScan() {
+        new IntentIntegrator(this)
+                .setOrientationLocked(false)
+                .setCaptureActivity(CustomScanActivity.class) // 设置自定义的activity是CustomActivity
+                .initiateScan(); // 初始化扫描
+    }
 }

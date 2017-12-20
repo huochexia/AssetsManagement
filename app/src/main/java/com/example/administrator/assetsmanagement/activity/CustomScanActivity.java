@@ -81,13 +81,13 @@ public class CustomScanActivity extends AppCompatActivity implements DecoratedBa
     // torch 手电筒
     @Override
     public void onTorchOn() {
-        Toast.makeText(this, "torch on", Toast.LENGTH_LONG).show();
+
         isLightOn = true;
     }
 
     @Override
     public void onTorchOff() {
-        Toast.makeText(this, "torch off", Toast.LENGTH_LONG).show();
+
         isLightOn = false;
     }
 
