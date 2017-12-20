@@ -55,6 +55,7 @@
         <activity android:name=".MainActivity"/>
         <activity android:name=".RegisterManagerActivity"/>
         <activity android:name=".activity.AssetReceiverActivity"/>
+        <activity android:name=".activity.CustomScanActivity"/>
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package com.example.administrator.assetsmanagement;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -9,14 +10,19 @@ import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ToxicBakery.viewpager.transforms.RotateDownTransformer;
+import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
+import com.example.administrator.assetsmanagement.activity.CustomScanActivity;
+import com.example.administrator.assetsmanagement.adapter.ViewPagerAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.fragment.AssetsManagementFragment;
 import com.example.administrator.assetsmanagement.fragment.BaseSettingFragment;
 import com.example.administrator.assetsmanagement.fragment.MySettingFragment;
-import com.example.administrator.assetsmanagement.adapter.ViewPagerAdapter;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.util.List;
 
@@ -70,6 +76,30 @@ public class MainActivity extends ParentWithNaviActivity {
         return R.drawable.barcode_2d;
     }
 
+    @Override
+    public ToolbarClickListener getToolbarListener() {
+        return new ToolbarClickListener() {
+            @Override
+            public void clickLeft() {
+
+            }
+
+            @Override
+            public void clickRight() {
+                customScan();
+            }
+        };
+    }
+
+    /**
+     * 扫描二维码点击事件
+     */
+    public void customScan() {
+        new IntentIntegrator(this)
+                .setOrientationLocked(false)
+                .setCaptureActivity(CustomScanActivity.class) // 设置自定义的activity是CustomActivity
+                .initiateScan(); // 初始化扫描
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -175,5 +205,23 @@ public class MainActivity extends ParentWithNaviActivity {
             }
         }
     }
+
+    // 通过 onActivityResult的方法获取 扫描回来的 值
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (intentResult != null) {
+            if (intentResult.getContents() == null) {
+                Toast.makeText(this, "内容为空", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "扫描成功", Toast.LENGTH_LONG).show();
+                // ScanResult 为 获取到的字符串
+                String ScanResult = intentResult.getContents();
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
 
 }
