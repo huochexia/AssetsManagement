@@ -72,12 +72,7 @@ public class MainActivity extends ParentWithNaviActivity {
         return "欢迎使用资产管理系统";
     }
 
-    @Override
-    public Object right() {
-        return R.drawable.barcode_2d;
-    }
-
-    @Override
+     @Override
     public ToolbarClickListener getToolbarListener() {
         return new ToolbarClickListener() {
             @Override
@@ -87,20 +82,12 @@ public class MainActivity extends ParentWithNaviActivity {
 
             @Override
             public void clickRight() {
-                customScan();
+
             }
         };
     }
 
-    /**
-     * 扫描二维码点击事件
-     */
-    public void customScan() {
-        new IntentIntegrator(this)
-                .setOrientationLocked(false)
-                .setCaptureActivity(CustomScanActivity.class) // 设置自定义的activity是CustomActivity
-                .initiateScan(); // 初始化扫描
-    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -206,26 +193,5 @@ public class MainActivity extends ParentWithNaviActivity {
             }
         }
     }
-
-    // 通过 onActivityResult的方法获取 扫描回来的 值
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (intentResult != null) {
-            if (intentResult.getContents() == null) {
-                Toast.makeText(this, "内容为空", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, "扫描成功", Toast.LENGTH_LONG).show();
-                // ScanResult 为 获取到的字符串
-                String ScanResult = intentResult.getContents();
-                Bundle bundle = new Bundle();
-                bundle.putString("assetNum", ScanResult);
-                startActivity(SingleAssetInfoActivity.class,bundle,false);
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
 
 }

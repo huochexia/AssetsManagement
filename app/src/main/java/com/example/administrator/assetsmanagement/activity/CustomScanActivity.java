@@ -6,8 +6,7 @@ import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
+import android.widget.ImageView;
 
 import com.example.administrator.assetsmanagement.R;
 import com.journeyapps.barcodescanner.CaptureManager;
@@ -26,7 +25,8 @@ public class CustomScanActivity extends AppCompatActivity implements DecoratedBa
     @BindView(R.id.dbv_custom)
     DecoratedBarcodeView mDBV;
     @BindView(R.id.btn_switch)
-    Button switchLight;
+    ImageView switchLight;
+
     private CaptureManager captureManager;
     private boolean isLightOn = false;
 
@@ -97,7 +97,7 @@ public class CustomScanActivity extends AppCompatActivity implements DecoratedBa
                 .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
     }
 
-     @OnClick(R.id.btn_switch)
+    @OnClick(R.id.btn_switch)
     public void onViewClicked() {
         if (isLightOn) {
             mDBV.setTorchOff();

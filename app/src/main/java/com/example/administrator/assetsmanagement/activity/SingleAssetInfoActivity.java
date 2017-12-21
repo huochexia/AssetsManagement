@@ -4,22 +4,24 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
+import com.example.administrator.assetsmanagement.MainActivity;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
+import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
  * Created by Administrator on 2017/12/20 0020.
@@ -41,9 +43,10 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
     TextView mTvScanAssetState;
 
 
-
-    String assetNum ;
+    String assetNum;
     AssetInfo mAssetInfo;
+    @BindView(R.id.ll_asset_single_management)
+    LinearLayout mLlAssetSingleManagement;
 
     @Override
     public String title() {
@@ -77,10 +80,12 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
         ButterKnife.bind(this);
         Bundle bundle = getBundle();
         assetNum = bundle.getString("assetNum");
-        AssetsUtil.AndQueryAssets(this,"mAssetsNum",assetNum,handler);
+        AssetsUtil.AndQueryAssets(this, "mAssetsNum", assetNum, handler);
 
     }
+
     SingleAssetHandler handler = new SingleAssetHandler();
+
     class SingleAssetHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
@@ -114,7 +119,13 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
                             case 5:
                                 mTvScanAssetState.setText("送修");
                         }
-
+                        Person person = MainActivity.getCurrentPerson();
+                        String id = mAssetInfo.getOldManager().getObjectId();
+                        if (!id.equals(person.getObjectId())) {
+                            mLlAssetSingleManagement.setVisibility(View.GONE);
+                        } else {
+                            mLlAssetSingleManagement.setVisibility(View.VISIBLE);
+                        }
                         title = mAssetInfo.getAssetName();
                         initNaviView();
 

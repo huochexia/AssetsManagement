@@ -1,5 +1,6 @@
 package com.example.administrator.assetsmanagement.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -7,6 +8,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
@@ -15,6 +17,8 @@ import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.Person;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.readystatesoftware.viewbadger.BadgeView;
 
 import java.util.ArrayList;
@@ -62,7 +66,7 @@ public class ManageAssetsActivity extends ParentWithNaviActivity {
 
     @Override
     public Object right() {
-        return R.drawable.ic_search_db;
+        return R.drawable.whitescan;
     }
 
     @Override
@@ -75,7 +79,7 @@ public class ManageAssetsActivity extends ParentWithNaviActivity {
 
             @Override
             public void clickRight() {
-                startActivity(SearchAssetsActivity.class, null, false);
+                customScan();
             }
         };
     }
@@ -94,7 +98,6 @@ public class ManageAssetsActivity extends ParentWithNaviActivity {
         initNaviView();
         glideImage();
         badgeView = new BadgeView(this, ivAssetsReceive);// 将需要设置角标的View 传递进去
-//        queryCountOfReceiver();
     }
 
     /**
@@ -120,7 +123,7 @@ public class ManageAssetsActivity extends ParentWithNaviActivity {
                 startActivity(AssetsTurnOverActivity.class, null, false);
                 break;
             case R.id.iv_assets_receive:
-                startActivity(AssetReceiverActivity.class,null,false);
+                startActivity(AssetReceiverActivity.class, null, false);
                 break;
             case R.id.iv_assets_repaired:
                 startActivity(AssetRepairActivity.class, null, false);
@@ -158,7 +161,7 @@ public class ManageAssetsActivity extends ParentWithNaviActivity {
                         badgeView.setTextSize(19);// 设置文本大小
                         badgeView.setTextColor(Color.GREEN);
                         badgeView.setBadgePosition(BadgeView.POSITION_TOP_LEFT);// 设置在右上角
-                        badgeView.setText(integer+""); // 设置要显示的文本
+                        badgeView.setText(integer + ""); // 设置要显示的文本
                         badgeView.show();// 将角标显示出来
                     }
                 });
@@ -166,4 +169,33 @@ public class ManageAssetsActivity extends ParentWithNaviActivity {
         });
     }
 
+    /**
+     * 扫描二维码点击事件
+     */
+    public  void customScan() {
+        new IntentIntegrator(this)
+                .setOrientationLocked(false)
+                .setCaptureActivity(CustomScanActivity.class) // 设置自定义的activity是CustomActivity
+                .initiateScan(); // 初始化扫描
+    }
+
+    // 通过 onActivityResult的方法获取 扫描回来的 值
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (intentResult != null) {
+            if (intentResult.getContents() == null) {
+                Toast.makeText(this, "内容为空", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "扫描成功", Toast.LENGTH_LONG).show();
+                // ScanResult 为 获取到的字符串
+                String ScanResult = intentResult.getContents();
+                Bundle bundle = new Bundle();
+                bundle.putString("assetNum", ScanResult);
+                startActivity(SingleAssetInfoActivity.class, bundle, false);
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 }
