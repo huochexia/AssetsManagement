@@ -14,9 +14,7 @@
 
 
     </LinearLayout>
-    <!--<include layout="@layout/view_line_between"/>-->
 
-    <!--<include layout="@layout/view_line_between"/>-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -234,55 +232,39 @@
            line:lineColorEt="#1d26de" />
    </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp">
-        <RelativeLayout
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
-            <mehdi.sakout.fancybuttons.FancyButton
+            android:layout_centerHorizontal="true">
+            <Button
                 android:id="@+id/btn_register_add_ok"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:layout_alignParentEnd="true"
-                android:padding="10dp"
-                fancy:fb_borderColor="#FFFFFF"
-                fancy:fb_borderWidth="0dp"
-                fancy:fb_defaultColor="#3f51b4"
-                fancy:fb_focusColor="#7182e2"
-                fancy:fb_radius="15dp"
-                fancy:fb_text="@string/btn_confirm"
-                fancy:fb_textFont="隶书.ttf"
-                fancy:fb_textSize="20sp"
-                fancy:fb_textColor="#FFFFFF">
-            </mehdi.sakout.fancybuttons.FancyButton>
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-            <mehdi.sakout.fancybuttons.FancyButton
+                android:text="@string/btn_confirm"
+                android:background="@drawable/btn_login_selector"
+                android:textColor="@color/base_color_text_white"
+                android:textSize="16sp"
+                android:padding="10dp"/>
+            <Button
                 android:id="@+id/btn_register_add_next"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_alignParentStart="true"
-                android:padding="10dp"
-                fancy:fb_borderColor="#FFFFFF"
-                fancy:fb_borderWidth="0dp"
-                fancy:fb_defaultColor="#3f51b4"
-                fancy:fb_focusColor="#7182e2"
-                fancy:fb_radius="15dp"
-                fancy:fb_text="@string/btn_next_text"
-                fancy:fb_textFont="隶书.ttf"
-                fancy:fb_textSize="20sp"
-                fancy:fb_textColor="#FFFFFF">
-            </mehdi.sakout.fancybuttons.FancyButton>
+                android:layout_marginEnd="10dp"
+                android:layout_alignParentEnd="true"
+                android:text="@string/btn_next_text"
+                android:background="@drawable/btn_login_selector"
+                android:textColor="@color/base_color_text_white"
+                android:textSize="16sp"
+                android:padding="10dp"/>
 
-        </RelativeLayout>
-    </LinearLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>
