@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,61 +23,47 @@
 
             </android.support.v7.widget.RecyclerView>
         </LinearLayout>
-        <LinearLayout
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
 
-                <mehdi.sakout.fancybuttons.FancyButton
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true">
+
+                <Button
                     android:id="@+id/btn_single_asset_manage_ok"
-                    android:layout_width="150dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginEnd="20dp"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="10dp"
                     android:padding="10dp"
-                    fancy:fb_borderColor="#aeaaaa"
-                    fancy:fb_disabledColor="#aeaaaa"
-                    fancy:fb_borderWidth="0dp"
-                    fancy:fb_defaultColor="#3f51b4"
-                    fancy:fb_focusColor="#7182e2"
-                    fancy:fb_radius="15dp"
-                    fancy:fb_text="确定"
-                    fancy:fb_textColor="#FFFFFF"
-                    fancy:fb_textFont="隶书.ttf"
-                    fancy:fb_textSize="16sp">
-                </mehdi.sakout.fancybuttons.FancyButton>
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-                <mehdi.sakout.fancybuttons.FancyButton
+                    android:background="@drawable/btn_login_selector"
+                    android:text="@string/btn_confirm"
+                    android:textColor="@color/base_color_text_white"
+                    android:textSize="16sp"
+                    android:enabled="false"/>
+                <Button
                     android:id="@+id/btn_single_asset_manage_cancel"
-                    android:layout_width="150dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
                     android:layout_marginEnd="20dp"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="10dp"
                     android:padding="10dp"
-                    fancy:fb_borderColor="#FFFFFF"
-                    fancy:fb_disabledColor="#aeaaaa"
-                    fancy:fb_borderWidth="0dp"
-                    fancy:fb_defaultColor="#3f51b4"
-                    fancy:fb_focusColor="#7182e2"
-                    fancy:fb_radius="15dp"
-                    fancy:fb_text="取消"
-                    fancy:fb_textColor="#FFFFFF"
-                    fancy:fb_textFont="隶书.ttf"
-                    fancy:fb_textSize="16sp">
-                </mehdi.sakout.fancybuttons.FancyButton>
-            </RelativeLayout>
-        </LinearLayout>
+                    android:background="@drawable/btn_login_selector"
+                    android:text="@string/btn_cancel"
+                    android:textColor="@color/base_color_text_white"
+                    android:textSize="16sp"
+                    android:enabled="false"/>
+            </LinearLayout>
+
+        </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

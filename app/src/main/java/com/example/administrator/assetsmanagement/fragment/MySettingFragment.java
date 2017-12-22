@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.administrator.assetsmanagement.R;
+import com.example.administrator.assetsmanagement.activity.UpdateMyInfo;
 import com.example.administrator.assetsmanagement.base.BaseFragment;
 
 import butterknife.ButterKnife;
@@ -53,6 +54,7 @@ public class MySettingFragment extends BaseFragment {
             case R.id.btn_query_my_assets:
                 break;
             case R.id.btn_update_my_info:
+                startActivity(UpdateMyInfo.class,null);
                 break;
             case R.id.btn_logout:
                 BmobUser.logOut();

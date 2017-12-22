@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
@@ -42,9 +43,9 @@ public class AssetRepairActivity extends ParentWithNaviActivity {
     @BindView(R.id.rv_single_asset_manage)
     RecyclerView rvSingleAssetManage;
     @BindView(R.id.btn_single_asset_manage_ok)
-    FancyButton btnSingleAssetManageOk;
+    Button btnSingleAssetManageOk;
     @BindView(R.id.btn_single_asset_manage_cancel)
-    FancyButton btnSingleAssetManageCancel;
+    Button btnSingleAssetManageCancel;
     List<AssetInfo> list;
     AssetRecyclerViewAdapter adapter;
     @BindView(R.id.et_search_asset_num)

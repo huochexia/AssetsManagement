@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
@@ -80,13 +81,13 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     @BindView(R.id.tv_search_content)
     TextView mTvSearchContent;
     @BindView(R.id.btn_search_start)
-    FancyButton mBtnSearchStart;
+    Button mBtnSearchStart;
 
 
     @BindView(R.id.btn_receive_manager)
     FancyButton mBtnTurnOverReceiver;
     @BindView(R.id.btn_turn_over_ok)
-    FancyButton mBtnTurnOverOk;
+    Button mBtnTurnOverOk;
 
     @BindView(R.id.ll_overall_asset)
     LinearLayout mLlOverallAsset;

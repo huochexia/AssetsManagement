@@ -13,12 +13,17 @@ import android.widget.Toast;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
+
 /**基础类
  * @author liuyong
  * Created by Administrator on 2017/11/3.
  */
 
 public class BaseActivity extends AppCompatActivity {
+    private CompositeSubscription mCompositeSubscription;
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -95,5 +100,16 @@ public class BaseActivity extends AppCompatActivity {
             InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             im.hideSoftInputFromWindow(token,0);
         }
+    }
+    /**
+     * 解决Subscription内存泄露问题
+     *
+     * @param s
+     */
+    protected void addSubscription(Subscription s) {
+        if (this.mCompositeSubscription == null) {
+            this.mCompositeSubscription = new CompositeSubscription();
+        }
+        this.mCompositeSubscription.add(s);
     }
 }

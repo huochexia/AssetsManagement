@@ -36,4 +36,6 @@
     <string name="btn_category_text">类别</string>
     <string name="name_and_image">名称（图）</string>
     <string name="all_text">全部</string>
+    <string name="repair_old_password_hint">请输入旧密码</string>
+    <string name="btn_cancel">取消</string>
 </resources>

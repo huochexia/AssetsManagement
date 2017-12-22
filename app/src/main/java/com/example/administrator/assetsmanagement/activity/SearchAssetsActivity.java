@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,7 +71,7 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
     @BindView(R.id.btn_search_dept)
     FancyButton mBtnSearchDept;
     @BindView(R.id.btn_search_start)
-    FancyButton btnSearchStart;
+    Button btnSearchStart;
 
 
     private BaseNode mNode;//接收传入的节点信息

@@ -1,5 +1,6 @@
 package com.example.administrator.assetsmanagement;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -48,6 +49,7 @@ public class LoginActivity extends BaseActivity {
                     public void done(Object o, BmobException e) {
                         if (e == null) {
                             //登录成功
+
                             startActivity(MainActivity.class, null, true);
                         } else {
                             toast(e.getMessage() + "(" + e.getErrorCode() + ")");

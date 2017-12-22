@@ -32,22 +32,33 @@
 
                 android:textSize="16sp" />
         </LinearLayout>
-
-        <mehdi.sakout.fancybuttons.FancyButton
-            android:id="@+id/btn_single_asset_search"
-            fancy:fb_borderColor="#FFFFFF"
-            fancy:fb_borderWidth="0dp"
-            fancy:fb_defaultColor="#3f51b4"
-            fancy:fb_focusColor="#7182e2"
-            fancy:fb_radius="15dp"
-            fancy:fb_text="@string/btn_search_text"
-            fancy:fb_textColor="#FFFFFF"
-            fancy:fb_textFont="隶书.ttf"
-            fancy:fb_textSize="16sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp"
-            android:padding="10dp"/>
+    <Button
+        android:id="@+id/btn_single_asset_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_login_selector"
+        android:textColor="@color/base_color_text_white"
+        android:text="@string/btn_search_text"
+        android:textSize="16sp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"
+        android:padding="10dp"
+        />
+        <!--<mehdi.sakout.fancybuttons.FancyButton-->
+            <!--android:id="@+id/btn_single_asset_search"-->
+            <!--fancy:fb_borderColor="#FFFFFF"-->
+            <!--fancy:fb_borderWidth="0dp"-->
+            <!--fancy:fb_defaultColor="#3f51b4"-->
+            <!--fancy:fb_focusColor="#7182e2"-->
+            <!--fancy:fb_radius="15dp"-->
+            <!--fancy:fb_text="@string/btn_search_text"-->
+            <!--fancy:fb_textColor="#FFFFFF"-->
+            <!--fancy:fb_textFont="隶书.ttf"-->
+            <!--fancy:fb_textSize="16sp"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentEnd="true"-->
+            <!--android:layout_marginEnd="10dp"-->
+            <!--android:padding="10dp"/>-->
 
 </RelativeLayout>

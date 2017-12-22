@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical">
+
+    <include layout="@layout/include_navi" />
+
+    <Button
+        android:id="@+id/btn_update_my_department"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_title"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:background="@drawable/btn_login_selector"
+        android:gravity="center"
+        android:text="@string/update_my_department"
+        android:textColor="@color/base_color_text_white"
+        android:textSize="@dimen/text_size_large" />
+
+    <Button
+        android:id="@+id/btn_repair_password"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_title"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:background="@drawable/btn_login_selector"
+        android:gravity="center"
+        android:text="@string/repair_password"
+        android:textColor="@color/base_color_text_white"
+        android:textSize="@dimen/text_size_large" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/base_horization_line" />
+
+</LinearLayout>

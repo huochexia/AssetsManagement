@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 
 import com.example.administrator.assetsmanagement.Interface.AssetSelectedListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
@@ -38,8 +39,8 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
     List<AssetInfo> temp_list = new ArrayList<>();
     List<AssetInfo> selectedList = new ArrayList<>();
     AssetRecyclerViewAdapter adapter;
-    @BindView(R.id.btn_receiver_ok)
-    FancyButton mBtnReceiverOk;
+    @BindView(R.id.btn_receive_ok)
+    Button mBtnReceiverOk;
 
     @Override
     public String title() {
@@ -80,7 +81,7 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
         AssetsUtil.AndQueryAssets(this, "mNewManager", person, "mStatus", 4, handler);
     }
 
-    @OnClick(R.id.btn_receiver_ok)
+    @OnClick(R.id.btn_receive_ok)
     public void onViewClicked(View view) {
         AssetsUtil.updateBmobLibrary(this, updateAllSelectedAssetInfo(mAssetInfoList, selectedList));
         temp_list.clear();
