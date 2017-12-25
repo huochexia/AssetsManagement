@@ -28,6 +28,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.CountListener;
 
@@ -144,7 +145,7 @@ public class ManageAssetsActivity extends ParentWithNaviActivity {
     private void queryCountOfReceiver() {
         List<BmobQuery<AssetInfo>> and = new ArrayList<>();
         BmobQuery<AssetInfo> query1 = new BmobQuery<>();
-        Person person = MainActivity.getCurrentPerson();
+        Person person = BmobUser.getCurrentUser(Person.class);
         query1.addWhereEqualTo("mNewManager", person);
         BmobQuery<AssetInfo> query2 = new BmobQuery<>();
         query2.addWhereEqualTo("mStatus", 4);

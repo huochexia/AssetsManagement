@@ -157,7 +157,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         setTextFonts();
         asset = new AssetInfo();
         asset.setStatus(9);//初始状态，9新登记
-        asset.setOldManager(MainActivity.getCurrentPerson());//初始管理者，为空或登记人即当前用户
+        asset.setOldManager(BmobUser.getCurrentUser(Person.class));//初始管理者，为空或登记人即当前用户
 //        getPerson();
         initEvent();
         mEtRegisterAssetsQuantity.setText("");

@@ -16,13 +16,12 @@ public class Location extends BmobObject {
     private String parentId;
     @TreeNodeName
     private String locationName;
-//    private String locationNumber;
 
     public String getId() {
         return id;
     }
 
-    public void setId(String  id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -42,13 +41,6 @@ public class Location extends BmobObject {
         this.locationName = locationName;
     }
 
-//    public String getLocationNumber() {
-//        return locationNumber;
-//    }
-
-//    public void setLocationNumber(String locationNumber) {
-//        this.locationNumber = locationNumber;
-//    }
 
     /**
      * 构造方法

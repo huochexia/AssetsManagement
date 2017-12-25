@@ -36,6 +36,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.BmobUser;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
@@ -387,7 +388,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
      * 获取查询结果
      */
     private void getSearchResultList() {
-        Person current = MainActivity.getCurrentPerson();
+        Person current = BmobUser.getCurrentUser(Person.class);
         switch (select_type) {
             case SEARCH_LOCATION:
                 if (mNode != null) {

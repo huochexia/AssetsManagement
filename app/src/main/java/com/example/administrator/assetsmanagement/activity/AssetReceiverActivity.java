@@ -26,6 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.BmobUser;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
@@ -77,7 +78,7 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
 
         LinearLayoutManager ll = new LinearLayoutManager(this);
         mRcReceiverAssets.setLayoutManager(ll);
-        Person person = MainActivity.getCurrentPerson();
+        Person person = BmobUser.getCurrentUser(Person.class);
         AssetsUtil.AndQueryAssets(this, "mNewManager", person, "mStatus", 4, handler);
     }
 
@@ -136,7 +137,7 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
      * 修改资产信息
      */
     private void updateAssetInfo(AssetInfo asset) {
-        asset.setOldManager(MainActivity.getCurrentPerson());
+        asset.setOldManager(BmobUser.getCurrentUser(Person.class));
         Person person = new Person();
         asset.setNewManager(person);
         asset.setStatus(0);
