@@ -31,7 +31,7 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
 
-/**
+/**通过扫描二维码，获取单个资产的信息，并可以进行相应的操作
  * Created by Administrator on 2017/12/20 0020.
  */
 
