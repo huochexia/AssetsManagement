@@ -18,6 +18,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -90,9 +91,9 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     TextView mTvAssetsItemCamera;
 
     @BindView(R.id.btn_register_add_ok)
-    FancyButton btnRegisterAddOk;
+    Button btnRegisterAddOk;
     @BindView(R.id.btn_register_add_next)
-    FancyButton btnRegisterAddNext;
+    Button btnRegisterAddNext;
     @BindView(R.id.btn_register_category)
     FancyButton btnRegisterCategory;
     @BindView(R.id.et_register_assets_date)
@@ -505,6 +506,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             mEtRegisterAssetsQuantity.setEnabled(false);
             mTvAssetsItemPictureLib.setEnabled(false);
             mTvAssetsItemCamera.setEnabled(false);
+            mEtRegisterAssetPrice.setText("0.0");
         } else {
             btnRegisterAddOk.setEnabled(true);
             btnRegisterAddNext.setEnabled(false);

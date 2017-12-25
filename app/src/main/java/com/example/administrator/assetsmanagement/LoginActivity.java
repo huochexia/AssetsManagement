@@ -83,12 +83,15 @@ public class LoginActivity extends BaseActivity {
         user.login(new SaveListener<Person>() {
             @Override
             public void done(Person person, BmobException e) {
-                if (e == null) {
+                if (person!=null && e == null) {
                     listener.done(getCurrentUser(), null);
+
+
                 } else {
                     listener.done(user, e);
                 }
             }
         });
     }
+
 }

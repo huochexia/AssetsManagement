@@ -16,6 +16,7 @@ import com.example.administrator.assetsmanagement.adapter.PhotoRecyclerViewAdapt
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
+import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 
 import java.io.Serializable;
@@ -104,7 +105,7 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
             getPictureList("categoryNum", categoryNum, handler);
         } else {
             title = "我的资产图片";
-            AssetsUtil.AndQueryAssets(this,"mOldManager", MainActivity.getCurrentPerson(),handler);
+            AssetsUtil.AndQueryAssets(this,"mOldManager", BmobUser.getCurrentUser(Person.class),handler);
         }
 
         initNaviView();

@@ -93,7 +93,7 @@ public class MainActivity extends ParentWithNaviActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        getPerson();
+//        getPerson();
         initNaviView();
         mViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -154,44 +154,45 @@ public class MainActivity extends ParentWithNaviActivity {
     }
 
     public static Person getCurrentPerson() {
-        return currentPerson;
+        return BmobUser.getCurrentUser(Person.class);
     }
-    /**
-     * 获取当前用户的Person对象
-     */
-    private void getPerson() {
-        BmobQuery<Person> queryPerson = new BmobQuery<>();
-        String id = BmobUser.getCurrentUser().getObjectId();
-        queryPerson.addWhereEqualTo("objectId", id);
-        queryPerson.findObjects(new FindListener<Person>() {
-            @Override
-            public void done(final List<Person> list, BmobException e) {
-                if (e == null && list.size() > 0) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Message msg = new Message();
-                            msg.what = REQUEST_PERSON;
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("person", list.get(0));
-                            msg.setData(bundle);
-                            handler.sendMessage(msg);
-                        }
-                    }).start();
-                }
-            }
-        });
-    }
-    PersonHandler handler = new PersonHandler();
-    class PersonHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case REQUEST_PERSON:
-                    currentPerson = (Person) msg.getData().getSerializable("person");
-                    break;
-            }
-        }
-    }
+//    /**
+//     * 获取当前用户的Person对象
+//     */
+//    private void getPerson() {
+//        Person person = BmobUser.getCurrentUser(Person.class);
+//        BmobQuery<Person> queryPerson = new BmobQuery<>();
+//        String id = BmobUser.getCurrentUser().getObjectId();
+//        queryPerson.addWhereEqualTo("objectId", id);
+//        queryPerson.findObjects(new FindListener<Person>() {
+//            @Override
+//            public void done(final List<Person> list, BmobException e) {
+//                if (e == null && list.size() > 0) {
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Message msg = new Message();
+//                            msg.what = REQUEST_PERSON;
+//                            Bundle bundle = new Bundle();
+//                            bundle.putSerializable("person", list.get(0));
+//                            msg.setData(bundle);
+//                            handler.sendMessage(msg);
+//                        }
+//                    }).start();
+//                }
+//            }
+//        });
+//    }
+//    PersonHandler handler = new PersonHandler();
+//    class PersonHandler extends Handler {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            switch (msg.what) {
+//                case REQUEST_PERSON:
+//                    currentPerson = (Person) msg.getData().getSerializable("person");
+//                    break;
+//            }
+//        }
+//    }
 
 }
