@@ -24,16 +24,10 @@ public class Person extends BmobUser implements Serializable{
     @TreeNodeIsLast
     private Boolean isPerson = true;
     private Boolean isSelected = false;
-    private List<String> role;
+
     private Department department;
 
-    public List<String> getRole() {
-        return role;
-    }
 
-    public void setRole(List<String> role) {
-        this.role = role;
-    }
 
 
     public String getNodename() {
