@@ -60,6 +60,7 @@
         <activity android:name=".activity.RepairPWActivity"/>
         <activity android:name=".activity.UpdateMyInfo"/>
         <activity android:name=".LoginActivity"/>
+        <activity android:name=".activity.SingleAssetTransferActivity"/>
     </application>
 
 </manifest>

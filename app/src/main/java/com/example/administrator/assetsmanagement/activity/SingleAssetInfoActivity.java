@@ -57,8 +57,7 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
     LinearLayout mLlAssetSingleManagement;
     @BindView(R.id.btn_single_asset_change)
     Button mBtnSingleAssetChange;
-    @BindView(R.id.btn_single_asset_cancel_change)
-    Button mBtnSingleAssetCancelChange;
+
     @BindView(R.id.btn_single_asset_maintain)
     Button mBtnSingleAssetMaintain;
     @BindView(R.id.btn_single_asset_cancel_maintain)
@@ -73,10 +72,7 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
     Button mBtnSingleAssetCancelScrap;
     @BindView(R.id.btn_single_asset_receive)
     Button mBtnSingleAssetReceive;
-    @BindView(R.id.btn_single_asset_return)
-    Button mBtnSingleAssetReturn;
-    @BindView(R.id.ll_asset_single_receive)
-    LinearLayout mLlAssetSingleReceive;
+
 
     @Override
     public String title() {
@@ -116,48 +112,45 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
 
     SingleAssetHandler handler = new SingleAssetHandler();
 
-    @OnClick({R.id.btn_single_asset_change, R.id.btn_single_asset_cancel_change,
-            R.id.btn_single_asset_maintain, R.id.btn_single_asset_cancel_maintain,
+    @OnClick({R.id.btn_single_asset_change, R.id.btn_single_asset_maintain, R.id.btn_single_asset_cancel_maintain,
             R.id.btn_single_asset_lose, R.id.btn_single_asset_cancel_lose, R.id.btn_single_asset_scrap,
-            R.id.btn_single_asset_cancel_scrap, R.id.btn_single_asset_receive, R.id.btn_single_asset_return})
+            R.id.btn_single_asset_cancel_scrap, R.id.btn_single_asset_receive})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_single_asset_change:
-
-                break;
-            case R.id.btn_single_asset_cancel_change:
-
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("asset", mAssetInfo);
+                startActivity(SingleAssetTransferActivity.class, bundle, false);
                 break;
             case R.id.btn_single_asset_maintain:
                 mAssetInfo.setStatus(1);
-                setStatus();
+                setButtonStatus();
                 break;
             case R.id.btn_single_asset_cancel_maintain:
                 mAssetInfo.setStatus(0);
-                setStatus();
+                setButtonStatus();
                 break;
             case R.id.btn_single_asset_lose:
                 mAssetInfo.setStatus(2);
-               setStatus();
+               setButtonStatus();
                 break;
             case R.id.btn_single_asset_cancel_lose:
                 mAssetInfo.setStatus(0);
-                setStatus();
+                setButtonStatus();
                 break;
             case R.id.btn_single_asset_scrap:
                 mAssetInfo.setStatus(3);
-                setStatus();
+                setButtonStatus();
                 break;
             case R.id.btn_single_asset_cancel_scrap:
                 mAssetInfo.setStatus(0);
-                setStatus();
+                setButtonStatus();
                 break;
             case R.id.btn_single_asset_receive:
                 mAssetInfo.setValue("mOldManager",BmobUser.getCurrentUser(Person.class));
                 mAssetInfo.setValue("mNewManager",null);
                 break;
-            case R.id.btn_single_asset_return:
-                break;
+
         }
         mAssetInfo.update(mAssetInfo.getObjectId(),new UpdateListener() {
             @Override
@@ -180,7 +173,7 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
                         mTvScanAssetManager.setText(mAssetInfo.getOldManager().getUsername());
                         getLocationAndDepartment(asset);
                         mTvScanAssetRegisterDate.setText(mAssetInfo.getRegisterDate());
-                        setStatus();
+                        setButtonStatus();
 //                        Person person = BmobUser.getCurrentUser(Person.class);
                         String id = mAssetInfo.getOldManager().getObjectId();
                        // 自V3.4.5版本开始，SDK新增了getObjectByKey(key)方法从本地缓存中获取
@@ -199,12 +192,12 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
         }
     }
 
-    private void setStatus() {
+    private void setButtonStatus() {
+
         switch (mAssetInfo.getStatus()) {
             case 0:
                 mTvScanAssetState.setText("正常");
                 mBtnSingleAssetChange.setVisibility(View.VISIBLE);
-                mBtnSingleAssetCancelChange.setVisibility(View.GONE);
                 mBtnSingleAssetScrap.setVisibility(View.VISIBLE);
                 mBtnSingleAssetCancelScrap.setVisibility(View.GONE);
                 mBtnSingleAssetMaintain.setVisibility(View.VISIBLE);

@@ -51,6 +51,7 @@ public class AssetRepairActivity extends ParentWithNaviActivity {
     @BindView(R.id.et_search_asset_num)
     LineEditText etSearchAssetNum;
     private String ScanResult;
+    private AssetInfo asset;
 
     @Override
     public String title() {
@@ -130,7 +131,9 @@ public class AssetRepairActivity extends ParentWithNaviActivity {
         builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("asset",asset);
+                startActivity(SingleAssetTransferActivity.class,bundle,false);
             }
         });
         builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
@@ -149,7 +152,7 @@ public class AssetRepairActivity extends ParentWithNaviActivity {
             switch (msg.what) {
                 case AssetsUtil.SEARCH_ONE_ASSET:
                     list = (List<AssetInfo>) msg.getData().getSerializable("assets");
-                    AssetInfo asset = list.get(0);
+                    asset = list.get(0);
                     //如果有资产且其状态为损坏时，修好按钮可用；只有正常状态下的资产可以报修，待移交、
                     //待报废等非正常状态下的资产不能报修
                     adapter = new AssetRecyclerViewAdapter(AssetRepairActivity.this,

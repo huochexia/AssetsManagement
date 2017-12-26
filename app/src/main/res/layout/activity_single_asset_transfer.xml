@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:fancy="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/background"
+              android:orientation="vertical">
+
+    <include layout="@layout/include_navi"/>
+
+    <include layout="@layout/view_line_between"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_5"
+                android:layout_weight="1">
+
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:id="@+id/btn_single_asset_new_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="10dp"
+                    android:padding="10dp"
+                    fancy:fb_borderColor="#FFFFFF"
+                    fancy:fb_borderWidth="0dp"
+                    fancy:fb_defaultColor="#3fb2b4"
+                    fancy:fb_focusColor="#3f51b4"
+                    fancy:fb_radius="15dp"
+                    fancy:fb_text="@string/btn_new_location_text"
+                    fancy:fb_textColor="#FFFFFF"
+                    fancy:fb_textFont="隶书.ttf"
+                    fancy:fb_textSize="16sp">
+                </mehdi.sakout.fancybuttons.FancyButton>
+
+                <TextView
+                    android:id="@+id/tv_single_asset_new_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:textSize="15sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_5"
+                android:layout_weight="1">
+
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:id="@+id/btn_single_asset_new_department"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="10dp"
+                    android:padding="10dp"
+                    fancy:fb_borderColor="#FFFFFF"
+                    fancy:fb_borderWidth="0dp"
+                    fancy:fb_defaultColor="#3fb2b4"
+                    fancy:fb_focusColor="#3f51b4"
+                    fancy:fb_radius="15dp"
+                    fancy:fb_text="@string/btn_new_department_text"
+                    fancy:fb_textColor="#FFFFFF"
+                    fancy:fb_textFont="隶书.ttf"
+                    fancy:fb_textSize="16sp">
+                </mehdi.sakout.fancybuttons.FancyButton>
+
+                <TextView
+                    android:id="@+id/tv_single_asset_new_department"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:textSize="15sp"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <include layout="@layout/view_line_between"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_5"
+            >
+
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:id="@+id/btn_single_asset_new_manager"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="10dp"
+                android:padding="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="0dp"
+                fancy:fb_defaultColor="#3fb2b4"
+                fancy:fb_focusColor="#3f51b4"
+                fancy:fb_radius="15dp"
+                fancy:fb_text="@string/btn_new_receiver_text"
+                fancy:fb_textColor="#FFFFFF"
+                fancy:fb_textFont="隶书.ttf"
+                fancy:fb_textSize="16sp">
+            </mehdi.sakout.fancybuttons.FancyButton>
+
+            <TextView
+                android:id="@+id/tv_single_asset_new_manager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_10"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <Button
+                    android:id="@+id/btn_single_asset_transfer_ok"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_login_selector"
+                    android:textColor="@color/base_color_text_white"
+                    android:text="@string/btn_confirm"
+                    android:textSize="16sp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:padding="10dp"
+                    />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

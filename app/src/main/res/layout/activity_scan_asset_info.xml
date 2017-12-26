@@ -174,12 +174,12 @@
                 android:textSize="16sp"
                 android:padding="10dp"/>
             <Button
-                android:id="@+id/btn_single_asset_cancel_change"
+                android:id="@+id/btn_single_asset_receive"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:layout_alignParentEnd="true"
-                android:text="收回"
+                android:text="接收"
                 android:background="@drawable/btn_login_selector"
                 android:textColor="@color/base_color_text_white"
                 android:textSize="16sp"
@@ -284,49 +284,5 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_asset_single_receive"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginLeft="5dp"
-        android:layout_weight="2"
-        android:visibility="gone">
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-            <Button
-                android:id="@+id/btn_single_asset_receive"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:layout_alignParentEnd="true"
-                android:text="接收"
-                android:background="@drawable/btn_login_selector"
-                android:textColor="@color/base_color_text_white"
-                android:textSize="16sp"
-                android:padding="10dp"/>
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-            <Button
-                android:id="@+id/btn_single_asset_return"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:layout_alignParentEnd="true"
-                android:text="退回"
-                android:background="@drawable/btn_login_selector"
-                android:textColor="@color/base_color_text_white"
-                android:textSize="16sp"
-                android:padding="10dp"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
 </LinearLayout>
