@@ -45,12 +45,12 @@ public class LoginActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_login:
+
                 login(mEtUsername.getText().toString(), mEtPassword.getText().toString(), new LogInListener() {
                     @Override
                     public void done(Object o, BmobException e) {
                         if (e == null) {
                             //登录成功
-
                             startActivity(MainActivity.class, null, true);
                         } else {
                             toast(e.getMessage() + "(" + e.getErrorCode() + ")");
@@ -78,23 +78,16 @@ public class LoginActivity extends BaseActivity {
             listener.done(null, new BmobException(1000, "请填写密码"));
             return;
         }
+        BmobUser.loginByAccount(username, password, new LogInListener<Person>() {
 
-        final Person user = new Person();
-        user.setUsername(username);
-        user.setPassword(password);
-
-        user.login(new SaveListener<Person>() {
             @Override
-            public void done(Person person, BmobException e) {
-                if (person!=null && e == null) {
+            public void done(Person user, BmobException e) {
+                if (user != null) {
                     listener.done(getCurrentUser(), null);
-
-
                 } else {
                     listener.done(user, e);
                 }
             }
         });
     }
-
 }
