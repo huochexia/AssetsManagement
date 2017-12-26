@@ -181,9 +181,11 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
                         getLocationAndDepartment(asset);
                         mTvScanAssetRegisterDate.setText(mAssetInfo.getRegisterDate());
                         setStatus();
-                        Person person = BmobUser.getCurrentUser(Person.class);
+//                        Person person = BmobUser.getCurrentUser(Person.class);
                         String id = mAssetInfo.getOldManager().getObjectId();
-                        if (!id.equals(person.getObjectId())) {
+                       // 自V3.4.5版本开始，SDK新增了getObjectByKey(key)方法从本地缓存中获取
+                        // 当前登陆用户某一列的值。其中key为用户表的指定列名
+                        if (!id.equals(BmobUser.getObjectByKey("objectId"))) {
                             mLlAssetSingleManagement.setVisibility(View.GONE);
                         } else {
                             mLlAssetSingleManagement.setVisibility(View.VISIBLE);

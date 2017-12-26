@@ -13,6 +13,7 @@ import com.example.administrator.assetsmanagement.bean.Person;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.LogInListener;
 import cn.bmob.v3.listener.SaveListener;
@@ -77,9 +78,11 @@ public class LoginActivity extends BaseActivity {
             listener.done(null, new BmobException(1000, "请填写密码"));
             return;
         }
+
         final Person user = new Person();
         user.setUsername(username);
         user.setPassword(password);
+
         user.login(new SaveListener<Person>() {
             @Override
             public void done(Person person, BmobException e) {
