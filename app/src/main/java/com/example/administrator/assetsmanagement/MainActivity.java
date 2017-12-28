@@ -12,20 +12,13 @@ import com.ToxicBakery.viewpager.transforms.RotateDownTransformer;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.adapter.ViewPagerAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
-import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.bean.Role;
 import com.example.administrator.assetsmanagement.fragment.AssetsManagementFragment;
 import com.example.administrator.assetsmanagement.fragment.BaseSettingFragment;
 import com.example.administrator.assetsmanagement.fragment.MySettingFragment;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
 
 public class MainActivity extends ParentWithNaviActivity {
 
@@ -36,7 +29,8 @@ public class MainActivity extends ParentWithNaviActivity {
     @BindView(R.id.tv_toolbar_title)
     TextView mTvToolbarTitle;
 
-    Role role = new Role();
+    Role role;//当前用户的角色
+
     private MenuItem mMenuItem;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -86,7 +80,7 @@ public class MainActivity extends ParentWithNaviActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         initNaviView();
-
+        role=FlashActivity.getCurrentUsersRole();
         mViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -111,6 +105,8 @@ public class MainActivity extends ParentWithNaviActivity {
             }
         });
         mNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+
         setViewpager(mViewpager);
         //增加ViewPager转换动画
         mViewpager.setPageTransformer(true,new RotateDownTransformer());
@@ -122,7 +118,10 @@ public class MainActivity extends ParentWithNaviActivity {
     public void setViewpager(ViewPager viewpager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(AssetsManagementFragment.newInstance());
-        adapter.addFragment(BaseSettingFragment.newInstance());
+//        if (role.getRights().contains("设置")) {
+
+            adapter.addFragment(BaseSettingFragment.newInstance());
+//        }
         adapter.addFragment(MySettingFragment.newInstance());
         viewpager.setAdapter(adapter);
     }
@@ -145,27 +144,5 @@ public class MainActivity extends ParentWithNaviActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    /**
-     * 获取当前用户的权限
-     */
-    private Role getCurrentRole() {
 
-        final Person person = BmobUser.getCurrentUser(Person.class);
-        runOnMain(new Runnable() {
-            @Override
-            public void run() {
-                BmobQuery<Role> query = new BmobQuery<>();
-                query.addWhereEqualTo("user", person);
-                query.findObjects(new FindListener<Role>() {
-                    @Override
-                    public void done(List<Role> list, BmobException e) {
-                        if (list != null) {
-                            role = list.get(0);
-                        }
-                    }
-                });
-            }
-        });
-        return role;
-    }
 }

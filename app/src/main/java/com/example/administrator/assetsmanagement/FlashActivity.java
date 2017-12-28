@@ -1,19 +1,25 @@
 package com.example.administrator.assetsmanagement;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.assetsmanagement.base.BaseActivity;
+import com.example.administrator.assetsmanagement.bean.Person;
+import com.example.administrator.assetsmanagement.bean.Role;
 
 import java.io.IOException;
+import java.util.List;
 
+import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -29,6 +35,7 @@ public class FlashActivity extends BaseActivity {
     Handler handler;
     Runnable runnable;
 
+    public static Role role;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +43,7 @@ public class FlashActivity extends BaseActivity {
         mImageView = (ImageView) findViewById(R.id.bing_pic_img);
         handler = new Handler();
         loadBingPic();
+        queryRole();
         runnable = new Runnable() {
             @Override
             public void run() {
@@ -54,12 +62,11 @@ public class FlashActivity extends BaseActivity {
      */
     private void startMainOrLoginActivity() {
 
-
         BmobUser bmobUser = BmobUser.getCurrentUser();
         if (bmobUser != null) {
             // 允许用户使用应用
-
             startActivity(MainActivity.class,null,true);
+
         } else {
             //缓存用户对象为空时， 可打开用户注册界面…
             startActivity(LoginActivity.class,null,true);
@@ -98,5 +105,32 @@ public class FlashActivity extends BaseActivity {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(address).build();
         client.newCall(request).enqueue(callback);
+    }
+
+    /**
+     * 获取当前用户的权限
+     */
+    private void queryRole() {
+        final Person person = BmobUser.getCurrentUser(Person.class);
+        BmobQuery<Role> query = new BmobQuery<>();
+        query.addWhereEqualTo("user", person);
+        query.findObjects(new FindListener<Role>() {
+            @Override
+            public void done(final List<Role> list, BmobException e) {
+                if (list != null && list.size() > 0) {
+                    runOnMain(new Runnable() {
+                        @Override
+                        public void run() {
+                            role = list.get(0);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+
+    public static Role getCurrentUsersRole() {
+        return role;
     }
 }

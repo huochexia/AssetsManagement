@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
+import com.example.administrator.assetsmanagement.FlashActivity;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.activity.ManageAssetsActivity;
 import com.example.administrator.assetsmanagement.activity.RegisterAssetsActivity;
@@ -27,6 +29,10 @@ public class AssetsManagementFragment extends BaseFragment {
     Unbinder unbinder;
     @BindView(R.id.iv_assets_register)
     ImageView mIvAssetsRegister;
+    @BindView(R.id.rl_main_register)
+    RelativeLayout rlMainRegister;
+    @BindView(R.id.rl_main_search)
+    RelativeLayout rlMainSearch;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,6 +44,12 @@ public class AssetsManagementFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_manager, container, false);
         unbinder = ButterKnife.bind(this, view);
+//        if (FlashActivity.getCurrentUsersRole().getRights().contains("登记")) {
+//            rlMainRegister.setVisibility(View.GONE);
+//        }
+//        if (FlashActivity.getCurrentUsersRole().getRights().contains("查询")) {
+//            rlMainSearch.setVisibility(View.GONE);
+//        }
         return view;
     }
 
