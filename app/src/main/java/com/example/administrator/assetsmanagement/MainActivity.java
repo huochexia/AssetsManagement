@@ -1,29 +1,22 @@
 package com.example.administrator.assetsmanagement;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ToxicBakery.viewpager.transforms.RotateDownTransformer;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
-import com.example.administrator.assetsmanagement.activity.CustomScanActivity;
-import com.example.administrator.assetsmanagement.activity.SingleAssetInfoActivity;
 import com.example.administrator.assetsmanagement.adapter.ViewPagerAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.Person;
+import com.example.administrator.assetsmanagement.bean.Role;
 import com.example.administrator.assetsmanagement.fragment.AssetsManagementFragment;
 import com.example.administrator.assetsmanagement.fragment.BaseSettingFragment;
 import com.example.administrator.assetsmanagement.fragment.MySettingFragment;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 
 import java.util.List;
 
@@ -43,6 +36,7 @@ public class MainActivity extends ParentWithNaviActivity {
     @BindView(R.id.tv_toolbar_title)
     TextView mTvToolbarTitle;
 
+    Role role = new Role();
     private MenuItem mMenuItem;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -151,4 +145,27 @@ public class MainActivity extends ParentWithNaviActivity {
         return super.onKeyDown(keyCode, event);
     }
 
+    /**
+     * 获取当前用户的权限
+     */
+    private Role getCurrentRole() {
+
+        final Person person = BmobUser.getCurrentUser(Person.class);
+        runOnMain(new Runnable() {
+            @Override
+            public void run() {
+                BmobQuery<Role> query = new BmobQuery<>();
+                query.addWhereEqualTo("user", person);
+                query.findObjects(new FindListener<Role>() {
+                    @Override
+                    public void done(List<Role> list, BmobException e) {
+                        if (list != null) {
+                            role = list.get(0);
+                        }
+                    }
+                });
+            }
+        });
+        return role;
+    }
 }
