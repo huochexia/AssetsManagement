@@ -51,8 +51,9 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void done(Object o, BmobException e) {
                         if (e == null) {
-                            //登录成功
-                            startActivity(MainActivity.class, null, true);
+                           //登录成功
+                            startActivity(FlashActivity.class,null,true);
+//                            startActivity(MainActivity.class, null, true);
                         } else {
                             toast(e.getMessage() + "(" + e.getErrorCode() + ")");
                         }

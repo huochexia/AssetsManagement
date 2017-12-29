@@ -3,16 +3,15 @@ package com.example.administrator.assetsmanagement.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.administrator.assetsmanagement.FlashActivity;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
-import com.example.administrator.assetsmanagement.MainActivity;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
@@ -54,6 +53,10 @@ public class ManageAssetsActivity extends ParentWithNaviActivity {
     ImageView ivAssetsRecycle;
 
     BadgeView badgeView;
+    @BindView(R.id.ll_manage_asset_approval)
+    LinearLayout llManageAssetApproval;
+    @BindView(R.id.ll_manage_asset_recycle)
+    LinearLayout llManageAssetRecycle;
 
     @Override
     public String title() {
@@ -98,6 +101,12 @@ public class ManageAssetsActivity extends ParentWithNaviActivity {
         ButterKnife.bind(this);
         initNaviView();
         glideImage();
+        if (!FlashActivity.mROLE.getRights().contains("审批")) {
+            llManageAssetApproval.setVisibility(View.INVISIBLE);
+        }
+        if (!FlashActivity.mROLE.getRights().contains("处置")) {
+            llManageAssetRecycle.setVisibility(View.INVISIBLE);
+        }
         badgeView = new BadgeView(this, ivAssetsReceive);// 将需要设置角标的View 传递进去
     }
 
@@ -173,7 +182,7 @@ public class ManageAssetsActivity extends ParentWithNaviActivity {
     /**
      * 扫描二维码点击事件
      */
-    public  void customScan() {
+    public void customScan() {
         new IntentIntegrator(this)
                 .setOrientationLocked(false)
                 .setCaptureActivity(CustomScanActivity.class) // 设置自定义的activity是CustomActivity

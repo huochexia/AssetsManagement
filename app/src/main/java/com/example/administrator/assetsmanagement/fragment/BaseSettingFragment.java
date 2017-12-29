@@ -1,11 +1,13 @@
 package com.example.administrator.assetsmanagement.fragment;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.administrator.assetsmanagement.FlashActivity;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.activity.CategorySettingActivity;
 import com.example.administrator.assetsmanagement.activity.DepartmentSettingActivity;
@@ -33,8 +35,14 @@ public class BaseSettingFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main_baseset, container, false);
-        unbinder = ButterKnife.bind(this, view);
+        View view ;
+        if (FlashActivity.mROLE.getRights().contains("设置")) {
+            view = inflater.inflate(R.layout.fragment_main_baseset, container, false);
+            unbinder = ButterKnife.bind(this, view);
+        } else {
+            view = inflater.inflate(R.layout.fragment_no_system_manager, container, false);
+        }
+
         return view;
     }
 
@@ -46,7 +54,10 @@ public class BaseSettingFragment extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        if (FlashActivity.mROLE.getRights().contains("设置")){
+            unbinder.unbind();
+        }
+
     }
 
     @OnClick({R.id.iv_base_set_location, R.id.iv_base_set_department, R.id.iv_base_set_person, R.id.iv_base_set_categray})

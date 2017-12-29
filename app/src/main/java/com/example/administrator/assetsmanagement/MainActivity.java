@@ -29,7 +29,7 @@ public class MainActivity extends ParentWithNaviActivity {
     @BindView(R.id.tv_toolbar_title)
     TextView mTvToolbarTitle;
 
-    Role role;//当前用户的角色
+
 
     private MenuItem mMenuItem;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -80,7 +80,6 @@ public class MainActivity extends ParentWithNaviActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         initNaviView();
-        role=FlashActivity.getCurrentUsersRole();
         mViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -118,10 +117,7 @@ public class MainActivity extends ParentWithNaviActivity {
     public void setViewpager(ViewPager viewpager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(AssetsManagementFragment.newInstance());
-//        if (role.getRights().contains("设置")) {
-
-            adapter.addFragment(BaseSettingFragment.newInstance());
-//        }
+        adapter.addFragment(BaseSettingFragment.newInstance());
         adapter.addFragment(MySettingFragment.newInstance());
         viewpager.setAdapter(adapter);
     }

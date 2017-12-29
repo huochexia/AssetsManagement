@@ -35,7 +35,7 @@ public class FlashActivity extends BaseActivity {
     Handler handler;
     Runnable runnable;
 
-    public static Role role;
+    public static Role mROLE;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,7 +110,8 @@ public class FlashActivity extends BaseActivity {
     /**
      * 获取当前用户的权限
      */
-    private void queryRole() {
+    public
+    void queryRole() {
         final Person person = BmobUser.getCurrentUser(Person.class);
         BmobQuery<Role> query = new BmobQuery<>();
         query.addWhereEqualTo("user", person);
@@ -121,7 +122,7 @@ public class FlashActivity extends BaseActivity {
                     runOnMain(new Runnable() {
                         @Override
                         public void run() {
-                            role = list.get(0);
+                            mROLE = list.get(0);
                         }
                     });
                 }
@@ -129,8 +130,4 @@ public class FlashActivity extends BaseActivity {
         });
     }
 
-
-    public static Role getCurrentUsersRole() {
-        return role;
-    }
 }
