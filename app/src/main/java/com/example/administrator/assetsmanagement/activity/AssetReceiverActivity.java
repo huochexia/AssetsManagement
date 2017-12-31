@@ -11,7 +11,6 @@ import android.widget.Button;
 
 import com.example.administrator.assetsmanagement.Interface.AssetSelectedListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
-import com.example.administrator.assetsmanagement.MainActivity;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.adapter.AssetRecyclerViewAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
@@ -27,7 +26,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobUser;
-import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
  * Created by Administrator on 2017/12/17 0017.
@@ -86,7 +84,7 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
     public void onViewClicked(View view) {
         AssetsUtil.updateBmobLibrary(this, updateAllSelectedAssetInfo(mAssetInfoList, selectedList));
         temp_list.clear();
-        temp_list.addAll(AssetsUtil.mergeAndSum(AssetsUtil.deepCopy(mAssetInfoList)));
+        temp_list.addAll(AssetsUtil.GroupAfterMerge(AssetsUtil.deepCopy(mAssetInfoList)));
         adapter.initMap();
         adapter.notifyDataSetChanged();
     }
@@ -107,7 +105,7 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
                     if (mAssetInfoList.size() > 0) {
                         mBtnReceiverOk.setEnabled(true);
                     }
-                    temp_list.addAll(AssetsUtil.mergeAndSum(AssetsUtil.deepCopy(mAssetInfoList)));
+                    temp_list.addAll(AssetsUtil.GroupAfterMerge(AssetsUtil.deepCopy(mAssetInfoList)));
                     setListAdapter();
                     break;
             }

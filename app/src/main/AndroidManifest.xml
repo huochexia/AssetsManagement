@@ -61,6 +61,8 @@
         <activity android:name=".activity.UpdateMyInfo"/>
         <activity android:name=".LoginActivity"/>
         <activity android:name=".activity.SingleAssetTransferActivity"/>
+        <activity android:name=".activity.MyAssetListActivity"/>
+        <activity android:name=".activity.ApprovalAssetActivity"/>
     </application>
 
 </manifest>

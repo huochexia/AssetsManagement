@@ -120,17 +120,6 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
                         role.addUnique("rights", rights[which]);
                     } catch (NullPointerException e) {
                     }
-                    if (role.getUser() == null) {//如果用户为空，说明这个用户是第一次设置权限，则要插入
-                        role.setUser(person);
-                        role.save(new SaveListener<String>() {
-                            @Override
-                            public void done(String s, BmobException e) {
-                                if (e != null) {
-                                    toast("设置失败："+e.getMessage());
-                                }
-                            }
-                        });
-                    } else {//如果用户不为空，则修改它的权限
                         role.update(new UpdateListener() {
                             @Override
                             public void done(BmobException e) {
@@ -140,7 +129,6 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
                             }
                         });
 
-                    }
                 } else {
                    role.removeAll("rights", Arrays.asList(rights[which]));
                    role.update(new UpdateListener() {

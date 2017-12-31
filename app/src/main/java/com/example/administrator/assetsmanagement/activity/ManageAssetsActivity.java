@@ -145,6 +145,7 @@ public class ManageAssetsActivity extends ParentWithNaviActivity {
                 startActivity(AssetBaofeiActivity.class, null, false);
                 break;
             case R.id.iv_assets_approval:
+                startActivity(ApprovalAssetActivity.class,null,false);
                 break;
             case R.id.iv_assets_recycle:
                 break;

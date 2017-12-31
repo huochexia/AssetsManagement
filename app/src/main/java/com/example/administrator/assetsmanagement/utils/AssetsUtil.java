@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
@@ -42,7 +43,22 @@ public class AssetsUtil {
      *
      * @param list
      */
-    public static List<AssetInfo> mergeAndSum(List<AssetInfo> list) {
+    public static List<AssetInfo> GroupAfterMerge(List<AssetInfo> list) {
+        List<AssetInfo> result = new ArrayList<>();
+        Map<Integer, List<AssetInfo>> groupedList = GroupAsset(list);
+        for (Object object : groupedList.keySet()) {
+            result.addAll(mergeAsset(groupedList.get(object)));
+        }
+        return result;
+    }
+
+    /**
+     * 合并同类项
+     * @param list
+     * @return
+     */
+    @NonNull
+    private static List<AssetInfo> mergeAsset(List<AssetInfo> list) {
         Map<String, AssetInfo> map = new HashMap();
         Iterator it = list.iterator();
         while (it.hasNext()) {
@@ -64,6 +80,24 @@ public class AssetsUtil {
         return list;
     }
 
+    /**
+     * AssetInfo按状态进行分组
+     */
+    public static Map<Integer,List<AssetInfo>> GroupAsset(List<AssetInfo> assets) {
+        AssetInfo asset;
+        Map<Integer, List<AssetInfo>> resultList = new HashMap<>();
+        for(int i=0;i<assets.size();i++) {
+            asset =assets.get(i);
+            if (resultList.containsKey(asset.getStatus())) {
+                resultList.get(asset.getStatus()).add(asset);
+            } else {
+                List<AssetInfo> list = new ArrayList<>();
+                list.add(asset);
+                resultList.put(asset.getStatus(), list);
+            }
+        }
+        return resultList;
+    }
     /**
      * 改变单一资产的状态
      *
@@ -258,9 +292,9 @@ public class AssetsUtil {
                 @Override
                 public void done(List<BatchResult> list, BmobException e) {
                     if (e == null) {
-                        Toast.makeText(context,"移交更新成功",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,"更新成功",Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(context,"移交更新失败:" + e.toString(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,"更新失败:" + e.toString(),Toast.LENGTH_SHORT).show();
                     }
                 }
             });

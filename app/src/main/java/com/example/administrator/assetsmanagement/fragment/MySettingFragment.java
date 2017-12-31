@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.administrator.assetsmanagement.R;
+import com.example.administrator.assetsmanagement.activity.MyAssetListActivity;
 import com.example.administrator.assetsmanagement.activity.UpdateMyInfo;
 import com.example.administrator.assetsmanagement.base.BaseFragment;
 
@@ -47,14 +48,14 @@ public class MySettingFragment extends BaseFragment {
     }
 
 
-
     @OnClick({R.id.btn_query_my_assets, R.id.btn_update_my_info, R.id.btn_logout})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_query_my_assets:
+                startActivity(MyAssetListActivity.class,null);
                 break;
             case R.id.btn_update_my_info:
-                startActivity(UpdateMyInfo.class,null);
+                startActivity(UpdateMyInfo.class, null);
                 break;
             case R.id.btn_logout:
                 BmobUser.logOut();
@@ -62,4 +63,6 @@ public class MySettingFragment extends BaseFragment {
                 break;
         }
     }
+
+
 }

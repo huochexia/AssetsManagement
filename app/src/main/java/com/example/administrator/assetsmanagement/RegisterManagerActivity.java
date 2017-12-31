@@ -15,9 +15,11 @@ import com.example.administrator.assetsmanagement.activity.SelectedTreeNodeActiv
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.Department;
 import com.example.administrator.assetsmanagement.bean.Person;
+import com.example.administrator.assetsmanagement.bean.Role;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -98,11 +100,24 @@ public class RegisterManagerActivity extends ParentWithNaviActivity {
             public void done(Person user, BmobException e) {
                 if (e == null) {
                     listener.done(null, null);
+                    //每位用户都是管理员，管理自己名下的资产
+                    Role role = new Role();
+                    role.setUser(user);
+                    List<String> rights = new ArrayList<>();
+                    rights.add("管理");
+                    role.setRights(rights);
+                    role.save(new SaveListener<String>() {
+                        @Override
+                        public void done(String s, BmobException e) {
+
+                        }
+                    });
                 } else {
                     listener.done(null, e);
                 }
             }
         });
+
     }
 
     @OnClick({R.id.btn_register_department, R.id.btn_register})

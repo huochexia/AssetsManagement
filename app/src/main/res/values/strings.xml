@@ -38,4 +38,6 @@
     <string name="all_text">全部</string>
     <string name="repair_old_password_hint">请输入旧密码</string>
     <string name="btn_cancel">取消</string>
+    <string name="btn_no_agree">不同意</string>
+    <string name="btn_agree">同意</string>
 </resources>

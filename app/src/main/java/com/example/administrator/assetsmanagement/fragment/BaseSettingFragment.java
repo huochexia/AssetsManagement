@@ -20,7 +20,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
- * 基础设置，主要有资产位置、类别、部门及管理员的增加，修改和删除
+ * 基础设置，主要有资产位置、类别、部门的增加，修改和删除,管理员的权限
  * Created by Administrator on 2017/11/4 0004.
  */
 

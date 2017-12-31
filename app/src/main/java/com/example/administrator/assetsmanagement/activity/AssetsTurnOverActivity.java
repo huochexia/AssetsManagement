@@ -12,12 +12,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.administrator.assetsmanagement.Interface.AssetSelectedListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
-import com.example.administrator.assetsmanagement.MainActivity;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.adapter.AssetRecyclerViewAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
@@ -27,7 +25,6 @@ import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
-import com.example.administrator.assetsmanagement.utils.LineEditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -161,7 +158,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                     //单体移交因为不进行汇总操作，所以不需要复制
                     temp_list.addAll(assetsList);
                 } else {
-                    temp_list.addAll(AssetsUtil.mergeAndSum(AssetsUtil.deepCopy(assetsList)));
+                    temp_list.addAll(AssetsUtil.GroupAfterMerge(AssetsUtil.deepCopy(assetsList)));
                 }
                 setListAdapter();
             }
@@ -282,7 +279,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                             if (isSingle) {
                                 temp_list.addAll(assetsList);
                             } else {
-                                temp_list.addAll(AssetsUtil.mergeAndSum(AssetsUtil.deepCopy(assetsList)));
+                                temp_list.addAll(AssetsUtil.GroupAfterMerge(AssetsUtil.deepCopy(assetsList)));
                             }
                             adapter.initMap();
                             adapter.notifyDataSetChanged();
@@ -365,7 +362,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                     if (assetsList.size() > 0) {
                         mBtnTurnOverOk.setEnabled(true);
                     }
-                    temp_list.addAll(AssetsUtil.mergeAndSum(AssetsUtil.deepCopy(assetsList)));
+                    temp_list.addAll(AssetsUtil.GroupAfterMerge(AssetsUtil.deepCopy(assetsList)));
                     setListAdapter();
                     break;
             }
@@ -393,16 +390,15 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
             case SEARCH_LOCATION:
                 if (mNode != null) {
                     AssetsUtil.AndQueryAssets(this, "mLocationNum", mNode.getId(),
-                            "mOldManager", current,"mStatus",0, handler);
+                            "mOldManager", current, handler);
                 }
                 break;
             case SEARCH_NAME:
                 AssetsUtil.AndQueryAssets(this, "mPicture",mPicture,
-                        "mOldManager", current,"mStatus",0, handler);
+                        "mOldManager", current, handler);
                 break;
             case SEARCH_ALL:
-                AssetsUtil.AndQueryAssets(this, "mStatus",0,
-                        "mOldManager", current, handler);
+                AssetsUtil.AndQueryAssets(this,"mOldManager", current, handler);
                 break;
         }
 

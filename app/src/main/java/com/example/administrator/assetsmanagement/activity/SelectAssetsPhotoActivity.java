@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 
 import com.example.administrator.assetsmanagement.Interface.PhotoSelectedListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
-import com.example.administrator.assetsmanagement.MainActivity;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.adapter.PhotoRecyclerViewAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
@@ -153,7 +152,7 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
                     break;
                 case SEARCH_ONE_ASSET :
                     List<AssetInfo> list = (List<AssetInfo>) msg.getData().getSerializable("assets");
-                    List<AssetInfo> mergeList = AssetsUtil.mergeAndSum(list);
+                    List<AssetInfo> mergeList = AssetsUtil.GroupAfterMerge(list);
                     for (AssetInfo asset : mergeList) {
                         photoLists.add(asset.getPicture());
                     }
