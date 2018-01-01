@@ -31,7 +31,8 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
 
-/**通过扫描二维码，获取单个资产的信息，并可以进行相应的操作
+/**
+ * 通过扫描二维码，获取单个资产的信息，并可以进行相应的操作
  * Created by Administrator on 2017/12/20 0020.
  */
 
@@ -72,6 +73,11 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
     Button mBtnSingleAssetCancelScrap;
     @BindView(R.id.btn_single_asset_receive)
     Button mBtnSingleAssetReceive;
+    @BindView(R.id.tv_scan_asset_price)
+    TextView mTvScanAssetPrice;
+    @BindView(R.id.tv_scan_asset_comment)
+    TextView mTvScanAssetComment;
+
 
 
     @Override
@@ -132,7 +138,7 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
                 break;
             case R.id.btn_single_asset_lose:
                 mAssetInfo.setStatus(2);
-               setButtonStatus();
+                setButtonStatus();
                 break;
             case R.id.btn_single_asset_cancel_lose:
                 mAssetInfo.setStatus(0);
@@ -147,12 +153,12 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
                 setButtonStatus();
                 break;
             case R.id.btn_single_asset_receive:
-                mAssetInfo.setValue("mOldManager",BmobUser.getCurrentUser(Person.class));
-                mAssetInfo.setValue("mNewManager",null);
+                mAssetInfo.setValue("mOldManager", BmobUser.getCurrentUser(Person.class));
+                mAssetInfo.setValue("mNewManager", null);
                 break;
 
         }
-        mAssetInfo.update(mAssetInfo.getObjectId(),new UpdateListener() {
+        mAssetInfo.update(mAssetInfo.getObjectId(), new UpdateListener() {
             @Override
             public void done(BmobException e) {
 
@@ -173,10 +179,12 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
                         mTvScanAssetManager.setText(mAssetInfo.getOldManager().getUsername());
                         getLocationAndDepartment(asset);
                         mTvScanAssetRegisterDate.setText(mAssetInfo.getRegisterDate());
+                        mTvScanAssetPrice.setText(mAssetInfo.getPrice()+"");
+                        mTvScanAssetComment.setText(mAssetInfo.getComment());
                         setButtonStatus();
 //                        Person person = BmobUser.getCurrentUser(Person.class);
                         String id = mAssetInfo.getOldManager().getObjectId();
-                       // 自V3.4.5版本开始，SDK新增了getObjectByKey(key)方法从本地缓存中获取
+                        // 自V3.4.5版本开始，SDK新增了getObjectByKey(key)方法从本地缓存中获取
                         // 当前登陆用户某一列的值。其中key为用户表的指定列名
                         if (!id.equals(BmobUser.getObjectByKey("objectId"))) {
                             mLlAssetSingleManagement.setVisibility(View.GONE);

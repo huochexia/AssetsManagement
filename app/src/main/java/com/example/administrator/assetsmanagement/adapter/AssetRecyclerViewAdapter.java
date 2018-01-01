@@ -106,7 +106,9 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
                 holder.assetStatus.setText("待移交");
                 break;
             case 5:
-                holder.assetStatus.setText("送修");
+                holder.assetStatus.setText("已报废");
+                break;
+
         }
 
         holder.assetName.setOnClickListener(new View.OnClickListener() {
