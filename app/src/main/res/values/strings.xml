@@ -40,4 +40,6 @@
     <string name="btn_cancel">取消</string>
     <string name="btn_no_agree">不同意</string>
     <string name="btn_agree">同意</string>
+    <string name="btn_making_label">打印</string>
+    <string name="btn_print_and_move">打印并移交</string>
 </resources>

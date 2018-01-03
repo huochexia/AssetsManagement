@@ -63,6 +63,7 @@
         <activity android:name=".activity.SingleAssetTransferActivity"/>
         <activity android:name=".activity.MyAssetListActivity"/>
         <activity android:name=".activity.ApprovalAssetActivity"/>
+        <activity android:name=".activity.MakingLabelActivity"/>
     </application>
 
 </manifest>

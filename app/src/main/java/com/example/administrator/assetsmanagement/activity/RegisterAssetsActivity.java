@@ -1,7 +1,5 @@
 package com.example.administrator.assetsmanagement.activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,8 +7,6 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
@@ -25,7 +21,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
-import com.example.administrator.assetsmanagement.MainActivity;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
@@ -49,11 +44,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobObject;
-import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UploadFileListener;
 import mehdi.sakout.fancybuttons.FancyButton;
@@ -269,7 +262,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                     mIvRegisterPicture.setImageResource(R.drawable.pictures_no);
                     hasPhoto = false;
                     setAllWidget(true);
-                    turnOverAssetDialog(mAssetInfos);
+                    startMakingLabel(mAssetInfos);
                     asset.setPicture(null);
                 }
                 break;
@@ -348,48 +341,19 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         }
     }
 
-    /**
-     * 进行资产移交，从数据库中提取出刚登记的资产进行移交
-     */
-    private void turnOverAssetDialog(final List<AssetInfo> list) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        String[] items = new String[]{"单体移交", "整体移交"};
-        builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0:
-                        startTurnOverActivity(true, list);
-                        break;
-                    case 1:
-                        startTurnOverActivity(false, list);
-                        break;
-                }
-                dialog.dismiss();
-            }
-        });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.show();
-    }
 
     /**
-     * 启动资产移交活动
+     * 仅制作标签或者制作标签和进行移交
      *
-     * @param oneOrAll true为单体移交，false为整体移交
+     *
      * @param list
      */
-    private void startTurnOverActivity(Boolean oneOrAll, List<AssetInfo> list) {
+    private void startMakingLabel(List<AssetInfo> list) {
         Bundle bundle = new Bundle();
-        bundle.putInt("turn_over", 1);
-        bundle.putBoolean("oneOrAll", oneOrAll);
-        bundle.putSerializable("assets", (Serializable) list);
-        startActivity(AssetsTurnOverActivity.class, bundle, false);
+        bundle.putInt("flag",1);
+        bundle.putSerializable("newasset", (Serializable) list);
+        startActivity(MakingLabelActivity.class, bundle, false);
     }
 
     /**
@@ -597,47 +561,6 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
     }
 
-    /**
-     * 获取当前用户的Person对象
-     */
-    private void getPerson() {
-        BmobQuery<Person> queryPerson = new BmobQuery<>();
-        String id = BmobUser.getCurrentUser().getObjectId();
-        queryPerson.addWhereEqualTo("objectId", id);
-        queryPerson.findObjects(new FindListener<Person>() {
-            @Override
-            public void done(final List<Person> list, BmobException e) {
-                if (e == null && list.size() > 0) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Message msg = new Message();
-                            msg.what = REQUEST_PERSON;
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("person", list.get(0));
-                            msg.setData(bundle);
-                            handler.sendMessage(msg);
-                        }
-                    }).start();
-                } else {
-                    toast("当前用户不存在！");
-                }
-            }
-        });
-    }
 
-    PersonHandler handler = new PersonHandler();
-
-    class PersonHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case REQUEST_PERSON:
-                    Person manager = (Person) msg.getData().getSerializable("person");
-                    asset.setOldManager(manager);
-                    break;
-            }
-        }
-    }
 
 }
