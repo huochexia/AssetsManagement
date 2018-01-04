@@ -44,12 +44,15 @@ public class AssetsManagementFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_manager, container, false);
         unbinder = ButterKnife.bind(this, view);
-        if (!FlashActivity.mROLE.getRights().contains("登记")) {
-            rlMainRegister.setVisibility(View.GONE);
+        if (FlashActivity.mROLE != null) {
+            if (!FlashActivity.mROLE.getRights().contains("登记")) {
+                rlMainRegister.setVisibility(View.GONE);
+            }
+            if (!FlashActivity.mROLE.getRights().contains("查询")) {
+                rlMainSearch.setVisibility(View.GONE);
+            }
         }
-        if (!FlashActivity.mROLE.getRights().contains("查询")) {
-            rlMainSearch.setVisibility(View.GONE);
-        }
+
         return view;
     }
 

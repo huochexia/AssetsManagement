@@ -6,13 +6,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.administrator.assetsmanagement.Interface.AssetSelectedListener;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 制作标签时资产列表适配器
@@ -24,11 +28,23 @@ public class MakingLabelsListAdapter extends RecyclerView.Adapter<MakingLabelsLi
     Context mContext;
     LayoutInflater mInflater;
 
+    Map<Integer,Boolean> map=new HashMap<>();
+    AssetSelectedListener listener;
     public MakingLabelsListAdapter(Context context, List<AssetInfo> list) {
         mContext = context;
         mAssetInfoList = list;
         mInflater = LayoutInflater.from(mContext);
+        initMap();
 
+    }
+    private void initMap() {
+        for (int i = 0;i<mAssetInfoList.size();i++) {
+            map.put(i, false);
+        }
+    }
+
+    public void setSelectedListener(AssetSelectedListener listener) {
+        this.listener = listener;
     }
     @Override
     public LabelViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -38,11 +54,25 @@ public class MakingLabelsListAdapter extends RecyclerView.Adapter<MakingLabelsLi
     }
 
     @Override
-    public void onBindViewHolder(LabelViewHolder holder, int position) {
+    public void onBindViewHolder(LabelViewHolder holder, final int position) {
         holder.mAssetNum.setText(mAssetInfoList.get(position).getAssetsNum());
         holder.mCheckBox.setVisibility(View.VISIBLE);
         holder.serial_number.setText((position+1)+"");
-
+        holder.mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                map.put(position,isChecked);
+                if (isChecked) {
+                    listener.selectAsset(mAssetInfoList.get(position));
+                } else {
+                    listener.cancelAsset(mAssetInfoList.get(position));
+                }
+            }
+        });
+        if (map.get(position) == null) {
+            map.put(position,false);
+        }
+        holder.mCheckBox.setChecked(map.get(position));
     }
 
     @Override
