@@ -51,6 +51,5 @@ dependencies {
     //二维码
     compile 'com.google.zxing:core:3.3.0'
     compile 'com.journeyapps:zxing-android-embedded:3.3.0'
-
-
+    implementation files('libs/LPAPI-2017-10-17.jar')
 }

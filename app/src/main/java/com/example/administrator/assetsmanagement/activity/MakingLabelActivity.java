@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.dothantech.lpapi.LPAPI;
+import com.dothantech.printer.IDzPrinter;
 import com.example.administrator.assetsmanagement.Interface.AssetSelectedListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
@@ -70,6 +72,11 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
     }
 
     @Override
+    public Object right() {
+        return R.drawable.print_d;
+    }
+
+    @Override
     public ToolbarClickListener getToolbarListener() {
         return new ToolbarClickListener() {
             @Override
@@ -79,7 +86,7 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
 
             @Override
             public void clickRight() {
-
+                toast("近期推出，敬请期待");
             }
         };
     }

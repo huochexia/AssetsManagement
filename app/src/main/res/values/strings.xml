@@ -42,4 +42,5 @@
     <string name="btn_agree">同意</string>
     <string name="btn_making_label">打印</string>
     <string name="btn_print_and_move">打印并移交</string>
+    <string name="btn_connect_printer">打印机：未连接打印机</string>
 </resources>
