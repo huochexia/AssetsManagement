@@ -2,13 +2,13 @@ package com.example.administrator.assetsmanagement.activity;
 
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Build;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -68,7 +68,7 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
     @BindView(R.id.tv_printer_state)
     TextView tvPrinterState;
     private List<AssetInfo> mInfoList;
-    private List<AssetInfo> mSelectedList;
+    private List<AssetInfo> mSelectedList =new ArrayList<>();
     private AssetPicture mAssetPicture;
     private int flag;//标志，1为新，否则为旧数据
 
@@ -81,6 +81,9 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
     private AlertDialog stateAlertDialog = null;// 状态提示框
     private List<IDzPrinter.PrinterAddress> pairedPrinters = new ArrayList<>();
 
+    private static final String KeyLastPrinterMac = "LastPrinterMac";
+    private static final String KeyLastPrinterName = "LastPrinterName";
+    private static final String KeyLastPrinterType = "LastPrinterType";
     // LPAPI 打印机操作相关的回调函数。
     private final LPAPI.Callback mCallback = new LPAPI.Callback() {
         // 蓝牙适配器状态发生变化时被调用
@@ -258,6 +261,47 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
             onPrinterDisconnected();
         }
     }
+
+    //初始化打印机
+    private void initPrinter() {
+        SharedPreferences sharedPreferences = getSharedPreferences(getResources().getString(R.string.app_name), Context.MODE_PRIVATE);
+        String lastPrinterMac = sharedPreferences.getString(KeyLastPrinterMac, null);
+        String lastPrinterName = sharedPreferences.getString(KeyLastPrinterName, null);
+        String lastPrinterType = sharedPreferences.getString(KeyLastPrinterType, null);
+        IDzPrinter.AddressType lastAddressType = TextUtils.isEmpty(lastPrinterType) ? null : Enum.valueOf(IDzPrinter.AddressType.class, lastPrinterType);
+        if (lastPrinterMac == null || lastPrinterName == null || lastAddressType == null) {
+            mPrinterAddress = null;
+        } else {
+            mPrinterAddress = new IDzPrinter.PrinterAddress(lastPrinterName, lastPrinterMac, lastAddressType);
+        }
+    }
+    // 应用退出时需要的操作
+    private void fini() {
+        // 保存相关信息
+        SharedPreferences sharedPreferences = getSharedPreferences(getResources().getString(R.string.app_name), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        if (mPrinterAddress != null) {
+            editor.putString(KeyLastPrinterMac, mPrinterAddress.macAddress);
+            editor.putString(KeyLastPrinterName, mPrinterAddress.shownName);
+            editor.putString(KeyLastPrinterType, mPrinterAddress.addressType.toString());
+        }
+
+        editor.commit();
+    }
+    // 打印
+    private boolean printAssetLabel(AssetInfo asset) {
+        // 开始绘图任务，传入参数(页面宽度, 页面高度)
+        api.startJob(50, 20, 0);
+        // 开始一个页面的绘制，绘制二维码
+        // 传入参数(需要绘制的二维码的数据, 绘制的二维码左上角水平位置, 绘制的二维码左上角垂直位置, 绘制的二维码的宽度(宽高相同))
+        api.draw2DQRCode(asset.getAssetsNum(), 1, 1, 13);
+        api.drawText("河北省税务干部学校",15,1,0,0,3);
+        api.drawText(asset.getRegisterDate(),19,6,0,0,3);
+        api.drawText(asset.getAssetsNum(), 15, 11, 0, 0, 3);
+        // 结束绘图任务提交打印
+        return api.commitJob();
+    }
     /**
      *
      * 界面部分
@@ -298,16 +342,23 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
         setContentView(R.layout.activity_making_label_and_move);
         initNaviView();
         ButterKnife.bind(this);
-        //初始化打印机
-        this.api = LPAPI.Factory.createInstance(mCallback);
-        // 尝试连接上次成功连接的打印机
-        if (mPrinterAddress != null) {
-            if (api.openPrinterByAddress(mPrinterAddress)) {
-                // 连接打印机的请求提交成功，刷新界面提示
-                onPrinterConnecting(mPrinterAddress);
-                return;
+        runOnMain(new Runnable() {
+            @Override
+            public void run() {
+                //初始化打印机
+                initPrinter();
+                api = LPAPI.Factory.createInstance(mCallback);
+                // 尝试连接上次成功连接的打印机
+                if (mPrinterAddress != null) {
+                    if (api.openPrinterByAddress(mPrinterAddress)) {
+                        // 连接打印机的请求提交成功，刷新界面提示
+                        onPrinterConnecting(mPrinterAddress);
+                        return;
+                    }
+                }
             }
-        }
+        });
+
         //点击事件：出现打印机列表
         tvPrinterState.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -340,6 +391,13 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        api.quit();
+        fini();
+        super.onDestroy();
+    }
+
     /**
      * 设置列表适配器
      */
@@ -365,6 +423,10 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
             case R.id.btn_print_asset_label:
                 if (flag == 1) {//打印完后，保存资产信息
                     //TODO:打印功能
+                    for (AssetInfo asset : mSelectedList) {
+
+                        printAssetLabel(asset);
+                    }
                 } else {//否则只打印
 
                 }

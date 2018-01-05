@@ -5,12 +5,14 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.activity.MyAssetListActivity;
 import com.example.administrator.assetsmanagement.activity.UpdateMyInfo;
 import com.example.administrator.assetsmanagement.base.BaseFragment;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
@@ -22,6 +24,7 @@ import cn.bmob.v3.BmobUser;
 
 public class MySettingFragment extends BaseFragment {
     Unbinder unbinder;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,7 +55,7 @@ public class MySettingFragment extends BaseFragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_query_my_assets:
-                startActivity(MyAssetListActivity.class,null);
+                startActivity(MyAssetListActivity.class, null);
                 break;
             case R.id.btn_update_my_info:
                 startActivity(UpdateMyInfo.class, null);
@@ -61,6 +64,7 @@ public class MySettingFragment extends BaseFragment {
                 BmobUser.logOut();
                 getActivity().finish();
                 break;
+
         }
     }
 
