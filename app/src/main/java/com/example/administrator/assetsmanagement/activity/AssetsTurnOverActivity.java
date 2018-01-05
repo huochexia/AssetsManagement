@@ -148,18 +148,18 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
 
         Bundle bundle = getBundle();
         if (bundle != null) {
-            flag = bundle.getInt("turn_over");
-            isSingle = bundle.getBoolean("oneOrAll");
+            flag = bundle.getInt("flag");
+//            isSingle = bundle.getBoolean("oneOrAll");
             if (flag == 1) {
                 mLlAssetsTurnOverTop.setVisibility(View.GONE);
                 mBtnTurnOverOk.setEnabled(true);
-                assetsList = (List<AssetInfo>) bundle.getSerializable("assets");
-                if (isSingle) {
-                    //单体移交因为不进行汇总操作，所以不需要复制
-                    temp_list.addAll(assetsList);
-                } else {
+                assetsList = (List<AssetInfo>) bundle.getSerializable("newasset");
+//                if (isSingle) {
+//                    //单体移交因为不进行汇总操作，所以不需要复制
+//                    temp_list.addAll(assetsList);
+//                } else {
                     temp_list.addAll(AssetsUtil.GroupAfterMerge(AssetsUtil.deepCopy(assetsList)));
-                }
+//                }
                 setListAdapter();
             }
         }
@@ -276,11 +276,11 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                                 AssetsUtil.updateBmobLibrary(this, updateAllSelectedAssetInfo(assetsList, selectedAssets));
                             }
                             temp_list.clear();
-                            if (isSingle) {
-                                temp_list.addAll(assetsList);
-                            } else {
+//                            if (isSingle) {
+//                                temp_list.addAll(assetsList);
+//                            } else {
                                 temp_list.addAll(AssetsUtil.GroupAfterMerge(AssetsUtil.deepCopy(assetsList)));
-                            }
+//                            }
                             adapter.initMap();
                             adapter.notifyDataSetChanged();
                         }

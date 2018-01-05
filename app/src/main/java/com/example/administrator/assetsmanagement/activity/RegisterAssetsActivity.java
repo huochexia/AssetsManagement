@@ -1,5 +1,7 @@
 package com.example.administrator.assetsmanagement.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -54,7 +56,8 @@ import mehdi.sakout.fancybuttons.FancyButton;
 /**
  * 登记资产：对原有资产和新购资产进行基本信息登记，资产图片的分两种方式，一是从现有图库中进行选择，
  * 二是现场拍照。资产编号根据登记时的系统时间自动产生，同样资产的编号，在自动产生的编号基础上依据
- * 其数量增加序号，做到一资产一编号。登记后进行移交。
+ * 其数量增加序号，做到一资产一编号。登记确定后，需要进行两种选择，一种是制作标签并移交，一种是只移
+ * 交，将来再制作标签。
  * <p>
  * Created by Administrator on 2017/11/4 0004.
  */
@@ -63,7 +66,6 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     public static final int REGISTER_CATEGORY = 3;
     public static final int CHOOSET_PHOTO = 5;
     public static final int TAKE_PHOTO = 6;
-    public static final int REQUEST_PERSON = 1;
 
     @BindView(R.id.tv_register_category)
     TextView mTvRegisterCategory;
@@ -262,7 +264,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                     mIvRegisterPicture.setImageResource(R.drawable.pictures_no);
                     hasPhoto = false;
                     setAllWidget(true);
-                    startMakingLabel(mAssetInfos);
+                    startSelectDialog(mAssetInfos);
                     asset.setPicture(null);
                 }
                 break;
@@ -341,11 +343,44 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         }
     }
 
+    /**
+     *列表对话框，选择是制作标签还是直接进行移交
+     */
+    private void startSelectDialog(final List<AssetInfo> list) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String[] items = new String[]{"制作标签","直接移交"};
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        startMakingLabel(list);
+                        break;
+                    case 1:
+                        startTurnOverAsset(list);
+                        break;
+                }
+                dialog.dismiss();
+            }
+        });
+        builder.setTitle("请选择下一步操作");
+        builder.setNegativeButton("取消登记",null);
+        builder.show();
 
+    }
+    /**
+     * 直接进行移交，将来再制作标签。
+     * @param list
+     */
+    private void startTurnOverAsset(List<AssetInfo> list) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("flag", 1);
+        bundle.putSerializable("newasset", (Serializable) list);
+        startActivity(AssetsTurnOverActivity.class,bundle,false);
+    }
 
     /**
      * 仅制作标签或者制作标签和进行移交
-     *
      *
      * @param list
      */
