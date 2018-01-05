@@ -225,7 +225,7 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
         stateAlertDialog = null;
     }
     // 选择打印机的按钮事件
-    public void selectPrinterOnClick(View view) {
+    public void selectPrinterOnClick() {
         BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
         if (btAdapter == null) {
             Toast.makeText(this, this.getResources().getString(R.string.unsupportedbluetooth), Toast.LENGTH_SHORT).show();
@@ -308,6 +308,13 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
                 return;
             }
         }
+        //点击事件：出现打印机列表
+        tvPrinterState.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectPrinterOnClick();
+            }
+        });
         //初始化适配器
         LinearLayoutManager ll = new LinearLayoutManager(this);
         mRvMakingLabel.setLayoutManager(ll);
