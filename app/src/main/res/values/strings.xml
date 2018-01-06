@@ -48,7 +48,7 @@
     <string name="connectprinterfailed">连接打印机失败</string>
     <string name="printsuccess">标签打印成功</string>
     <string name="printfailed">标签打印失败</string>
-    <string name="nowisconnectingprinter">正在连接</string>
+    <string name="nowisconnectingprinter">正在连接...</string>
     <string name="unsupportedbluetooth">当前设备不支技蓝牙</string>
     <string name="unenablebluetooth">蓝牙设备未开启</string>
     <string name="selectbondeddevice">选择已绑定设备</string>

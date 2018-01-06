@@ -37,7 +37,7 @@ public class MakingLabelsListAdapter extends RecyclerView.Adapter<MakingLabelsLi
         initMap();
 
     }
-    private void initMap() {
+    public void initMap() {
         for (int i = 0;i<mAssetInfoList.size();i++) {
             map.put(i, false);
         }

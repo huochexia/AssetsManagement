@@ -26,6 +26,7 @@ import cn.bmob.v3.listener.FindListener;
 
 public class AssetManagerApplication extends Application {
     public static final int REQUEST_PERSON =1;
+    public static final String COMPANY = "河北省税务干部学校";
     private static Context context;
 
     @Override

@@ -49,18 +49,17 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     public static final int REQUEST_RECEIVE_LOCATION = 101;
     public static final int REQUEST_RECEIVE_DEPT = 102;
     public static final int REQUEST_RECEIVE_MANAGER = 103;
-    public static final int REQUEST_NAME =104;
+    public static final int REQUEST_NAME = 104;
 
     public static final int SEARCH_LOCATION = 1;
-    public static final int SEARCH_NAME= 2;
+    public static final int SEARCH_NAME = 2;
     public static final int SEARCH_ALL = 3;
-
 
 
     private BaseNode mNode;//接收传入位置信息的节点
     private BaseNode mNewLocation, mNewDept;
     private int select_type = SEARCH_LOCATION; //拟选择的类型，位置、名称或全部
-    private Person  mNewManager;
+    private Person mNewManager;
     @BindView(R.id.ll_assets_turn_over_top)
     LinearLayout mLlAssetsTurnOverTop;
 
@@ -158,7 +157,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
 //                    //单体移交因为不进行汇总操作，所以不需要复制
 //                    temp_list.addAll(assetsList);
 //                } else {
-                    temp_list.addAll(AssetsUtil.GroupAfterMerge(AssetsUtil.deepCopy(assetsList)));
+                temp_list.addAll(AssetsUtil.GroupAfterMerge(AssetsUtil.deepCopy(assetsList)));
 //                }
                 setListAdapter();
             }
@@ -210,9 +209,9 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                     case R.id.rb_turn_over_all:
                         changeBtnStatus();
                         clearLists();
-                        select_type= SEARCH_ALL;
+                        select_type = SEARCH_ALL;
                         mTvSearchContent.setText("全部正常资产");
-                       break;
+                        break;
 
                 }
             }
@@ -234,7 +233,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
      * @param view
      */
 
-    @OnClick({ R.id.btn_search_location,R.id.btn_search_name,R.id.btn_search_start,
+    @OnClick({R.id.btn_search_location, R.id.btn_search_name, R.id.btn_search_start,
             R.id.btn_receive_manager, R.id.btn_turn_over_ok, R.id.btn_receive_location,
             R.id.btn_receive_dept})
     public void onViewClicked(View view) {
@@ -247,7 +246,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 clearLists();
                 Intent intentPhoto = new Intent(this, SelectAssetsPhotoActivity.class);
                 intentPhoto.putExtra("isRegister", false);
-                startActivityForResult(intentPhoto,REQUEST_NAME );
+                startActivityForResult(intentPhoto, REQUEST_NAME);
                 break;
             case R.id.btn_search_start:
                 clearLists();
@@ -279,7 +278,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
 //                            if (isSingle) {
 //                                temp_list.addAll(assetsList);
 //                            } else {
-                                temp_list.addAll(AssetsUtil.GroupAfterMerge(AssetsUtil.deepCopy(assetsList)));
+                            temp_list.addAll(AssetsUtil.GroupAfterMerge(AssetsUtil.deepCopy(assetsList)));
 //                            }
                             adapter.initMap();
                             adapter.notifyDataSetChanged();
@@ -307,7 +306,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 break;
             case REQUEST_NAME:
                 if (resultCode == SelectAssetsPhotoActivity.RESULT_OK) {
-                    Bundle  bundle = data.getBundleExtra("assetpicture");
+                    Bundle bundle = data.getBundleExtra("assetpicture");
                     mPicture = (AssetPicture) bundle.getSerializable("imageFile");
                     mTvSearchContent.setText(mPicture.getImageNum());
                 }
@@ -394,11 +393,11 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 }
                 break;
             case SEARCH_NAME:
-                AssetsUtil.AndQueryAssets(this, "mPicture",mPicture,
+                AssetsUtil.AndQueryAssets(this, "mPicture", mPicture,
                         "mOldManager", current, handler);
                 break;
             case SEARCH_ALL:
-                AssetsUtil.AndQueryAssets(this,"mOldManager", current, handler);
+                AssetsUtil.AndQueryAssets(this, "mOldManager", current, handler);
                 break;
         }
 
@@ -432,13 +431,18 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     }
 
     /**
-     * 遍历资产列表，修改所有图片编号等于传入编号的资产，并返回对象列表
+     * 遍历资产列表，修改所有图片编号等于传入编号的资产，且状态也相同的资产，并返回对象列表
+     * @param list 为所有列表项
+     * @param imageNum 为选择的列表项的图片编号
+     * @param status  为选择的列表项的状态
+     * @return
      */
-    private List<BmobObject> updateAllSameImangeNumAssets(List<AssetInfo> list, String imageNum) {
+    private List<BmobObject> updateAllSameImangeNumAssets(List<AssetInfo> list, String imageNum,
+                                                          Integer status) {
         List<BmobObject> objects = new ArrayList<>();
         List<AssetInfo> updated = new ArrayList<>();
         for (AssetInfo asset : list) {
-            if (imageNum.equals(asset.getPicture().getImageNum())) {
+            if (imageNum.equals(asset.getPicture().getImageNum()) && asset.getStatus().equals(status)) {
                 updateAssetInfo(asset);
                 objects.add(asset);
                 updated.add(asset);//将已经更新的资产暂时存入临时列表中以备移除
@@ -449,26 +453,29 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     }
 
     /**
-     * 遍历所有资产，修改已选择的资产信息
+     * 遍历所有资产，修改已选择的资产信息。通过选择资产的数量属性判断是一个资产还是合并数量后的资产
+     * 如果是一个资产直接处理，如果是合并数量的资产，还需要分别处理
+     * @param assetsList 为所有列表项
+     * @param selectedAssets 为已被选择的列表项
      */
     private List<BmobObject> updateAllSelectedAssetInfo(List<AssetInfo> assetsList, List<AssetInfo> selectedAssets) {
         List<BmobObject> objects = new ArrayList<>();
         for (AssetInfo asset : selectedAssets) {
-            if (flag == 1) {
-                if (asset.getQuantity() == 1) {
-                    updateAssetInfo(asset);
-                    objects.add(asset);
-                    assetsList.remove(asset);
-                } else {
-                    List<BmobObject> selectObject = updateAllSameImangeNumAssets(assetsList,
-                            asset.getPicture().getImageNum());
-                    objects.addAll(selectObject);
-                }
-            } else {
+//            if (flag == 1) {
+//                if (asset.getQuantity() == 1) {
+//                    updateAssetInfo(asset);
+//                    objects.add(asset);
+//                    assetsList.remove(asset);
+//                } else {
+//                    List<BmobObject> selectObject = updateAllSameImangeNumAssets(assetsList,
+//                            asset.getPicture().getImageNum(), asset.getStatus());
+//                    objects.addAll(selectObject);
+//                }
+//            } else {
                 List<BmobObject> selectObject = updateAllSameImangeNumAssets(assetsList,
-                        asset.getPicture().getImageNum());
+                        asset.getPicture().getImageNum(), asset.getStatus());
                 objects.addAll(selectObject);
-            }
+//            }
 
         }
         return objects;

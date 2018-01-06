@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.dothantech.lpapi.LPAPI;
 import com.dothantech.printer.IDzPrinter;
+import com.example.administrator.assetsmanagement.AssetManagerApplication;
 import com.example.administrator.assetsmanagement.Interface.AssetSelectedListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
@@ -31,12 +32,15 @@ import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.SaveListener;
 
 /**
  * 制作资产标签，仅打印标签，或者打印后进行移交。该活动适用于新登记的资产(尚未保存）和从数据库中获取
@@ -67,13 +71,15 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
     Button mBtnPrintLabelAndMoveAsset;
     @BindView(R.id.tv_printer_state)
     TextView tvPrinterState;
+    @BindView(R.id.iv_printer_state)
+    ImageView mIvPrinterState;
     private List<AssetInfo> mInfoList;
-    private List<AssetInfo> mSelectedList =new ArrayList<>();
+    private List<AssetInfo> mSelectedList = new ArrayList<>();
     private AssetPicture mAssetPicture;
     private int flag;//标志，1为新，否则为旧数据
 
     /**
-     *打印机部分
+     * 打印机部分
      */
     private LPAPI api; //打印机api
     private Handler mHandler = new Handler();//异步处理线程，更新界面
@@ -170,48 +176,51 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
         mPrinterAddress = printer;
         // 调用LPAPI对象的getPrinterInfo方法获得当前连接的打印机信息
         String txt = api.getPrinterInfo().deviceName;
-        tvPrinterState.setCompoundDrawables(this.getResources().getDrawable(R.drawable.ic_bluetooth_connect,
-                null),null,null,null);
+        mIvPrinterState.setImageResource(R.drawable.ic_bluetooth_connect);
         tvPrinterState.setText(txt);
     }
+
     // 连接打印机操作提交失败、打印机连接失败或连接断开时操作
     private void onPrinterDisconnected() {
         clearAlertDialog();
         // 连接打印机操作提交失败、打印机连接失败或连接断开时，刷新界面提示
         Toast.makeText(this, this.getResources().getString(R.string.connectprinterfailed),
                 Toast.LENGTH_SHORT).show();
-        tvPrinterState.setCompoundDrawables(this.getResources().getDrawable(R.drawable.ic_bluetooth,
-                null),null,null,null);
+        mIvPrinterState.setImageResource(R.drawable.ic_bluetooth);
         tvPrinterState.setText("未连接打印机");
     }
+
     // 标签打印成功时操作
     private void onPrintSuccess() {
         clearAlertDialog();
         // 标签打印成功时，刷新界面提示
         Toast.makeText(this, this.getResources().getString(R.string.printsuccess), Toast.LENGTH_SHORT).show();
     }
+
     // 打印请求失败或标签打印失败时操作
     private void onPrintFailed() {
         clearAlertDialog();
         // 打印请求失败或标签打印失败时，刷新界面提示
         Toast.makeText(this, this.getResources().getString(R.string.printfailed), Toast.LENGTH_SHORT).show();
     }
+
     // 连接打印机请求成功提交时操作
     private void onPrinterConnecting(IDzPrinter.PrinterAddress printer) {
         clearAlertDialog();
         // 连接打印机请求成功提交，刷新界面提示
-        String txt = printer.shownName;
-        if (TextUtils.isEmpty(txt))
-            txt = printer.macAddress;
-        txt = getResources().getString(R.string.nowisconnectingprinter) + '[' + txt + ']';
-        tvPrinterState.setCompoundDrawables(this.getResources().getDrawable(R.drawable.ic_bluetooth_search,
-                null),null,null,null);
+//        String txt = printer.shownName;
+//        if (TextUtils.isEmpty(txt))
+//            txt = printer.macAddress;
+        String txt = getResources().getString(R.string.nowisconnectingprinter);
+        mIvPrinterState.setImageResource(R.drawable.ic_bluetooth_search);
         tvPrinterState.setText(txt);
     }
+
     // 显示连接、打印的状态提示框。使用资源设置提示内容
     private void showStateAlertDialog(int resId) {
         showStateAlertDialog(getResources().getString(resId));
     }
+
     // 显示连接、打印的状态提示框
     private void showStateAlertDialog(String str) {
         if (stateAlertDialog != null && stateAlertDialog.isShowing()) {
@@ -220,6 +229,7 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
             stateAlertDialog = new AlertDialog.Builder(this).setCancelable(false).setTitle(str).show();
         }
     }
+
     // 清除连接、打印的状态提示框
     private void clearAlertDialog() {
         if (stateAlertDialog != null && stateAlertDialog.isShowing()) {
@@ -227,6 +237,7 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
         }
         stateAlertDialog = null;
     }
+
     // 选择打印机的按钮事件
     public void selectPrinterOnClick() {
         BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -241,8 +252,9 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
 
         pairedPrinters = api.getAllPrinterAddresses(null);
         new AlertDialog.Builder(this).setTitle(R.string.selectbondeddevice).
-                setAdapter(new PrintDeviceListAdapter(this,pairedPrinters), new DeviceListItemClicker()).show();
+                setAdapter(new PrintDeviceListAdapter(this, pairedPrinters), new DeviceListItemClicker()).show();
     }
+
     // 打印机列表的每项点击事件
     private class DeviceListItemClicker implements DialogInterface.OnClickListener {
         @Override
@@ -275,6 +287,7 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
             mPrinterAddress = new IDzPrinter.PrinterAddress(lastPrinterName, lastPrinterMac, lastAddressType);
         }
     }
+
     // 应用退出时需要的操作
     private void fini() {
         // 保存相关信息
@@ -289,6 +302,7 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
 
         editor.commit();
     }
+
     // 打印
     private boolean printAssetLabel(AssetInfo asset) {
         // 开始绘图任务，传入参数(页面宽度, 页面高度)
@@ -296,14 +310,14 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
         // 开始一个页面的绘制，绘制二维码
         // 传入参数(需要绘制的二维码的数据, 绘制的二维码左上角水平位置, 绘制的二维码左上角垂直位置, 绘制的二维码的宽度(宽高相同))
         api.draw2DQRCode(asset.getAssetsNum(), 1, 1, 13);
-        api.drawText("河北省税务干部学校",15,1,0,0,3);
-        api.drawText(asset.getRegisterDate(),19,6,0,0,3);
+        api.drawText(AssetManagerApplication.COMPANY, 15, 1, 0, 0, 3);
+        api.drawText(asset.getRegisterDate(), 19, 6, 0, 0, 3);
         api.drawText(asset.getAssetsNum(), 15, 11, 0, 0, 3);
         // 结束绘图任务提交打印
         return api.commitJob();
     }
+
     /**
-     *
      * 界面部分
      */
     @Override
@@ -424,10 +438,18 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
                 if (flag == 1) {//打印完后，保存资产信息
                     //TODO:打印功能
                     for (AssetInfo asset : mSelectedList) {
-
                         printAssetLabel(asset);
+                        asset.save(new SaveListener<String>() {
+                            @Override
+                            public void done(String s, BmobException e) {
+
+                            }
+                        });
                     }
                 } else {//否则只打印
+                    for (AssetInfo asset : mSelectedList) {
+                        printAssetLabel(asset);
+                    }
 
                 }
                 break;
@@ -435,9 +457,20 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
                 //如果是新登记的资产打印后要做移交时，要直接传递资产信息，移交后再保存。因为如果先保存
                 //再从数据库中取出进行移交，因为网络时差的原因，会产生取出的数据不全的现象。所以要移交
                 // 后再做保存。
-
+                for (AssetInfo asset : mSelectedList) {
+                    printAssetLabel(asset);
+                }
+                Bundle bundle = new Bundle();
+                bundle.putInt("flag",1);
+                bundle.putSerializable("newasset", (Serializable) mSelectedList);
+                startActivity(AssetsTurnOverActivity.class,bundle,false);
                 break;
         }
+        //刷新列表
+        mInfoList.removeAll(mSelectedList);
+        mSelectedList.clear();
+        madapter.initMap();
+        madapter.notifyDataSetChanged();
     }
 
     MakingHander handler = new MakingHander();

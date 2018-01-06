@@ -39,7 +39,8 @@ public class AssetsUtil {
     public static final int SEARCH_ONE_ASSET = 1;
 
     /**
-     * 将资产列表中同种的资产合并为一项，并计算同种资产的数量
+     * 分组后合并：因为同种资产的状态不一定一样，所以将资产列表中不同状态下同种资产合并为一项，
+     * 并计算的数量
      *
      * @param list
      */

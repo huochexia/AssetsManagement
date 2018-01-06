@@ -233,6 +233,9 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
                 break;
             case 5:
                 mTvScanAssetState.setText("送修");
+                break;
+            case 9:
+                mTvScanAssetState.setText("新登记未移交");
         }
     }
 
@@ -243,32 +246,44 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
      */
 
     private void getLocationAndDepartment(List<AssetInfo> asset) {
-        BmobQuery<Location> queryl = new BmobQuery<>();
-        queryl.addWhereEqualTo("id", asset.get(0).getLocationNum());
-        queryl.findObjects(new FindListener<Location>() {
-            @Override
-            public void done(final List<Location> list, BmobException e) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mTvScanAssetLocation.setText(list.get(0).getLocationName());
+        if (asset.get(0).getLocationNum() != null && asset.get(0).getLocationNum()!="") {
+            BmobQuery<Location> queryl = new BmobQuery<>();
+            queryl.addWhereEqualTo("id", asset.get(0).getLocationNum());
+            queryl.findObjects(new FindListener<Location>() {
+                @Override
+                public void done(final List<Location> list, BmobException e) {
+                    if (list.size() > 0) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mTvScanAssetLocation.setText(list.get(0).getLocationName());
+                            }
+                        });
                     }
-                });
-            }
-        });
-        BmobQuery<Department> query2 = new BmobQuery<>();
-        query2.addWhereEqualTo("id", asset.get(0).getDeptNum());
-        query2.findObjects(new FindListener<Department>() {
-            @Override
-            public void done(final List<Department> list, BmobException e) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mTvScanAssetDepartment.setText(list.get(0).getDepartmentName());
+
+                }
+            });
+        }
+        if (asset.get(0).getDeptNum() != null && asset.get(0).getDeptNum()!="") {
+            BmobQuery<Department> query2 = new BmobQuery<>();
+            query2.addWhereEqualTo("id", asset.get(0).getDeptNum());
+            query2.findObjects(new FindListener<Department>() {
+                @Override
+                public void done(final List<Department> list, BmobException e) {
+                    if (list.size() > 0) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                mTvScanAssetDepartment.setText(list.get(0).getDepartmentName());
+                            }
+                        });
                     }
-                });
-            }
-        });
+
+                }
+            });
+        }
+
     }
 
 }
