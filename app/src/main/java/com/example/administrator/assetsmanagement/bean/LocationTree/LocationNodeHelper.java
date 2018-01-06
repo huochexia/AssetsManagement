@@ -1,4 +1,4 @@
-package com.example.administrator.assetsmanagement.treeUtil;
+package com.example.administrator.assetsmanagement.bean.LocationTree;
 
 
 import android.support.annotation.NonNull;
@@ -15,22 +15,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by H
+ * 
  *
  * @description 节点帮助类
  */
-public class NodeHelper {
+public class LocationNodeHelper {
     /**
      * 得到确定关系并排好序的节点列表
      */
-    public static <T> List<BaseNode> getSortNodes(List<T> datas, int defaultExpandLevel) {
-        List<BaseNode> result = new ArrayList<>();
+    public static  List<Location> getSortNodes(List<Location> datas, int defaultExpandLevel) {
+        List<Location> result = new ArrayList<>();
         try {
-            List<BaseNode> nodes = convertDatas2Nodes(datas);
+            List<Location> nodes = convertDatas2Nodes(datas);
             //获得所有根节点
-            List<BaseNode> rootNodes = getRootNodes(nodes);
+            List<Location> rootNodes = getRootNodes(nodes);
             // 排序以及设置Node间关系
-            for (BaseNode node : rootNodes) {
+            for (Location node : rootNodes) {
                 addNode(result, node, defaultExpandLevel, 1);
             }
         } catch (IllegalAccessException e) {
@@ -45,10 +45,10 @@ public class NodeHelper {
      * @param nodes
      * @return
      */
-    public static List<BaseNode> filterVisibleNode(List<BaseNode> nodes) {
-        List<BaseNode> result = new ArrayList<>();
+    public static List<Location> filterVisibleNode(List<Location> nodes) {
+        List<Location> result = new ArrayList<>();
 
-        for (BaseNode node : nodes) {
+        for (Location node : nodes) {
             // 如果为跟节点，或者上层目录为展开状态
             if (node.isRoot() || node.isParentExpand()) {
                 setNodeIcon(node);
@@ -61,58 +61,8 @@ public class NodeHelper {
     /**
      * 将服务器端获取的数据转化为Node,并确定它们之间的关系
      */
-    private static <T> List<BaseNode> convertDatas2Nodes(List<T> datas) throws IllegalAccessException {
-        List<BaseNode> nodes = new ArrayList<>();
-        BaseNode node = null;
-        for (T t : datas) {
-            String id = "";
-            String pId = "";
-            String name = "";
-            int iconExpand = -1;
-            int iconNoExpand = -1;
-            Boolean isLast =false;
-            node = null;
-            Class c = t.getClass();
-            Field fields[] = c.getDeclaredFields();
-            for (Field field : fields) {
-                if (field.getAnnotation(TreeNodeId.class) != null) {
-                    //设置访问权限，强制性的可以访问
-                    field.setAccessible(true);
-                    id = (String) field.get(t);
-                }
-
-                if (field.getAnnotation(TreeNodePId.class) != null) {
-                    //设置访问权限，强制性的可以访问
-                    field.setAccessible(true);
-                    pId = (String) field.get(t);
-                }
-
-                if (field.getAnnotation(TreeNodeName.class) != null) {
-                    //设置访问权限，强制性的可以访问
-                    field.setAccessible(true);
-                    name = (String) field.get(t);
-                }
-                if (field.getAnnotation(TreeNodeIconExpand.class) != null) {
-                    field.setAccessible(true);
-                    iconExpand = (int) field.get(t);
-                }
-                if (field.getAnnotation(TreeNodeIconCollape.class) != null) {
-                    field.setAccessible(true);
-                    iconNoExpand = (int) field.get(t);
-                }
-                if (field.getAnnotation(TreeNodeIsLast.class) != null) {
-                    field.setAccessible(true);
-                    isLast = (Boolean) field.get(t);
-                }
-            }
-            node = new BaseNode(id, pId, name);
-            node.iconExpand = iconExpand;
-            node.iconNoExpand = iconNoExpand;
-            node.isLast = isLast;
-            nodes.add(node);
-        }
-        return getNodesRelation(nodes);
-
+    private static  List<Location> convertDatas2Nodes(List<Location> datas) throws IllegalAccessException {
+           return getNodesRelation(datas);
     }
 
     /**
@@ -122,16 +72,16 @@ public class NodeHelper {
      * @return
      */
     @NonNull
-    private static List<BaseNode> getNodesRelation(List<BaseNode> nodes) {
+    private static List<Location> getNodesRelation(List<Location> nodes) {
         //设置节点之间的父子关系
         for (int i = 0; i < nodes.size(); i++) {
-            BaseNode n = nodes.get(i);
+            Location n = nodes.get(i);
             for (int j = i + 1; j < nodes.size(); j++) {
-                BaseNode m = nodes.get(j);
-                if (m.getId().equals(n.getpId())) {
+                Location m = nodes.get(j);
+                if (m.getId().equals(n.getParentId())) {
                     m.getChildren().add(n);
                     n.setParent(m);
-                } else if (m.getpId().equals(n.getId())) {
+                } else if (m.getParentId().equals(n.getId())) {
                     n.getChildren().add(m);
                     m.setParent(n);
                 }
@@ -147,7 +97,7 @@ public class NodeHelper {
      *
      * @param node
      */
-    private static void setNodeIcon(BaseNode node) {
+    private static void setNodeIcon(Location node) {
         if (node.getChildren().size() > 0 && node.isExpand()) {
             node.setIcon(node.iconExpand);
         } else if (node.getChildren().size() > 0 && !node.isExpand()) {
@@ -163,9 +113,9 @@ public class NodeHelper {
      * @param nodes
      * @return
      */
-    private static List<BaseNode> getRootNodes(List<BaseNode> nodes) {
-        List<BaseNode> root = new ArrayList<>();
-        for (BaseNode node : nodes) {
+    private static List<Location> getRootNodes(List<Location> nodes) {
+        List<Location> root = new ArrayList<>();
+        for (Location node : nodes) {
             if (node.isRoot())
                 root.add(node);
         }
@@ -175,7 +125,7 @@ public class NodeHelper {
     /**
      * 把一个节点上的所有的内容都挂上去
      */
-    private static <B> void addNode(List<BaseNode> nodes, BaseNode<B> node,
+    private static void addNode(List<Location> nodes, Location node,
                                     int defaultExpandLeval, int currentLevel) {
         nodes.add(node);
 //如果默认展开层级大于或者当前节点层级，那么设置当前层级是展开的，否则设置是闭合的
@@ -195,9 +145,9 @@ public class NodeHelper {
      * 获得节点的父节点，以及父节点的父节点
      * @param nodes
      * @param node
-     * @param <B>
+     *
      */
-    public static <B> void getAllParents(List<BaseNode> nodes, BaseNode<B> node) {
+    public static void getAllParents(List<Location> nodes, Location node) {
         nodes.add(node);
         if (node.getParent() == null) {
             return;
@@ -207,16 +157,16 @@ public class NodeHelper {
     /**
      * 显示要查找的内容，传入的节点是201室，得到它的完整链内容。比如 A座-2楼-201室。
      *
-     * @param baseNode
+     * @param Location
      */
-    public static String getSearchContentName(BaseNode baseNode) {
+    public static String getSearchContentName(Location Location) {
         StringBuffer buffer = new StringBuffer();
-        List<BaseNode> nodes = new ArrayList<>();
-        NodeHelper.getAllParents(nodes, baseNode);
+        List<Location> nodes = new ArrayList<>();
+        LocationNodeHelper.getAllParents(nodes, Location);
         int i = nodes.size();
         while (i > 0) {
             i--;
-            buffer.append(nodes.get(i).getName());
+            buffer.append(nodes.get(i).getLocationName());
             if (i != 0)
                 buffer.append("-");
         }
@@ -225,13 +175,13 @@ public class NodeHelper {
     /**
      * 获得查询对象的ID
      *
-     * @param baseNode
+     * @param Location
      * @return
      */
-    public String getSearchContentId(BaseNode baseNode) {
+    public String getSearchContentId(Location Location) {
         StringBuffer buffer = new StringBuffer();
-        List<BaseNode> nodes = new ArrayList<>();
-        NodeHelper.getAllParents(nodes, baseNode);
+        List<Location> nodes = new ArrayList<>();
+        LocationNodeHelper.getAllParents(nodes, Location);
         int i = nodes.size();
         while (i > 0) {
             i--;

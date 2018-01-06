@@ -16,7 +16,9 @@ import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener
 import com.example.administrator.assetsmanagement.Interface.TreeNodeSelected;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
-import com.example.administrator.assetsmanagement.bean.Department;
+import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department;
+import com.example.administrator.assetsmanagement.bean.DepartmentTree.DepartmentCheckboxNodeAdapter;
+import com.example.administrator.assetsmanagement.bean.DepartmentTree.DepartmentNodeSelected;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.CheckboxTreeNodeAdapter;
 
@@ -50,10 +52,10 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
     RecyclerView mLvTreeStructure;
 
     public myHandler handler = new myHandler();
-    protected List<Object> treeNodeList = new ArrayList<>();
-    private BaseNode mBaseNode;
+    protected List<Department> treeNodeList = new ArrayList<>();
+    private Department mBaseNode;
     private int mPosition;
-    protected CheckboxTreeNodeAdapter adapter;
+    protected DepartmentCheckboxNodeAdapter adapter;
 
     @Override
     public String title() {
@@ -110,23 +112,23 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
                 if (departments != null && departments.size() > 0) {
                     treeNodeList.clear();
                     treeNodeList.addAll(departments);
-                    adapter = new CheckboxTreeNodeAdapter(DepartmentSettingActivity.this, treeNodeList,
+                    adapter = new DepartmentCheckboxNodeAdapter(DepartmentSettingActivity.this, treeNodeList,
                             0, R.mipmap.expand, R.mipmap.collapse);
                     mLvTreeStructure.setAdapter(adapter);
-                    adapter.setCheckBoxSelectedListener(new TreeNodeSelected() {
+                    adapter.setCheckBoxSelectedListener(new DepartmentNodeSelected() {
                         @Override
-                        public void checked(BaseNode node, int postion) {
+                        public void checked(Department node, int postion) {
                             mBaseNode = node;
                             mPosition = postion;
                             String parent = "";
                             if (node.getParent() != null) {
-                                parent = node.getParent().getName();
+                                parent = node.getParent().getDepartmentName();
                             }
-                            tvTreeStructureCurrentNode.setText(parent + "--" + node.getName());
+                            tvTreeStructureCurrentNode.setText(parent + "--" + node.getDepartmentName());
                         }
 
                         @Override
-                        public void cancelCheck(BaseNode node, int position) {
+                        public void cancelCheck(Department node, int position) {
                             mBaseNode = null;
                             mPosition = 0;
                             tvTreeStructureCurrentNode.setText("");
@@ -144,10 +146,10 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
             case R.id.btn_tree_add_node:
                 if (mBaseNode != null) {
                     if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
-                        BaseNode newNode = new BaseNode();
-                        newNode.setName(edTreeStructureNew.getText().toString());
+                        Department newNode = new Department();
+                        newNode.setDepartmentName(edTreeStructureNew.getText().toString());
                         newNode.setId(System.currentTimeMillis() + "");
-                        newNode.setpId(mBaseNode.getId());
+                        newNode.setParentId(mBaseNode.getId());
                         addToBmob(newNode);
                         addNode(newNode, mBaseNode.getLevel() + 1);
                         mBaseNode = null;
@@ -157,7 +159,7 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
                 } else {
                     if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
                         //如果没有选择节点，则列表最后创建根节点
-                        mBaseNode = new BaseNode(System.currentTimeMillis() + "",
+                        mBaseNode = new Department(System.currentTimeMillis() + "",
                                 "0", edTreeStructureNew.getText().toString());
                         addToBmob(mBaseNode);
                         addNode(mBaseNode, 0);
@@ -201,7 +203,7 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
      * 删除节点
      * @param node
      */
-    private void deleteNode(BaseNode node) {
+    private void deleteNode(Department node) {
         tvTreeStructureCurrentNode.setText("");
         adapter.deleteNode(node);
         adapter.notifyDataSetChanged();
@@ -213,12 +215,12 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
      *
      * @param node
      */
-    private void updateNode(BaseNode node) {
-        node.setName(edTreeStructureNew.getText().toString());
+    private void updateNode(Department node) {
+        node.setDepartmentName(edTreeStructureNew.getText().toString());
         if (node.getParent() != null) {
-            tvTreeStructureCurrentNode.setText(node.getParent().getName() + "--" + node.getName());
+            tvTreeStructureCurrentNode.setText(node.getParent().getDepartmentName() + "--" + node.getDepartmentName());
         } else {
-            tvTreeStructureCurrentNode.setText("--" + node.getName());
+            tvTreeStructureCurrentNode.setText("--" + node.getDepartmentName());
         }
         adapter.notifyDataSetChanged();
         edTreeStructureNew.setText("");
@@ -229,7 +231,7 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
      *
      * @param newNode
      */
-    private void addNode(BaseNode newNode, int level) {
+    private void addNode(Department newNode, int level) {
         edTreeStructureNew.setText("");
         tvTreeStructureCurrentNode.setText("");
         adapter.addData(mPosition, newNode, level);
@@ -241,11 +243,11 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
      * 将新增加数据保存到服务器上
      * @param node
      */
-    public void addToBmob(BaseNode node) {
+    public void addToBmob(Department node) {
         Department depa = new Department();
         depa.setId(node.getId());
-        depa.setParentId(node.getpId());
-        depa.setDepartmentName(node.getName());
+        depa.setParentId(node.getParentId());
+        depa.setDepartmentName(node.getDepartmentName());
         depa.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
@@ -263,7 +265,7 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
      * 将修改服务器上的相应内容
      * @param node
      */
-    public void updateToBmob(final BaseNode node) {
+    public void updateToBmob(final Department node) {
         BmobQuery<Department> query = new BmobQuery<>();
         query.addWhereEqualTo("id", node.getId());
         query.findObjects(new FindListener<Department>() {
@@ -277,7 +279,7 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
                             msg.what = UPDATE_FLAG;
                             Bundle bundle = new Bundle();
                             bundle.putString("objectId", list.get(0).getObjectId());
-                            bundle.putString("name", node.getName());
+                            bundle.putString("name", node.getDepartmentName());
                             msg.setData(bundle);
                             handler.sendMessage(msg);
 
@@ -288,29 +290,35 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
         });
     }
 
-    public void removeFromBmob(BaseNode node) {
-        BmobQuery<Department> query = new BmobQuery<>();
-        query.addWhereEqualTo("id", node.getId());
-        query.findObjects(new FindListener<Department>() {
+    public void removeFromBmob(Department node) {
+        node.delete(new UpdateListener() {
             @Override
-            public void done(final List<Department> list, BmobException e) {
-                if (e == null) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Message msg = new Message();
-                            msg.what = DELETE_FLAG;
-                            Bundle bundle = new Bundle();
-                            bundle.putString("objectId", list.get(0).getObjectId());
-                            msg.setData(bundle);
-                            handler.sendMessage(msg);
-
-                        }
-                    }).start();
-                }
+            public void done(BmobException e) {
+                toast("删除成功！");
             }
-
         });
+//        BmobQuery<Department> query = new BmobQuery<>();
+//        query.addWhereEqualTo("id", node.getId());
+//        query.findObjects(new FindListener<Department>() {
+//            @Override
+//            public void done(final List<Department> list, BmobException e) {
+//                if (e == null) {
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Message msg = new Message();
+//                            msg.what = DELETE_FLAG;
+//                            Bundle bundle = new Bundle();
+//                            bundle.putString("objectId", list.get(0).getObjectId());
+//                            msg.setData(bundle);
+//                            handler.sendMessage(msg);
+//
+//                        }
+//                    }).start();
+//                }
+//            }
+//
+//        });
     }
 
     public static final int UPDATE_FLAG = 0;
@@ -341,20 +349,20 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
 
                     });
                     break;
-                case DELETE_FLAG:
-                    String objectId1 = msg.getData().getString("objectId");
-                    depa.setObjectId(objectId1);
-                    depa.delete( new UpdateListener() {
-                        @Override
-                        public void done(BmobException e) {
-                            if (e == null) {
-                                toast("删除成功");
-                            } else {
-                                toast("删除失败"+e.toString());
-                            }
-                        }
-                    });
-                    break;
+//                case DELETE_FLAG:
+//                    String objectId1 = msg.getData().getString("objectId");
+//                    depa.setObjectId(objectId1);
+//                    depa.delete( new UpdateListener() {
+//                        @Override
+//                        public void done(BmobException e) {
+//                            if (e == null) {
+//                                toast("删除成功");
+//                            } else {
+//                                toast("删除失败"+e.toString());
+//                            }
+//                        }
+//                    });
+//                    break;
             }
         }
     }

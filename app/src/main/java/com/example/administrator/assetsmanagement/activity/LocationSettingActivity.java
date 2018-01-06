@@ -13,12 +13,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
-import com.example.administrator.assetsmanagement.Interface.TreeNodeSelected;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
-import com.example.administrator.assetsmanagement.bean.Location;
-import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
-import com.example.administrator.assetsmanagement.treeUtil.CheckboxTreeNodeAdapter;
+import com.example.administrator.assetsmanagement.bean.LocationTree.LocationCheckboxNodeAdapter;
+import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
+import com.example.administrator.assetsmanagement.bean.LocationTree.LocationNodeSelected;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -54,10 +53,10 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
     RecyclerView mLvTreeStructure;
 
     public myHandler handler = new myHandler();
-    protected List<Object> treeNodeList = new ArrayList<>();
-    private BaseNode mBaseNode;
+    protected List<Location> treeNodeList = new ArrayList<>();
+    private Location mBaseNode;
     private int mPosition;
-    protected CheckboxTreeNodeAdapter adapter;
+    protected LocationCheckboxNodeAdapter adapter;
 
     @Override
     public String title() {
@@ -138,10 +137,10 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
             case R.id.btn_tree_add_node:
                 if (mBaseNode != null) {
                     if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
-                        BaseNode newNode = new BaseNode();
-                        newNode.setName(edTreeStructureNew.getText().toString());
+                        Location newNode = new Location();
+                        newNode.setLocationName(edTreeStructureNew.getText().toString());
                         newNode.setId(System.currentTimeMillis() + "");
-                        newNode.setpId(mBaseNode.getId());
+                        newNode.setParentId(mBaseNode.getId());
                         addToBmob(newNode);
                         addNode(newNode, mBaseNode.getLevel() + 1);
                         mBaseNode = null;
@@ -151,7 +150,7 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
                 } else {
                     if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
                         //如果没有选择节点，则列表最后创建根节点
-                        mBaseNode = new BaseNode(System.currentTimeMillis() + "",
+                        mBaseNode = new Location(System.currentTimeMillis() + "",
                                 "0", edTreeStructureNew.getText().toString());
                         addToBmob(mBaseNode);
                         addNode(mBaseNode, 0);
@@ -163,7 +162,9 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
                 break;
             case R.id.btn_tree_replace_node:
                 if (mBaseNode != null) {
+                    String objectId = mBaseNode.getObjectId();
                     if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
+                        mBaseNode.setLocationName(edTreeStructureNew.getText()+"");
                         updateToBmob(mBaseNode);
                         updateNode(mBaseNode);
 
@@ -196,12 +197,12 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
      *
      * @param node
      */
-    private void updateNode(BaseNode node) {
-        node.setName(edTreeStructureNew.getText().toString());
+    private void updateNode(Location node) {
+        node.setLocationName(edTreeStructureNew.getText().toString());
         if (node.getParent() != null) {
-            tvTreeStructureCurrentNode.setText(node.getParent().getName() + "--" + node.getName());
+            tvTreeStructureCurrentNode.setText(node.getParent().getLocationName() + "--" + node.getLocationName());
         } else {
-            tvTreeStructureCurrentNode.setText("--" + node.getName());
+            tvTreeStructureCurrentNode.setText("--" + node.getLocationName());
         }
         adapter.notifyDataSetChanged();
         edTreeStructureNew.setText("");
@@ -212,7 +213,7 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
      *
      * @param newNode
      */
-    private void addNode(BaseNode newNode, int level) {
+    private void addNode(Location newNode, int level) {
         edTreeStructureNew.setText("");
         tvTreeStructureCurrentNode.setText("");
         adapter.addData(mPosition, newNode, level);
@@ -224,7 +225,7 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
      * 删除节点
      * @param node
      */
-    private void deleteNode(BaseNode node) {
+    private void deleteNode(Location node) {
         tvTreeStructureCurrentNode.setText("");
         adapter.deleteNode(node);
         adapter.notifyDataSetChanged();
@@ -235,11 +236,11 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
      * 将新增加数据保存到服务器上
      * @param node
      */
-    public void addToBmob(BaseNode node) {
+    public void addToBmob(Location node) {
         Location location = new Location();
         location.setId(node.getId());
-        location.setParentId(node.getpId());
-        location.setLocationName(node.getName());
+        location.setParentId(node.getParentId());
+        location.setLocationName(node.getLocationName());
         location.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
@@ -257,7 +258,7 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
      * 将修改服务器上的相应内容
      * @param node
      */
-    public void updateToBmob(final BaseNode node) {
+    public void updateToBmob(final Location node) {
         BmobQuery<Location> query = new BmobQuery<>();
         query.addWhereEqualTo("id", node.getId());
         query.findObjects(new FindListener<Location>() {
@@ -271,7 +272,7 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
                             msg.what = UPDATE_FLAG;
                             Bundle bundle = new Bundle();
                             bundle.putString("objectId", list.get(0).getObjectId());
-                            bundle.putString("name", node.getName());
+                            bundle.putString("name", node.getLocationName());
                             msg.setData(bundle);
                             handler.sendMessage(msg);
 
@@ -283,35 +284,18 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
         });
     }
 
-    public void removeFromBmob(BaseNode node) {
-        BmobQuery<Location> query = new BmobQuery<>();
-        query.addWhereEqualTo("id", node.getId());
-        query.findObjects(new FindListener<Location>() {
+    public void removeFromBmob(Location node) {
+        node.delete(new UpdateListener() {
             @Override
-            public void done(final List<Location> list, BmobException e) {
-                if (e == null) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Message msg = new Message();
-                            msg.what = DELETE_FLAG;
-                            Bundle bundle = new Bundle();
-                            bundle.putString("objectId", list.get(0).getObjectId());
-                            msg.setData(bundle);
-                            handler.sendMessage(msg);
-
-                        }
-                    }).start();
-                }
-
+            public void done(BmobException e) {
+                toast("删除成功！");
             }
-
         });
+
     }
 
     public static final int FIND_ALL =0;
     public static final int UPDATE_FLAG = 1;
-    public static final int DELETE_FLAG = 2;
 
 
     /**
@@ -342,21 +326,7 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
                         }
                     });
                     break;
-                case DELETE_FLAG:
-                    String objectId1 = msg.getData().getString("objectId");
-                    location.setObjectId(objectId1);
-                    location.delete(new UpdateListener() {
-                        @Override
-                        public void done(BmobException e) {
-                            if (e == null) {
-                                toast("删除成功");
-                            } else {
-                                toast("删除失败"+e.toString());
-                            }
-                        }
-                    });
-                    break;
-            }
+        }
         }
     }
 
@@ -367,23 +337,23 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
     private void initAdapter(List<Location> list) {
         treeNodeList.clear();
         treeNodeList.addAll(list);
-        adapter = new CheckboxTreeNodeAdapter(LocationSettingActivity.this, treeNodeList,
+        adapter = new LocationCheckboxNodeAdapter(LocationSettingActivity.this, treeNodeList,
                 0, R.mipmap.expand, R.mipmap.collapse);
         mLvTreeStructure.setAdapter(adapter);
-        adapter.setCheckBoxSelectedListener(new TreeNodeSelected() {
+        adapter.setCheckBoxSelectedListener(new LocationNodeSelected() {
             @Override
-            public void checked(BaseNode node, int postion) {
+            public void checked(Location node, int postion) {
                 mBaseNode = node;
                 mPosition = postion;
                 String parent = "";
                 if (node.getParent() != null) {
-                    parent = node.getParent().getName();
+                    parent = node.getParent().getLocationName();
                 }
-                tvTreeStructureCurrentNode.setText(parent + "--" + node.getName());
+                tvTreeStructureCurrentNode.setText(parent + "--" + node.getLocationName());
             }
 
             @Override
-            public void cancelCheck(BaseNode node, int position) {
+            public void cancelCheck(Location node, int position) {
                 mBaseNode = null;
                 mPosition = 0;
                 tvTreeStructureCurrentNode.setText("");

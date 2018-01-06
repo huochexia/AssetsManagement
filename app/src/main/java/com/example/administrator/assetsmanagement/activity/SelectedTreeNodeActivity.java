@@ -12,9 +12,9 @@ import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener
 import com.example.administrator.assetsmanagement.Interface.TreeNodeSelected;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
-import com.example.administrator.assetsmanagement.bean.AssetCategory;
-import com.example.administrator.assetsmanagement.bean.Department;
-import com.example.administrator.assetsmanagement.bean.Location;
+import com.example.administrator.assetsmanagement.bean.CategoryTree.AssetCategory;
+import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department;
+import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
 import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.CheckboxTreeNodeAdapter;
@@ -28,10 +28,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.datatype.BmobQueryResult;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.SQLQueryListener;
 
 /**
  * 根据要求从不同的表中获取数据集

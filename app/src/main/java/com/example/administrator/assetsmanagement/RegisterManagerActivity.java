@@ -10,14 +10,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.administrator.assetsmanagement.activity.AssetsTurnOverActivity;
 import com.example.administrator.assetsmanagement.activity.SelectedTreeNodeActivity;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
-import com.example.administrator.assetsmanagement.bean.Department;
+import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department;
 import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.bean.Role;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
-import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
 
 import java.util.ArrayList;
 import java.util.List;

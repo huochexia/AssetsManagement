@@ -1,14 +1,13 @@
 package com.example.administrator.assetsmanagement.bean;
 
+import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department;
 import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeId;
 import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeIsLast;
 import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeName;
 import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodePId;
 
 import java.io.Serializable;
-import java.util.List;
 
-import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobUser;
 
 /**
