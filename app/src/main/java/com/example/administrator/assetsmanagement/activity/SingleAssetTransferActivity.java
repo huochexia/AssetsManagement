@@ -10,6 +10,10 @@ import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
+import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department;
+import com.example.administrator.assetsmanagement.bean.DepartmentTree.DepartmentNodeHelper;
+import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
+import com.example.administrator.assetsmanagement.bean.LocationTree.LocationNodeHelper;
 import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
@@ -37,8 +41,8 @@ public class SingleAssetTransferActivity extends ParentWithNaviActivity {
     @BindView(R.id.tv_single_asset_new_manager)
     TextView tvSingleAssetNewManager;
 
-    BaseNode newLoction;//节点对象，用于接收返回节点值
-    BaseNode newDepartment;
+    Location newLoction;//节点对象，用于接收返回节点值
+    Department newDepartment;
     Person mNewManager;
     AssetInfo mSingleasset;
 
@@ -95,9 +99,9 @@ public class SingleAssetTransferActivity extends ParentWithNaviActivity {
                 break;
             case R.id.btn_single_asset_transfer_ok:
                 if (newLoction != null)
-                    mSingleasset.setLocationNum(newLoction.getId());
+                    mSingleasset.setLocation(newLoction);
                 if (newDepartment != null)
-                    mSingleasset.setDeptNum(newDepartment.getId());
+                    mSingleasset.setDepartment(newDepartment);
                 if (mNewManager != null) {
                     mSingleasset.setNewManager(mNewManager);
                     mSingleasset.setStatus(4);
@@ -141,14 +145,14 @@ public class SingleAssetTransferActivity extends ParentWithNaviActivity {
 
             case REQUEST_RECEIVE_LOCATION:
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    newLoction = (BaseNode) data.getSerializableExtra("node");
-                    tvSingleAssetNewLocation.setText(NodeHelper.getSearchContentName(newLoction));
+                    newLoction = (Location) data.getSerializableExtra("node");
+                    tvSingleAssetNewLocation.setText(LocationNodeHelper.getSearchContentName(newLoction));
                 }
                 break;
             case REQUEST_RECEIVE_DEPT:
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    newDepartment = (BaseNode) data.getSerializableExtra("node");
-                    tvSingleAssetNewDepartment.setText(NodeHelper.getSearchContentName(newLoction));
+                    newDepartment = (Department) data.getSerializableExtra("node");
+                    tvSingleAssetNewDepartment.setText(DepartmentNodeHelper.getSearchContentName(newDepartment));
                 }
                 break;
             case REQUEST_RECEIVE_MANAGER:

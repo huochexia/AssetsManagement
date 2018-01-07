@@ -158,7 +158,7 @@ public class AssetsUtil {
         BmobQuery<AssetInfo> query = new BmobQuery<>();
         query.addWhereEqualTo(para, value);
         query.setLimit(500);
-        query.include("mPicture,mOldManager");
+        query.include("mPicture,mOldManager,mLocation,mDepartment");
         query.findObjects(new FindListener<AssetInfo>() {
             @Override
             public void done(final List<AssetInfo> list, BmobException e) {
@@ -204,7 +204,7 @@ public class AssetsUtil {
         BmobQuery<AssetInfo> query= new BmobQuery<>();
         query.and(and);
         query.setLimit(500);
-        query.include("mPicture");
+        query.include("mPicture,mLocation,mDepartment,mOldManager");
         query.findObjects(new FindListener<AssetInfo>() {
             @Override
             public void done(final List<AssetInfo> list, BmobException e) {
@@ -255,7 +255,7 @@ public class AssetsUtil {
         BmobQuery<AssetInfo> query= new BmobQuery<>();
         query.and(and);
         query.setLimit(500);
-        query.include("mPicture");
+        query.include("mPicture,mLocation,mDepartment,mOldManager");
         query.findObjects(new FindListener<AssetInfo>() {
             @Override
             public void done(final List<AssetInfo> list, BmobException e) {

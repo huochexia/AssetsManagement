@@ -246,9 +246,9 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
      */
 
     private void getLocationAndDepartment(List<AssetInfo> asset) {
-        if (asset.get(0).getLocationNum() != null && asset.get(0).getLocationNum()!="") {
+        if (asset.get(0).getLocation() != null ) {
             BmobQuery<Location> queryl = new BmobQuery<>();
-            queryl.addWhereEqualTo("id", asset.get(0).getLocationNum());
+            queryl.addWhereEqualTo("id", asset.get(0).getLocation());
             queryl.findObjects(new FindListener<Location>() {
                 @Override
                 public void done(final List<Location> list, BmobException e) {
@@ -264,9 +264,9 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
                 }
             });
         }
-        if (asset.get(0).getDeptNum() != null && asset.get(0).getDeptNum()!="") {
+        if (asset.get(0).getDepartment() != null ) {
             BmobQuery<Department> query2 = new BmobQuery<>();
-            query2.addWhereEqualTo("id", asset.get(0).getDeptNum());
+            query2.addWhereEqualTo("id", asset.get(0).getDepartment());
             query2.findObjects(new FindListener<Department>() {
                 @Override
                 public void done(final List<Department> list, BmobException e) {

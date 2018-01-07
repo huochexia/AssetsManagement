@@ -21,9 +21,11 @@ import com.example.administrator.assetsmanagement.adapter.AssetRecyclerViewAdapt
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
+import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department;
+import com.example.administrator.assetsmanagement.bean.DepartmentTree.DepartmentNodeHelper;
+import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
+import com.example.administrator.assetsmanagement.bean.LocationTree.LocationNodeHelper;
 import com.example.administrator.assetsmanagement.bean.Person;
-import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
-import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 
 import java.util.ArrayList;
@@ -56,8 +58,9 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     public static final int SEARCH_ALL = 3;
 
 
-    private BaseNode mNode;//接收传入位置信息的节点
-    private BaseNode mNewLocation, mNewDept;
+    private Location oldLocation;//接收传入位置信息的节点
+    private Location mNewLocation;
+    private Department mNewDept;
     private int select_type = SEARCH_LOCATION; //拟选择的类型，位置、名称或全部
     private Person mNewManager;
     @BindView(R.id.ll_assets_turn_over_top)
@@ -300,8 +303,8 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         switch (requestCode) {
             case REQUEST_SELECTED:
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    mNode = (BaseNode) data.getSerializableExtra("node");
-                    mTvSearchContent.setText(NodeHelper.getSearchContentName(mNode));
+                    oldLocation = (Location) data.getSerializableExtra("node");
+                    mTvSearchContent.setText(LocationNodeHelper.getSearchContentName(oldLocation));
                 }
                 break;
             case REQUEST_NAME:
@@ -313,14 +316,14 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 break;
             case REQUEST_RECEIVE_LOCATION:
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    mNewLocation = (BaseNode) data.getSerializableExtra("node");
-                    mTvReceiveNewLocation.setText(NodeHelper.getSearchContentName(mNewLocation));
+                    mNewLocation = (Location) data.getSerializableExtra("node");
+                    mTvReceiveNewLocation.setText(LocationNodeHelper.getSearchContentName(mNewLocation));
                 }
                 break;
             case REQUEST_RECEIVE_DEPT:
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    mNewDept = (BaseNode) data.getSerializableExtra("node");
-                    mTvReceiveNewDept.setText(NodeHelper.getSearchContentName(mNewDept));
+                    mNewDept = (Department) data.getSerializableExtra("node");
+                    mTvReceiveNewDept.setText(DepartmentNodeHelper.getSearchContentName(mNewDept));
                 }
                 break;
             case REQUEST_RECEIVE_MANAGER:
@@ -387,8 +390,8 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         Person current = BmobUser.getCurrentUser(Person.class);
         switch (select_type) {
             case SEARCH_LOCATION:
-                if (mNode != null) {
-                    AssetsUtil.AndQueryAssets(this, "mLocationNum", mNode.getId(),
+                if (oldLocation != null) {
+                    AssetsUtil.AndQueryAssets(this, "mLocation", oldLocation,
                             "mOldManager", current, handler);
                 }
                 break;
@@ -421,10 +424,10 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
      */
     private void updateAssetInfo(AssetInfo asset) {
         if (mNewLocation != null) {
-            asset.setLocationNum(mNewLocation.getId());
+            asset.setLocation(mNewLocation);
         }
         if (mNewDept != null) {
-            asset.setDeptNum(mNewDept.getId());
+            asset.setDepartment(mNewDept);
         }
         asset.setNewManager(mNewManager);
         asset.setStatus(4);

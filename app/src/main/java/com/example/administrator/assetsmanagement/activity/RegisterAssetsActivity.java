@@ -27,6 +27,8 @@ import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
+import com.example.administrator.assetsmanagement.bean.CategoryTree.AssetCategory;
+import com.example.administrator.assetsmanagement.bean.CategoryTree.CategoryNodeHelper;
 import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
@@ -104,7 +106,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     @BindView(R.id.et_register_asset_price)
     LineEditText mEtRegisterAssetPrice;
 
-    private BaseNode mBaseNode;//临时节点
+    private AssetCategory mCategory;//临时节点
     private AssetInfo asset;
     private File Imagefile;
     private Uri imageUri;
@@ -153,7 +155,6 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         asset = new AssetInfo();
         asset.setStatus(9);//初始状态，9新登记
         asset.setOldManager(BmobUser.getCurrentUser(Person.class));//初始管理者，为空或登记人即当前用户
-//        getPerson();
         initEvent();
         mEtRegisterAssetsQuantity.setText("");
         mEtRegisterAssetsDate.setText(TimeUtils.getFormatToday(TimeUtils.FORMAT_DATE));
@@ -273,9 +274,9 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 mAssetInfos.clear();
                 break;
             case R.id.tv_assets_item_picture_lib:
-                if (asset.getCategoryNum() != null) {
+                if (asset.getCategory() != null) {
                     Intent intentPhoto = new Intent(this, SelectAssetsPhotoActivity.class);
-                    intentPhoto.putExtra("category_num", asset.getCategoryNum());
+                    intentPhoto.putExtra("category_num", asset.getCategory().getId());
                     intentPhoto.putExtra("category_name", mTvRegisterCategory.getText());
                     startActivityForResult(intentPhoto, CHOOSET_PHOTO);
                 } else {
@@ -284,7 +285,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
                 break;
             case R.id.tv_assets_item_camera:
-                if (asset.getCategoryNum() != null) {
+                if (asset.getCategory() != null) {
                     Imagefile = startCamera();
                 } else {
                     toast("请先选择资产类别！");
@@ -299,9 +300,9 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
             case REGISTER_CATEGORY:
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    mBaseNode = (BaseNode) data.getSerializableExtra("node");
-                    mTvRegisterCategory.setText(getNodeAllPathName(mBaseNode));
-                    asset.setCategoryNum(mBaseNode.getId());
+                    mCategory = (AssetCategory) data.getSerializableExtra("node");
+                    mTvRegisterCategory.setText(getNodeAllPathName(mCategory));
+                    asset.setCategory(mCategory);
                 }
                 break;
 
@@ -528,14 +529,14 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
      * @param node
      * @return
      */
-    private String getNodeAllPathName(BaseNode node) {
+    private String getNodeAllPathName(AssetCategory node) {
         StringBuffer buffer = new StringBuffer();
-        List<BaseNode> nodes = new ArrayList<>();
-        NodeHelper.getAllParents(nodes, node);
+        List<AssetCategory> nodes = new ArrayList<>();
+        CategoryNodeHelper.getAllParents(nodes, node);
         int i = nodes.size();
         while (i > 0) {
             i--;
-            buffer.append(nodes.get(i).getName());
+            buffer.append(nodes.get(i).getCategoryName());
             if (i != 0)
                 buffer.append("-");
         }
@@ -579,7 +580,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             public void done(BmobException e) {
                 if (e == null) {
                     AssetPicture picture = new AssetPicture();
-                    picture.setCategoryNum(asset.getCategoryNum());
+                    picture.setCategoryNum(asset.getCategory().getId());
                     String imangNum = System.currentTimeMillis() + "";
                     picture.setImageNum(imangNum);
                     picture.setImageUrl(bmobFile.getFileUrl());

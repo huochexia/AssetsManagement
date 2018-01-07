@@ -13,8 +13,15 @@ import com.example.administrator.assetsmanagement.Interface.TreeNodeSelected;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.CategoryTree.AssetCategory;
+import com.example.administrator.assetsmanagement.bean.CategoryTree.CategoryCheckboxNodeAdapter;
+import com.example.administrator.assetsmanagement.bean.CategoryTree.CategoryNodeSelected;
 import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department;
+import com.example.administrator.assetsmanagement.bean.DepartmentTree.DepartmentCheckboxNodeAdapter;
+import com.example.administrator.assetsmanagement.bean.DepartmentTree.DepartmentNodeSelected;
 import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
+import com.example.administrator.assetsmanagement.bean.LocationTree.LocationCheckboxNodeAdapter;
+import com.example.administrator.assetsmanagement.bean.LocationTree.LocationNodeSelected;
+import com.example.administrator.assetsmanagement.bean.LocationTree.LocationTreeNodeAdapter;
 import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.CheckboxTreeNodeAdapter;
@@ -43,11 +50,17 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
     public static final int SEARCH_CATEGORY = 4;
     public static final int SEARCH_RESULT_OK = 100;
     protected List<BmobObject> treeNodeList = new ArrayList<>();
+    List<Location> mLocations = new ArrayList<>();
+    Location mLocation;
+    List<AssetCategory> mCategorys = new ArrayList<>();
+    AssetCategory mCategory;
+    List<Department> mDepartments = new ArrayList<>();
+    Department mDepartment;
     @BindView(R.id.lv_tree_structure)
     RecyclerView mLvTreeStructure;
-    private BaseNode mBaseNode;
+    private BmobObject mBaseNode;
     private int mPosition;
-    private CheckboxTreeNodeAdapter adapter;
+
     private int type;
     private boolean isPerson;
 
@@ -96,7 +109,7 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
         ButterKnife.bind(this);
         Intent intent = getIntent();
         type = intent.getIntExtra("type", 0);
-        isPerson = intent.getBooleanExtra("person", false);
+//        isPerson = intent.getBooleanExtra("person", false);
         initNaviView();
         LinearLayoutManager ll = new LinearLayoutManager(this);
         mLvTreeStructure.setLayoutManager(ll);
@@ -194,23 +207,77 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
      */
     private void createAdapter(List<BmobObject> list) {
         treeNodeList=list;
-        adapter = new CheckboxTreeNodeAdapter(SelectedTreeNodeActivity.this, treeNodeList,
-                0, R.mipmap.expand, R.mipmap.collapse);
-        mLvTreeStructure.setAdapter(adapter);
-        adapter.setCheckBoxSelectedListener(new TreeNodeSelected() {
-            @Override
-            public void checked(BaseNode node, int postion) {
-                mBaseNode = node;
-                mPosition = postion;
-            }
+        switch (type) {
+            case SEARCH_LOCATION:
+                for (BmobObject location : list) {
+                    mLocations.add((Location) location);
+                }
+                LocationCheckboxNodeAdapter ladapter = new LocationCheckboxNodeAdapter(this,
+                        mLocations, 0, R.mipmap.expand, R.mipmap.collapse);
+                mLvTreeStructure.setAdapter(ladapter);
+                ladapter.setCheckBoxSelectedListener(new LocationNodeSelected() {
+                    @Override
+                    public void checked(Location node, int position) {
+                        mBaseNode =node;
+                        mPosition = position;
+                    }
 
-            @Override
-            public void cancelCheck(BaseNode node, int position) {
-                mBaseNode = null;
-                mPosition = 0;
+                    @Override
+                    public void cancelCheck(Location node, int position) {
+                        mBaseNode = null;
+                        mPosition = 0;
+                    }
+                });
+                break;
+            case SEARCH_DEPARTMENT:
+                for (BmobObject dept : list) {
+                    mDepartments.add((Department) dept);
+                }
+                DepartmentCheckboxNodeAdapter dadapter = new DepartmentCheckboxNodeAdapter(this,
+                        mDepartments, 0, R.mipmap.expand, R.mipmap.collapse);
+                mLvTreeStructure.setAdapter(dadapter);
+                dadapter.setCheckBoxSelectedListener(new DepartmentNodeSelected() {
+                    @Override
+                    public void checked(Department node, int position) {
+                        mBaseNode =node;
+                        mPosition = position;
+                    }
 
-            }
-        });
+                    @Override
+                    public void cancelCheck(Department node, int position) {
+                        mBaseNode = null;
+                        mPosition = 0;
+                    }
+                });
+                break;
+            case SEARCH_MANAGER:
+                getPersonFromBmob();
+                break;
+            case SEARCH_CATEGORY:
+                for (BmobObject category : list) {
+                    mCategorys.add((AssetCategory) category);
+                }
+                CategoryCheckboxNodeAdapter cadapter = new CategoryCheckboxNodeAdapter(this,
+                        mCategorys, 0, R.mipmap.expand, R.mipmap.collapse);
+                mLvTreeStructure.setAdapter(cadapter);
+                cadapter.setCheckBoxSelectedListener(new CategoryNodeSelected() {
+                    @Override
+                    public void checked(AssetCategory node, int position) {
+                        mBaseNode =node;
+                        mPosition = position;
+                    }
+
+                    @Override
+                    public void cancelCheck(AssetCategory node, int position) {
+                        mBaseNode = null;
+                        mPosition = 0;
+                    }
+                });
+                break;
+            default:
+                break;
+        }
+
     }
     /**
      * 生成异步传递信息
@@ -244,19 +311,8 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
     public void onViewClicked() {
 
         if (mBaseNode != null) {
-            if (!isPerson) {
-                //如果是查找位置或部门，则直接返回选择的节点
                 sendNodeInfo(mBaseNode);
                 finish();
-            } else {
-                //如果是查找人员，则必须选择人员，而不能选择部门
-                if (mBaseNode.isLast) {
-                    sendNodeInfo(mBaseNode);
-                    finish();
-                } else {
-                    toast("请选择人员！");
-                }
-            }
         } else {
             toast("请选择要查询的内容！");
         }
@@ -268,7 +324,7 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
      *
      * @param node
      */
-    private void sendNodeInfo(BaseNode node) {
+    private void sendNodeInfo(BmobObject node) {
         Intent intent = new Intent();
         intent.putExtra("node", node);
         setResult(SEARCH_RESULT_OK, intent);

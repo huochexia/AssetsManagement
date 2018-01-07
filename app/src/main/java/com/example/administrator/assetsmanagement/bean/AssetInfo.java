@@ -1,5 +1,9 @@
 package com.example.administrator.assetsmanagement.bean;
 
+import com.example.administrator.assetsmanagement.bean.CategoryTree.AssetCategory;
+import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department;
+import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
+
 import cn.bmob.v3.BmobObject;
 
 /**
@@ -16,11 +20,11 @@ public class AssetInfo extends BmobObject implements Cloneable {
     /*
     资产位置编号
      */
-    private String mLocationNum;
+    private Location mLocation;
     /*
     资产所属部门编号
      */
-    private String mDeptNum;
+    private Department mDepartment;
     /*
     新资产管理员编号
      */
@@ -35,7 +39,7 @@ public class AssetInfo extends BmobObject implements Cloneable {
     /*
     资产类别编号
      */
-    private String mCategoryNum;
+    private AssetCategory mCategory;
     /*
      资产所属图片编号，它是识别资产是否属于一种的标志
      */
@@ -75,20 +79,20 @@ public class AssetInfo extends BmobObject implements Cloneable {
         mAssetName = assetName;
     }
 
-    public String getLocationNum() {
-        return mLocationNum;
+    public Location getLocation() {
+        return mLocation;
     }
 
-    public void setLocationNum(String locationNum) {
-        mLocationNum = locationNum;
+    public void setLocation(Location location) {
+        mLocation = location;
     }
 
-    public String getDeptNum() {
-        return mDeptNum;
+    public Department getDepartment() {
+        return mDepartment;
     }
 
-    public void setDeptNum(String deptNum) {
-        mDeptNum = deptNum;
+    public void setDepartment(Department department) {
+        mDepartment = department;
     }
 
     public Person getNewManager() {
@@ -107,12 +111,12 @@ public class AssetInfo extends BmobObject implements Cloneable {
         mOldManager = oldManager;
     }
 
-    public String getCategoryNum() {
-        return mCategoryNum;
+    public AssetCategory getCategory() {
+        return mCategory;
     }
 
-    public void setCategoryNum(String categoryNum) {
-        mCategoryNum = categoryNum;
+    public void setCategory(AssetCategory category) {
+        mCategory = category;
     }
 
     public AssetPicture getPicture() {
