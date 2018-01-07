@@ -18,11 +18,8 @@ import cn.bmob.v3.BmobObject;
  */
 
 public class AssetCategory extends BmobObject {
-    @TreeNodeId
     private String id;
-    @TreeNodePId
     private String parentId;
-    @TreeNodeName
     private String categoryName;
     //节点层级
     private int level;
@@ -37,9 +34,7 @@ public class AssetCategory extends BmobObject {
     /**
      * 设置开启 关闭的图片,资源ID
      */
-    @TreeNodeIconExpand
     public int iconExpand = -1;
-    @TreeNodeIconCollape
     public int iconNoExpand = -1;
     /**
      * 是否被checked选中
@@ -67,13 +62,7 @@ public class AssetCategory extends BmobObject {
         this.parentId = parentId;
     }
 
-    public String getcategoryName() {
-        return categoryName;
-    }
 
-    public void setcategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
 
     public String getCategoryName() {
         return categoryName;

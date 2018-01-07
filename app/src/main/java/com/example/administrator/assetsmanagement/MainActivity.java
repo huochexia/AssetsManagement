@@ -140,5 +140,9 @@ public class MainActivity extends ParentWithNaviActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FlashActivity.queryRole();
+    }
 }

@@ -17,11 +17,8 @@ import cn.bmob.v3.BmobObject;
  * 位置信息,树状结构显示
  */
 public class Location extends BmobObject {
-    @TreeNodeId
     private String id;
-    @TreeNodePId
     private String parentId;
-    @TreeNodeName
     private String locationName;
     //节点层级
     private int level;
@@ -32,13 +29,11 @@ public class Location extends BmobObject {
     //父节点
     private  Location parent;
     //所有子节点集合
-    private List<Location> children = new ArrayList<>();
+    private List<Location> children ;
     /**
      * 设置开启 关闭的图片,资源ID
      */
-    @TreeNodeIconExpand
     public int iconExpand = -1;
-    @TreeNodeIconCollape
     public int iconNoExpand = -1;
     /**
      * 是否被checked选中
@@ -186,13 +181,14 @@ public class Location extends BmobObject {
      * 构造方法
      */
     public Location() {
-
+        children = new ArrayList<>();
     }
 
     public Location(String id, String parentId, String locationName) {
         this.id = id;
         this.parentId = parentId;
         this.locationName = locationName;
+        children = new ArrayList<>();
     }
 
 

@@ -110,8 +110,7 @@ public class FlashActivity extends BaseActivity {
     /**
      * 获取当前用户的权限
      */
-    public
-    void queryRole() {
+    public static void queryRole() {
         final Person person = BmobUser.getCurrentUser(Person.class);
         BmobQuery<Role> query = new BmobQuery<>();
         query.addWhereEqualTo("user", person);
@@ -119,12 +118,16 @@ public class FlashActivity extends BaseActivity {
             @Override
             public void done(final List<Role> list, BmobException e) {
                 if (list != null && list.size() > 0) {
-                    runOnMain(new Runnable() {
+                    new Handler().post(new Runnable() {
                         @Override
                         public void run() {
                             mROLE = list.get(0);
                         }
                     });
+//                    runOnMain(new Runnable() {
+//                        @Override
+//
+//                    });
                 }
             }
         });

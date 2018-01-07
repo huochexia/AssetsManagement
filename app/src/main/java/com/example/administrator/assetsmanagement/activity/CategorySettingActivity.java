@@ -246,7 +246,7 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
         AssetCategory category = new AssetCategory();
         category.setId(node.getId());
         category.setParentId(node.getParentId());
-        category.setcategoryName(node.getCategoryName());
+        category.setCategoryName(node.getCategoryName());
         category.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
@@ -314,7 +314,7 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
                 case UPDATE_FLAG:
                     String objectId = msg.getData().getString("objectId");
                     String name = msg.getData().getString("name");
-                    category.setcategoryName(name);
+                    category.setCategoryName(name);
                     category.update(objectId, new UpdateListener() {
                         @Override
                         public void done(BmobException e) {

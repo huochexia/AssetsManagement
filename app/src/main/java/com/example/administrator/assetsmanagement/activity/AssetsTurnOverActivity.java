@@ -391,7 +391,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         switch (select_type) {
             case SEARCH_LOCATION:
                 if (oldLocation != null) {
-                    AssetsUtil.AndQueryAssets(this, "mLocation", oldLocation,
+                    AssetsUtil.AndQueryAssets(this, "mLocation", oldLocation.getId(),
                             "mOldManager", current, handler);
                 }
                 break;
@@ -424,10 +424,11 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
      */
     private void updateAssetInfo(AssetInfo asset) {
         if (mNewLocation != null) {
-            asset.setLocation(mNewLocation);
+            mNewLocation.setChildren(null);
+            asset.setLocation(mNewLocation.getId());
         }
         if (mNewDept != null) {
-            asset.setDepartment(mNewDept);
+            asset.setDepartment(mNewDept.getId());
         }
         asset.setNewManager(mNewManager);
         asset.setStatus(4);

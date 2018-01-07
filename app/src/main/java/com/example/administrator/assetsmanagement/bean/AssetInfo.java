@@ -18,30 +18,30 @@ public class AssetInfo extends BmobObject implements Cloneable {
      */
     private String mAssetName;
     /*
-    资产位置编号
+    资产位置
      */
-    private Location mLocation;
+    private String mLocation;
     /*
-    资产所属部门编号
+    资产所属部门
      */
-    private Department mDepartment;
+    private String mDepartment;
     /*
-    新资产管理员编号
+    新资产管理员
      */
     private Person mNewManager;
     /*
-    原资产管理员编号,正常情况下新管理员与原管理一致。待移交状态下，新管理员为拟接收的管理员。这
+    原资产管理员,正常情况下新管理员与原管理一致。待移交状态下，新管理员为拟接收的管理员。这
     样设计是为了解决，拟接收人员不能接收资产时，只有新管理员接收了该资产后，旧管理员才会变更为新管理
     员；如果未接收原管理员不变。如果要退回原管理员，则新管理员清空。
     管理员
      */
     private  Person mOldManager;
     /*
-    资产类别编号
+    资产类别
      */
-    private AssetCategory mCategory;
+    private String mCategory;
     /*
-     资产所属图片编号，它是识别资产是否属于一种的标志
+     资产所属图片，它是识别资产是否属于一种的标志
      */
     private  AssetPicture mPicture;
 
@@ -79,19 +79,19 @@ public class AssetInfo extends BmobObject implements Cloneable {
         mAssetName = assetName;
     }
 
-    public Location getLocation() {
+    public String getLocation() {
         return mLocation;
     }
 
-    public void setLocation(Location location) {
+    public void setLocation(String location) {
         mLocation = location;
     }
 
-    public Department getDepartment() {
+    public String getDepartment() {
         return mDepartment;
     }
 
-    public void setDepartment(Department department) {
+    public void setDepartment(String department) {
         mDepartment = department;
     }
 
@@ -111,11 +111,11 @@ public class AssetInfo extends BmobObject implements Cloneable {
         mOldManager = oldManager;
     }
 
-    public AssetCategory getCategory() {
+    public String getCategory() {
         return mCategory;
     }
 
-    public void setCategory(AssetCategory category) {
+    public void setCategory(String category) {
         mCategory = category;
     }
 

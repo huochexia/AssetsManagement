@@ -158,7 +158,7 @@ public class AssetsUtil {
         BmobQuery<AssetInfo> query = new BmobQuery<>();
         query.addWhereEqualTo(para, value);
         query.setLimit(500);
-        query.include("mPicture,mOldManager,mLocation,mDepartment");
+        query.include("mPicture,mOldManager");
         query.findObjects(new FindListener<AssetInfo>() {
             @Override
             public void done(final List<AssetInfo> list, BmobException e) {
@@ -204,7 +204,7 @@ public class AssetsUtil {
         BmobQuery<AssetInfo> query= new BmobQuery<>();
         query.and(and);
         query.setLimit(500);
-        query.include("mPicture,mLocation,mDepartment,mOldManager");
+        query.include("mPicture,mOldManager");
         query.findObjects(new FindListener<AssetInfo>() {
             @Override
             public void done(final List<AssetInfo> list, BmobException e) {
@@ -255,7 +255,7 @@ public class AssetsUtil {
         BmobQuery<AssetInfo> query= new BmobQuery<>();
         query.and(and);
         query.setLimit(500);
-        query.include("mPicture,mLocation,mDepartment,mOldManager");
+        query.include("mPicture,mOldManager");
         query.findObjects(new FindListener<AssetInfo>() {
             @Override
             public void done(final List<AssetInfo> list, BmobException e) {
@@ -370,7 +370,7 @@ public class AssetsUtil {
      */
     public static void insertBmobLibrary(final Context context, List<BmobObject> objects) {
         if (objects.size() <= 50) {//如果资产少于等于50时
-            new BmobBatch().insertBatch(objects).doBatch(new QueryListListener<BatchResult>() {
+              new BmobBatch().insertBatch(objects).doBatch(new QueryListListener<BatchResult>() {
                 @Override
                 public void done(List<BatchResult> list, BmobException e) {
                     if (e == null) {

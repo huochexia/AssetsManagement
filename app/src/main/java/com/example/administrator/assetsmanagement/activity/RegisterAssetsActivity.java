@@ -276,7 +276,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             case R.id.tv_assets_item_picture_lib:
                 if (asset.getCategory() != null) {
                     Intent intentPhoto = new Intent(this, SelectAssetsPhotoActivity.class);
-                    intentPhoto.putExtra("category_num", asset.getCategory().getId());
+                    intentPhoto.putExtra("category_num", asset.getCategory());
                     intentPhoto.putExtra("category_name", mTvRegisterCategory.getText());
                     startActivityForResult(intentPhoto, CHOOSET_PHOTO);
                 } else {
@@ -302,7 +302,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
                     mCategory = (AssetCategory) data.getSerializableExtra("node");
                     mTvRegisterCategory.setText(getNodeAllPathName(mCategory));
-                    asset.setCategory(mCategory);
+                    asset.setCategory(mCategory.getId());
                 }
                 break;
 
@@ -355,13 +355,15 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
+                        dialog.dismiss();
                         startMakingLabel(list);
                         break;
                     case 1:
+                        dialog.dismiss();
                         startTurnOverAsset(list);
                         break;
                 }
-                dialog.dismiss();
+
             }
         });
         builder.setTitle("请选择下一步操作");
@@ -377,7 +379,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         Bundle bundle = new Bundle();
         bundle.putInt("flag", 1);
         bundle.putSerializable("newasset", (Serializable) list);
-        startActivity(AssetsTurnOverActivity.class,bundle,false);
+        startActivity(AssetsTurnOverActivity.class,bundle,true);
     }
 
     /**
@@ -580,7 +582,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             public void done(BmobException e) {
                 if (e == null) {
                     AssetPicture picture = new AssetPicture();
-                    picture.setCategoryNum(asset.getCategory().getId());
+                    picture.setCategoryNum(asset.getCategory());
                     String imangNum = System.currentTimeMillis() + "";
                     picture.setImageNum(imangNum);
                     picture.setImageUrl(bmobFile.getFileUrl());

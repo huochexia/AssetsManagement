@@ -18,11 +18,8 @@ import cn.bmob.v3.BmobObject;
  */
 
 public class Department extends BmobObject {
-    @TreeNodeId
     private String id;
-    @TreeNodePId
     private String parentId;
-    @TreeNodeName
     private String departmentName;
     //节点层级
     private int level;
@@ -37,9 +34,7 @@ public class Department extends BmobObject {
     /**
      * 设置开启 关闭的图片,资源ID
      */
-    @TreeNodeIconExpand
     public int iconExpand = -1;
-    @TreeNodeIconCollape
     public int iconNoExpand = -1;
     /**
      * 是否被checked选中
