@@ -177,12 +177,12 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
                         Glide.with(SingleAssetInfoActivity.this)
                                 .load(mAssetInfo.getPicture().getImageUrl()).into(mIvSingleAssetImage);
                         mTvScanAssetManager.setText(mAssetInfo.getOldManager().getUsername());
-                        getLocationAndDepartment(asset);
+                        mTvScanAssetLocation.setText(mAssetInfo.getLocation().getLocationName());
+                        mTvScanAssetDepartment.setText(mAssetInfo.getDepartment().getDepartmentName());
                         mTvScanAssetRegisterDate.setText(mAssetInfo.getRegisterDate());
                         mTvScanAssetPrice.setText(mAssetInfo.getPrice()+"");
                         mTvScanAssetComment.setText(mAssetInfo.getComment());
                         setButtonStatus();
-//                        Person person = BmobUser.getCurrentUser(Person.class);
                         String id = mAssetInfo.getOldManager().getObjectId();
                         // 自V3.4.5版本开始，SDK新增了getObjectByKey(key)方法从本地缓存中获取
                         // 当前登陆用户某一列的值。其中key为用户表的指定列名
@@ -200,6 +200,9 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
         }
     }
 
+    /**
+     * 设置所有按钮状态
+     */
     private void setButtonStatus() {
 
         switch (mAssetInfo.getStatus()) {
@@ -239,51 +242,5 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
         }
     }
 
-    /**
-     * 利用编号查找位置名称，是因为Location转化为BaseNode时是不能利用注释的方法保留objectId，
-     * 这样当选择节点后返回的节点没有objectId也就无法转换成Location类，也就无法在AssetInfo中
-     * 保存Location类型属性值，只能保存Location的id。（部门类同样有这个问题）
-     */
-
-    private void getLocationAndDepartment(List<AssetInfo> asset) {
-        if (asset.get(0).getLocation() != null ) {
-            BmobQuery<Location> queryl = new BmobQuery<>();
-            queryl.addWhereEqualTo("id", asset.get(0).getLocation());
-            queryl.findObjects(new FindListener<Location>() {
-                @Override
-                public void done(final List<Location> list, BmobException e) {
-                    if (list.size() > 0) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mTvScanAssetLocation.setText(list.get(0).getLocationName());
-                            }
-                        });
-                    }
-
-                }
-            });
-        }
-        if (asset.get(0).getDepartment() != null ) {
-            BmobQuery<Department> query2 = new BmobQuery<>();
-            query2.addWhereEqualTo("id", asset.get(0).getDepartment());
-            query2.findObjects(new FindListener<Department>() {
-                @Override
-                public void done(final List<Department> list, BmobException e) {
-                    if (list.size() > 0) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                mTvScanAssetDepartment.setText(list.get(0).getDepartmentName());
-                            }
-                        });
-                    }
-
-                }
-            });
-        }
-
-    }
 
 }

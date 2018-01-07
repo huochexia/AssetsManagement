@@ -420,15 +420,20 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     }
 
     /**
-     * 修改资产信息
+     * 修改资产信息,因为位置和部门有节点属性，即父节点。在Bmob存储中造成自循环，最终导致内存溢出。
+     * 所以在保存资产信息的位置和部门属性值时，新构造一个对象，传入其唯一objectId，
+     *
      */
     private void updateAssetInfo(AssetInfo asset) {
         if (mNewLocation != null) {
-            mNewLocation.setChildren(null);
-            asset.setLocation(mNewLocation.getId());
+            Location l = new Location();
+            l.setObjectId(mNewLocation.getObjectId());
+            asset.setLocation(l);
         }
         if (mNewDept != null) {
-            asset.setDepartment(mNewDept.getId());
+            Department d = new Department();
+            d.setObjectId(mNewDept.getObjectId());
+            asset.setDepartment(d);
         }
         asset.setNewManager(mNewManager);
         asset.setStatus(4);

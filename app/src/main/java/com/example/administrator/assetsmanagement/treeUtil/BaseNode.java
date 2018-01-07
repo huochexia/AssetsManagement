@@ -12,14 +12,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.bmob.v3.BmobObject;
+
 /**
  * 如果你觉得你的Item布局十分复杂，且布局会展示Bean的其他数据，那么为了方便，你可以让Node中
  * 包含一个泛型B， 每个Node携带与之对于的Bean的所有数据；
  */
-public class BaseNode<B> implements Serializable {
+public class BaseNode  extends BmobObject implements Serializable {
 
-    //传入一下实体bean
-    public B bean;
     //节点id 和父节点pId,pId=0时为根节点
     @TreeNodeId
     private String id;
@@ -69,13 +69,6 @@ public class BaseNode<B> implements Serializable {
     }
 
     public BaseNode(String id, String pId, String name) {
-        this.id = id;
-        this.pId = pId;
-        this.name = name;
-    }
-
-    public BaseNode(String id, String pId, String nam, B bean) {
-        this.bean = bean;
         this.id = id;
         this.pId = pId;
         this.name = name;

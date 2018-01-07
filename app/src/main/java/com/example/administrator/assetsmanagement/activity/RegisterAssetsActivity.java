@@ -302,7 +302,9 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
                     mCategory = (AssetCategory) data.getSerializableExtra("node");
                     mTvRegisterCategory.setText(getNodeAllPathName(mCategory));
-                    asset.setCategory(mCategory.getId());
+                    AssetCategory ac = new AssetCategory();
+                    ac.setObjectId(mCategory.getObjectId());
+                    asset.setCategory(ac);
                 }
                 break;
 
@@ -379,7 +381,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         Bundle bundle = new Bundle();
         bundle.putInt("flag", 1);
         bundle.putSerializable("newasset", (Serializable) list);
-        startActivity(AssetsTurnOverActivity.class,bundle,true);
+        startActivity(AssetsTurnOverActivity.class,bundle,false);
     }
 
     /**
@@ -582,7 +584,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             public void done(BmobException e) {
                 if (e == null) {
                     AssetPicture picture = new AssetPicture();
-                    picture.setCategoryNum(asset.getCategory());
+                    picture.setCategoryNum(asset.getCategory().getId());
                     String imangNum = System.currentTimeMillis() + "";
                     picture.setImageNum(imangNum);
                     picture.setImageUrl(bmobFile.getFileUrl());

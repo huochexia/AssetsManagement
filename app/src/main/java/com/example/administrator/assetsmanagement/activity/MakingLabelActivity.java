@@ -316,7 +316,26 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
         // 结束绘图任务提交打印
         return api.commitJob();
     }
+    // 判断当前打印机是否连接
+    private boolean isPrinterConnected() {
+        // 调用LPAPI对象的getPrinterState方法获取当前打印机的连接状态
+        IDzPrinter.PrinterState state = api.getPrinterState();
 
+        // 打印机未连接
+        if (state == null || state.equals(IDzPrinter.PrinterState.Disconnected)) {
+            Toast.makeText(this, this.getResources().getString(R.string.pleaseconnectprinter), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // 打印机正在连接
+        if (state.equals(IDzPrinter.PrinterState.Connecting)) {
+            Toast.makeText(this, this.getResources().getString(R.string.waitconnectingprinter), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // 打印机已连接
+        return true;
+    }
     /**
      * 界面部分
      */
@@ -435,37 +454,51 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_print_asset_label:
-                if (flag == 1) {//打印完后，保存资产信息
-                    //TODO:打印功能
-                    for (AssetInfo asset : mSelectedList) {
-                        printAssetLabel(asset);
-                        asset.save(new SaveListener<String>() {
-                            @Override
-                            public void done(String s, BmobException e) {
+                if (isPrinterConnected()) {
+                    if (flag == 1) {//打印完后，保存资产信息
+                        //TODO:打印功能
+                        for (AssetInfo asset : mSelectedList) {
+                            printAssetLabel(asset);
+                            asset.save(new SaveListener<String>() {
+                                @Override
+                                public void done(String s, BmobException e) {
 
-                            }
-                        });
-                    }
-                } else {//否则只打印
-                    for (AssetInfo asset : mSelectedList) {
-                        printAssetLabel(asset);
-                    }
+                                }
+                            });
+                        }
+                    } else {//否则只打印
+                        for (AssetInfo asset : mSelectedList) {
+                            printAssetLabel(asset);
+                        }
 
+                    }
+                    refreshList();
                 }
                 break;
             case R.id.btn_print_label_and_move_asset:
-                //如果是新登记的资产打印后要做移交时，要直接传递资产信息，移交后再保存。因为如果先保存
-                //再从数据库中取出进行移交，因为网络时差的原因，会产生取出的数据不全的现象。所以要移交
-                // 后再做保存。
-                for (AssetInfo asset : mSelectedList) {
-                    printAssetLabel(asset);
+                if (isPrinterConnected()) {
+                    //如果是新登记的资产打印后要做移交时，要直接传递资产信息，移交后再保存。因为如果先保存
+                    //再从数据库中取出进行移交，因为网络时差的原因，会产生取出的数据不全的现象。所以要移交
+                    // 后再做保存。
+                    for (AssetInfo asset : mSelectedList) {
+                        printAssetLabel(asset);
+                    }
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("flag",1);
+                    bundle.putSerializable("newasset", (Serializable) mSelectedList);
+                    startActivity(AssetsTurnOverActivity.class,bundle,false);
+                    refreshList();
                 }
-                Bundle bundle = new Bundle();
-                bundle.putInt("flag",1);
-                bundle.putSerializable("newasset", (Serializable) mSelectedList);
-                startActivity(AssetsTurnOverActivity.class,bundle,false);
-                break;
+               break;
         }
+
+
+    }
+
+    /**
+     * 打印后刷新列表
+     */
+    private void refreshList() {
         //刷新列表
         mInfoList.removeAll(mSelectedList);
         mSelectedList.clear();

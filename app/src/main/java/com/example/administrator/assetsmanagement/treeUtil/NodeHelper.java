@@ -175,7 +175,7 @@ public class NodeHelper {
     /**
      * 把一个节点上的所有的内容都挂上去
      */
-    private static <B> void addNode(List<BaseNode> nodes, BaseNode<B> node,
+    private static  void addNode(List<BaseNode> nodes, BaseNode node,
                                     int defaultExpandLeval, int currentLevel) {
         nodes.add(node);
 //如果默认展开层级大于或者当前节点层级，那么设置当前层级是展开的，否则设置是闭合的
@@ -195,9 +195,9 @@ public class NodeHelper {
      * 获得节点的父节点，以及父节点的父节点
      * @param nodes
      * @param node
-     * @param <B>
+     *
      */
-    public static <B> void getAllParents(List<BaseNode> nodes, BaseNode<B> node) {
+    public static  void getAllParents(List<BaseNode> nodes, BaseNode node) {
         nodes.add(node);
         if (node.getParent() == null) {
             return;

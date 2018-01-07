@@ -53,4 +53,6 @@
     <string name="unenablebluetooth">蓝牙设备未开启</string>
     <string name="selectbondeddevice">选择已绑定设备</string>
     <string name="connect_printer">未连接打印机</string>
+    <string name="pleaseconnectprinter">打印机未连接，请先连接打印机！</string>
+    <string name="waitconnectingprinter">正在连接打印机，请稍候！</string>
 </resources>

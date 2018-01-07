@@ -98,12 +98,15 @@ public class SingleAssetTransferActivity extends ParentWithNaviActivity {
                 startActivityForResult(intent1, REQUEST_RECEIVE_MANAGER);
                 break;
             case R.id.btn_single_asset_transfer_ok:
-                if (newLoction != null)
-                    //TODO:
-                    newLoction.setChildren(null);
-                    mSingleasset.setLocation(newLoction.getId());
+                Location l = new Location();
+                if (newLoction != null) {
+                    l.setObjectId(newLoction.getObjectId());
+                    mSingleasset.setLocation(l);
+                }
+                Department d = new Department();;
                 if (newDepartment != null)
-                    mSingleasset.setDepartment(newDepartment.getId());
+                    d.setObjectId(newDepartment.getObjectId());
+                    mSingleasset.setDepartment(d);
                 if (mNewManager != null) {
                     mSingleasset.setNewManager(mNewManager);
                     mSingleasset.setStatus(4);

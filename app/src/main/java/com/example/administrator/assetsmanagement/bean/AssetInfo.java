@@ -20,11 +20,11 @@ public class AssetInfo extends BmobObject implements Cloneable {
     /*
     资产位置
      */
-    private String mLocation;
+    private Location mLocation;
     /*
     资产所属部门
      */
-    private String mDepartment;
+    private Department mDepartment;
     /*
     新资产管理员
      */
@@ -39,7 +39,7 @@ public class AssetInfo extends BmobObject implements Cloneable {
     /*
     资产类别
      */
-    private String mCategory;
+    private AssetCategory mCategory;
     /*
      资产所属图片，它是识别资产是否属于一种的标志
      */
@@ -79,19 +79,19 @@ public class AssetInfo extends BmobObject implements Cloneable {
         mAssetName = assetName;
     }
 
-    public String getLocation() {
+    public Location getLocation() {
         return mLocation;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Location location) {
         mLocation = location;
     }
 
-    public String getDepartment() {
+    public Department getDepartment() {
         return mDepartment;
     }
 
-    public void setDepartment(String department) {
+    public void setDepartment(Department department) {
         mDepartment = department;
     }
 
@@ -111,11 +111,11 @@ public class AssetInfo extends BmobObject implements Cloneable {
         mOldManager = oldManager;
     }
 
-    public String getCategory() {
+    public AssetCategory getCategory() {
         return mCategory;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(AssetCategory category) {
         mCategory = category;
     }
 
