@@ -1,8 +1,10 @@
 package com.example.administrator.assetsmanagement.activity;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
@@ -11,6 +13,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -20,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
@@ -30,8 +35,6 @@ import com.example.administrator.assetsmanagement.bean.AssetPicture;
 import com.example.administrator.assetsmanagement.bean.CategoryTree.AssetCategory;
 import com.example.administrator.assetsmanagement.bean.CategoryTree.CategoryNodeHelper;
 import com.example.administrator.assetsmanagement.bean.Person;
-import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
-import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
 import com.example.administrator.assetsmanagement.utils.ImageFactory;
 import com.example.administrator.assetsmanagement.utils.LineEditText;
 import com.example.administrator.assetsmanagement.utils.TimeUtils;
@@ -286,11 +289,37 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 break;
             case R.id.tv_assets_item_camera:
                 if (asset.getCategory() != null) {
-                    Imagefile = startCamera();
+                    if (Build.VERSION.SDK_INT >= 23) {
+                        int checkCallPhonePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+                        if (checkCallPhonePermission != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 222);
+                            return;
+                        } else {
+                            Imagefile = startCamera();
+                        }
+                    } else {
+                        Imagefile = startCamera();
+                    }
+
                 } else {
                     toast("请先选择资产类别！");
                 }
                 break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 222:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Imagefile = startCamera();
+                } else {
+                    Toast.makeText(this, "很遗憾你把相机权限禁用了。", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
@@ -347,11 +376,11 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     }
 
     /**
-     *列表对话框，选择是制作标签还是直接进行移交
+     * 列表对话框，选择是制作标签还是直接进行移交
      */
     private void startSelectDialog(final List<AssetInfo> list) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        String[] items = new String[]{"制作标签","直接移交"};
+        String[] items = new String[]{"制作标签", "直接移交"};
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -369,19 +398,21 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             }
         });
         builder.setTitle("请选择下一步操作");
-        builder.setNegativeButton("取消登记",null);
+        builder.setNegativeButton("取消登记", null);
         builder.show();
 
     }
+
     /**
      * 直接进行移交，将来再制作标签。
+     *
      * @param list
      */
     private void startTurnOverAsset(List<AssetInfo> list) {
         Bundle bundle = new Bundle();
         bundle.putInt("flag", 1);
         bundle.putSerializable("newasset", (Serializable) list);
-        startActivity(AssetsTurnOverActivity.class,bundle,false);
+        startActivity(AssetsTurnOverActivity.class, bundle, false);
     }
 
     /**
@@ -391,7 +422,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
      */
     private void startMakingLabel(List<AssetInfo> list) {
         Bundle bundle = new Bundle();
-        bundle.putInt("flag",1);
+        bundle.putInt("flag", 1);
         bundle.putSerializable("newasset", (Serializable) list);
         startActivity(MakingLabelActivity.class, bundle, false);
     }
@@ -600,7 +631,6 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         });
 
     }
-
 
 
 }
