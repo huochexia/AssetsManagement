@@ -20,7 +20,12 @@ import com.example.administrator.assetsmanagement.adapter.AssetRecyclerViewAdapt
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
+import com.example.administrator.assetsmanagement.bean.CategoryTree.AssetCategory;
+import com.example.administrator.assetsmanagement.bean.CategoryTree.CategoryNodeHelper;
+import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department;
+import com.example.administrator.assetsmanagement.bean.DepartmentTree.DepartmentNodeHelper;
 import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
+import com.example.administrator.assetsmanagement.bean.LocationTree.LocationNodeHelper;
 import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
@@ -76,7 +81,9 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
     Button btnSearchStart;
 
 
-    private BmobObject mBmobObject;//接收传入的节点信息
+    private Location mLocation;//接收传入的节点信息
+    private Department mDepartment;
+    private AssetCategory mCategory;
     private int search_type = SEARCH_LOCATION;
 
     private List<AssetInfo> search_result_list = new ArrayList<>();
@@ -177,22 +184,22 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
             public void onClick(View v) {
                 switch (search_type) {
                     case SEARCH_LOCATION:
-                        if (mBmobObject != null) {
+                        if (mLocation != null) {
                             AssetsUtil.AndQueryAssets(SearchAssetsActivity.this,
-                                    "mLocation", mBmobObject, handler);
+                                    "mLocation", mLocation, handler);
                         }
                         break;
                     case SEARCH_CATEGORY:
-                        if (mBmobObject != null) {
+                        if (mCategory != null) {
                             AssetsUtil.AndQueryAssets(SearchAssetsActivity.this,
-                                    "mCategory", mBmobObject, handler);
+                                    "mCategory", mCategory, handler);
 
                         }
                         break;
                     case SEARCH_DEPARTMENT:
-                        if (mBmobObject != null) {
+                        if (mDepartment != null) {
                             AssetsUtil.AndQueryAssets(SearchAssetsActivity.this,
-                                    "mDepartment", mBmobObject, handler);
+                                    "mDepartment", mDepartment, handler);
                         }
                         break;
                     case SEARCH_MANAGER:
@@ -312,16 +319,28 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
         Intent intent = new Intent(SearchAssetsActivity.this, SelectedTreeNodeActivity.class);
         intent.putExtra("type", type);
         intent.putExtra("person", isPerson);
-        startActivityForResult(intent, SEARCHASSETS_REQUEST);
+        startActivityForResult(intent, type);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case SEARCHASSETS_REQUEST:
+            case SelectedTreeNodeActivity.SEARCH_LOCATION:
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    mBmobObject = (BmobObject) data.getSerializableExtra("node");
-//                    mTvSearchContent.setText();
+                   mLocation = (Location) data.getSerializableExtra("node");
+                    mTvSearchContent.setText(LocationNodeHelper.getSearchContentName(mLocation));
+                }
+                break;
+            case SelectedTreeNodeActivity.SEARCH_CATEGORY:
+                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
+                    mCategory = (AssetCategory) data.getSerializableExtra("node");
+                    mTvSearchContent.setText(CategoryNodeHelper.getSearchContentName(mCategory));
+                }
+                break;
+            case SelectedTreeNodeActivity.SEARCH_DEPARTMENT:
+                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
+                    mDepartment = (Department) data.getSerializableExtra("node");
+                    mTvSearchContent.setText(DepartmentNodeHelper.getSearchContentName(mDepartment));
                 }
                 break;
             case REQUEST_SELECTE_MANAGER:
