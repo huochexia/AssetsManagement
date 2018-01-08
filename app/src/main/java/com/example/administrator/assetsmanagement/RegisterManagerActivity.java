@@ -92,7 +92,9 @@ public class RegisterManagerActivity extends ParentWithNaviActivity {
         user.setUsername(username);
         user.setMobilePhoneNumber(telephone);
         user.setPassword(password);
-        user.setDepartment(mDepartment);
+        Department department = new Department();
+        department.setObjectId(mDepartment.getObjectId());
+        user.setDepartment(department);
         user.signUp(new SaveListener<Person>() {
             @Override
             public void done(Person user, BmobException e) {
@@ -152,8 +154,9 @@ public class RegisterManagerActivity extends ParentWithNaviActivity {
         switch (requestCode) {
             case REQUEST_RECEIVE_DEPT:
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    BaseNode node = (BaseNode) data.getSerializableExtra("node");
-                    getDepartmentFromBmob(node);
+                    mDepartment = (Department) data.getSerializableExtra("node");
+//                    getDepartmentFromBmob(node);
+                    mTvRegisterDepartment.setText(mDepartment.getDepartmentName());
                 }
                 break;
 

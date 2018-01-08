@@ -8,6 +8,7 @@ import android.view.View;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
+import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department;
 import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 
 import butterknife.ButterKnife;
@@ -19,7 +20,7 @@ import butterknife.OnClick;
 
 public class UpdateMyInfo extends ParentWithNaviActivity {
     public static final int REQUSET_DEPARTMENT=1;
-    BaseNode node;//接收返回的部门节点信息
+    Department node;//接收返回的部门节点信息
     @Override
     public String title() {
         return "变更信息";
@@ -73,7 +74,7 @@ public class UpdateMyInfo extends ParentWithNaviActivity {
         switch (requestCode) {
             case REQUSET_DEPARTMENT:
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    node = (BaseNode) data.getSerializableExtra("node");
+                    node = (Department) data.getSerializableExtra("node");
                 }
 
                 break;
