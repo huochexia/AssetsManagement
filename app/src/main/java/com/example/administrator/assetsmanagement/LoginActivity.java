@@ -1,6 +1,5 @@
 package com.example.administrator.assetsmanagement;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -16,12 +15,10 @@ import butterknife.OnClick;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.LogInListener;
-import cn.bmob.v3.listener.SaveListener;
 
 import static cn.bmob.v3.BmobUser.getCurrentUser;
 
 /**
- *
  * Created by Administrator on 2017/12/16 0016.
  */
 
@@ -41,8 +38,7 @@ public class LoginActivity extends BaseActivity {
     }
 
 
-
-    @OnClick({R.id.btn_login, R.id.tv_register})
+    @OnClick({R.id.btn_login, R.id.tv_register,R.id.tv_forget_password})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_login:
@@ -51,8 +47,8 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void done(Object o, BmobException e) {
                         if (e == null) {
-                           //登录成功
-                            startActivity(FlashActivity.class,null,true);
+                            //登录成功
+                            startActivity(FlashActivity.class, null, true);
 //                            startActivity(MainActivity.class, null, true);
                         } else {
                             toast(e.getMessage() + "(" + e.getErrorCode() + ")");
@@ -66,7 +62,10 @@ public class LoginActivity extends BaseActivity {
                 });
                 break;
             case R.id.tv_register:
-                startActivity(RegisterManagerActivity.class,null,true);
+                startActivity(RegisterManagerActivity.class, null, true);
+                break;
+            case R.id.tv_forget_password:
+                toast("近期推出，敬请期待");
                 break;
         }
     }
@@ -91,5 +90,9 @@ public class LoginActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    @OnClick(R.id.tv_forget_password)
+    public void onViewClicked() {
     }
 }
