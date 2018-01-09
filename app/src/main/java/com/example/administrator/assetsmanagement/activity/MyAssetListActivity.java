@@ -6,7 +6,9 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 
+import com.example.administrator.assetsmanagement.Interface.AssetItemClickListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.adapter.AssetRecyclerViewAdapter;
@@ -26,7 +28,7 @@ import cn.bmob.v3.BmobUser;
  */
 
 public class MyAssetListActivity extends ParentWithNaviActivity {
-
+    public AssetInfo assetInfo;
     List<AssetInfo> myAssetsList;
     AssetRecyclerViewAdapter adapter;
     @BindView(R.id.rc_my_assets_list)
@@ -78,6 +80,32 @@ public class MyAssetListActivity extends ParentWithNaviActivity {
                     List<AssetInfo> list = AssetsUtil.GroupAfterMerge(myAssetsList);
                     adapter = new AssetRecyclerViewAdapter(MyAssetListActivity.this, list, true);
                     mRcMyAssetsList.setAdapter(adapter);
+                    adapter.setAssetItemClickListener(new AssetItemClickListener() {
+                        @Override
+                        public void onClick(AssetInfo asset) {
+                            assetInfo = asset;
+                        }
+                    });
+                    adapter.setMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case 0:
+                                    Bundle bundle = new Bundle();
+                                    bundle.putSerializable("picture",assetInfo.getPicture());
+                                    bundle.putString("title", assetInfo.getAssetName());
+                                    startActivity(AssetPictureActivity.class,bundle,false);
+                                    return true;
+                                case 1:
+                                    Bundle bundle1 = new Bundle();
+                                    bundle1.putInt("flay", 0);
+                                    bundle1.putSerializable("picture", assetInfo.getPicture());
+                                    startActivity(MakingLabelActivity.class, bundle1, false);
+                                default:
+                                    return true;
+                            }
+                        }
+                    });
                     break;
             }
         }

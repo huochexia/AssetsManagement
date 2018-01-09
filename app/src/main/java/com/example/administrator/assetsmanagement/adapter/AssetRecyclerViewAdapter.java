@@ -4,7 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -13,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.administrator.assetsmanagement.Interface.AssetItemClickListener;
 import com.example.administrator.assetsmanagement.Interface.AssetSelectedListener;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.activity.AssetPictureActivity;
@@ -37,7 +43,8 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
     Map<Integer, Boolean> map =new HashMap<>();
     List<AssetInfo> checkedList;
     AssetSelectedListener listener;
-
+    AssetItemClickListener clickListener;
+    MenuItem.OnMenuItemClickListener menuClickLister;//弹出菜单项事件
     public AssetRecyclerViewAdapter(Context context, List<AssetInfo> list,boolean isSearch) {
         mContext = context;
         assetInfoList = list;
@@ -51,8 +58,26 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
         }
     }
 
+    /**
+     * 选择事件监听器
+     * @param listener
+     */
     public void getAssetSelectListener(AssetSelectedListener listener) {
         this.listener = listener;
+    }
+
+    /**
+     * 点击事件监听器
+     *
+     * @param
+     *
+     */
+    public void setAssetItemClickListener(AssetItemClickListener listener) {
+        this.clickListener = listener;
+    }
+
+    public void setMenuItemClickListener(MenuItem.OnMenuItemClickListener listener) {
+        this.menuClickLister = listener;
     }
     @Override
     public AssetHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -112,19 +137,14 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
                 holder.assetStatus.setText("新登记");
                 break;
         }
-
-        holder.assetName.setOnClickListener(new View.OnClickListener() {
+        holder.assetName.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("picture",assetInfoList.get(position).getPicture());
-                bundle.putString("title", assetInfoList.get(position).getAssetName());
-                Intent intent = new Intent(mContext, AssetPictureActivity.class);
-                intent.putExtra(mContext.getPackageName(), bundle);
-                mContext.startActivity(intent);
-
+            public boolean onLongClick(View v) {
+                clickListener.onClick(assetInfoList.get(position));
+                return false;
             }
         });
+
     }
 
 
@@ -152,7 +172,20 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
             assetQuantity = (TextView) itemView.findViewById(R.id.tv_assets_item_quantity);
             assetStatus = (TextView) itemView.findViewById(R.id.tv_assets_item_status);
             selected = (CheckBox) itemView.findViewById(R.id.cb_assets_item);
+            //设置上下文菜单
+            itemView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+                @Override
+                public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+                    MenuItem picture = menu.add(0,0,0,"图片");
+                    MenuItem printer =menu.add(0, 1, 0, "打印");
+                    picture.setOnMenuItemClickListener(menuClickLister);
+                    printer.setOnMenuItemClickListener(menuClickLister);
+
+                }
+            });
+
         }
+
     }
 
 }

@@ -8,12 +8,14 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.administrator.assetsmanagement.Interface.AssetItemClickListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.adapter.AssetRecyclerViewAdapter;
@@ -27,8 +29,6 @@ import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department
 import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
 import com.example.administrator.assetsmanagement.bean.LocationTree.LocationNodeHelper;
 import com.example.administrator.assetsmanagement.bean.Person;
-import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
-import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -39,7 +39,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.bmob.v3.BmobObject;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
@@ -80,6 +79,7 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
     @BindView(R.id.btn_search_start)
     Button btnSearchStart;
 
+    public AssetInfo assetInfo;
 
     private Location mLocation;//接收传入的节点信息
     private Department mDepartment;
@@ -247,12 +247,41 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                     adapter = new AssetRecyclerViewAdapter(SearchAssetsActivity.this,
                             AssetsUtil.GroupAfterMerge(search_result_list), true);
                     searchList.setAdapter(adapter);
+                    adapter.setAssetItemClickListener(new AssetItemClickListener() {
+                        @Override
+                        public void onClick(AssetInfo asset) {
+                            assetInfo = asset;
+                        }
+                    });
+                    adapter.setMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case 0:
+                                    Bundle bundle = new Bundle();
+                                    bundle.putSerializable("picture",assetInfo.getPicture());
+                                    bundle.putString("title", assetInfo.getAssetName());
+                                    startActivity(AssetPictureActivity.class,bundle,false);
+                                    return true;
+                                case 1:
+                                    Bundle bundle1 = new Bundle();
+                                    bundle1.putInt("flay", 0);
+                                    bundle1.putSerializable("picture", assetInfo.getPicture());
+                                    startActivity(MakingLabelActivity.class, bundle1, false);
+                                default:
+                                    return true;
+                            }
+                        }
+                    });
                     break;
 
             }
         }
     }
 
+    /**
+     * 因为检查所有资产，独立列示，而不是合并列示
+     */
     SingleListHandler sHandler = new SingleListHandler();
 
     class SingleListHandler extends Handler {
@@ -264,8 +293,27 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                     adapter = new AssetRecyclerViewAdapter(SearchAssetsActivity.this,
                             search_result_list, true);
                     searchList.setAdapter(adapter);
-                    break;
+                    adapter.setAssetItemClickListener(new AssetItemClickListener() {
 
+                        @Override
+                        public void onClick(AssetInfo assetInfo) {
+
+                        }
+                    });
+                    adapter.setMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case 0:
+                                    //do something
+                                    return true;
+                                case 1:
+                                    //do something
+                                default:
+                                    return true;
+                            }
+                        }
+                    });
             }
         }
     }
@@ -296,10 +344,7 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                 break;
             case R.id.btn_search_name:
                 clearLists();
-                //TODO:应该传入类别，否则图片量太大
-//                Intent intentPhoto = new Intent(this, SelectAssetsPhotoActivity.class);
-//                intentPhoto.putExtra("isRegister", false);
-//                startActivityForResult(intentPhoto, REQUEST_PICTURE);
+
                 customScan();
                 break;
             case R.id.btn_search_dept:
@@ -383,4 +428,6 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                 .setCaptureActivity(CustomScanActivity.class) // 设置自定义的activity是CustomActivity
                 .initiateScan(); // 初始化扫描
     }
+
+
 }
