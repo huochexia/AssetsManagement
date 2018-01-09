@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.administrator.assetsmanagement.AssetManagerApplication;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.Interface.TreeNodeSelected;
 import com.example.administrator.assetsmanagement.R;
@@ -101,7 +102,8 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
     }
 
     /**
-     * 从服务器获取数据，并以此设置适配器
+     * 从服务器获取数据，并以此设置适配器。这里用的是基本查询语句，所以没有使用异步处理。与LocationSettingActivity
+     * 使用的查询方法不一样。
      */
     private void getDataFromBmob() {
         String sql = "select * from Department";
@@ -110,32 +112,44 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
             public void done(BmobQueryResult<Department> bmobQueryResult, BmobException e) {
                 List<Department> departments = bmobQueryResult.getResults();
                 if (departments != null && departments.size() > 0) {
-                    treeNodeList.clear();
-                    treeNodeList.addAll(departments);
-                    adapter = new DepartmentCheckboxNodeAdapter(DepartmentSettingActivity.this, treeNodeList,
-                            0, R.mipmap.expand, R.mipmap.collapse);
-                    mLvTreeStructure.setAdapter(adapter);
-                    adapter.setCheckBoxSelectedListener(new DepartmentNodeSelected() {
-                        @Override
-                        public void checked(Department node, int postion) {
-                            mBaseNode = node;
-                            mPosition = postion;
-                            String parent = "";
-                            if (node.getParent() != null) {
-                                parent = node.getParent().getDepartmentName();
-                            }
-                            tvTreeStructureCurrentNode.setText(parent + "--" + node.getDepartmentName());
-                        }
-
-                        @Override
-                        public void cancelCheck(Department node, int position) {
-                            mBaseNode = null;
-                            mPosition = 0;
-                            tvTreeStructureCurrentNode.setText("");
-                        }
-                    });
+                    setListAdapter(departments);
                 }
 
+            }
+        });
+    }
+
+    /**
+     * 设置列表适配器
+     * @param departments 列表内容
+     */
+    private void setListAdapter(List<Department> departments) {
+        Department department = new Department("0", "-1", AssetManagerApplication.COMPANY);
+        List<Department> departmentList = new ArrayList<>();
+        departmentList.add(department);
+        treeNodeList.clear();
+        treeNodeList.addAll(departments);
+        departmentList.addAll(treeNodeList);
+        adapter = new DepartmentCheckboxNodeAdapter(DepartmentSettingActivity.this, departmentList,
+                1, R.mipmap.expand, R.mipmap.collapse);
+        mLvTreeStructure.setAdapter(adapter);
+        adapter.setCheckBoxSelectedListener(new DepartmentNodeSelected() {
+            @Override
+            public void checked(Department node, int postion) {
+                mBaseNode = node;
+                mPosition = postion;
+                String parent = "";
+                if (node.getParent() != null) {
+                    parent = node.getParent().getDepartmentName();
+                }
+                tvTreeStructureCurrentNode.setText(parent + "--" + node.getDepartmentName());
+            }
+
+            @Override
+            public void cancelCheck(Department node, int position) {
+                mBaseNode = null;
+                mPosition = 0;
+                tvTreeStructureCurrentNode.setText("");
             }
         });
     }

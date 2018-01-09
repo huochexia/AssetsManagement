@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.administrator.assetsmanagement.AssetManagerApplication;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
@@ -102,7 +103,7 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
     }
 
     /**
-     * 从服务器获取数据，并以此设置适配器
+     * 从服务器获取数据，并以此设置适配器。这里使用了异步处理。
      */
     private void getDataFromBmob() {
 
@@ -255,7 +256,7 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
     }
 
     /**
-     * 将修改服务器上的相应内容
+     * 将修改服务器上的相应内容，使用了异步处理
      * @param node
      */
     public void updateToBmob(final Location node) {
@@ -335,10 +336,14 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
      * @param list
      */
     private void initAdapter(List<Location> list) {
+        Location location = new Location("0", "-1", AssetManagerApplication.COMPANY);
+        List<Location> locations = new ArrayList<>();
+        locations.add(location);
         treeNodeList.clear();
         treeNodeList.addAll(list);
-        adapter = new LocationCheckboxNodeAdapter(LocationSettingActivity.this, treeNodeList,
-                0, R.mipmap.expand, R.mipmap.collapse);
+        locations.addAll(treeNodeList);
+        adapter = new LocationCheckboxNodeAdapter(LocationSettingActivity.this, locations,
+                1, R.mipmap.expand, R.mipmap.collapse);
         mLvTreeStructure.setAdapter(adapter);
         adapter.setCheckBoxSelectedListener(new LocationNodeSelected() {
             @Override
