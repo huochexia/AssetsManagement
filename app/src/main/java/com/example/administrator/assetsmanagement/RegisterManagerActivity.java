@@ -155,7 +155,6 @@ public class RegisterManagerActivity extends ParentWithNaviActivity {
             case REQUEST_RECEIVE_DEPT:
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
                     mDepartment = (Department) data.getSerializableExtra("node");
-//                    getDepartmentFromBmob(node);
                     mTvRegisterDepartment.setText(mDepartment.getDepartmentName());
                 }
                 break;
@@ -163,38 +162,5 @@ public class RegisterManagerActivity extends ParentWithNaviActivity {
         }
     }
 
-    private void getDepartmentFromBmob(BaseNode node) {
-        BmobQuery<Department> query = new BmobQuery<>();
-        query.addWhereEqualTo("id", node.getId());
-        query.findObjects(new FindListener<Department>() {
-            @Override
-            public void done(final List<Department> list, BmobException e) {
-                if (e == null && list.size() > 0) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Message msg = new Message();
-                            msg.what = 1;
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("department",list.get(0));
-                            msg.setData(bundle);
-                            handler.sendMessage(msg);
-                        }
-                    }).start();
-                }
-            }
-        });
-    }
-    RegisterHandler handler = new RegisterHandler();
-    class RegisterHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1:
-                    mDepartment = (Department) msg.getData().getSerializable("department");
-                    mTvRegisterDepartment.setText(mDepartment.getDepartmentName());
-                    break;
-            }
-        }
-    }
+
 }
