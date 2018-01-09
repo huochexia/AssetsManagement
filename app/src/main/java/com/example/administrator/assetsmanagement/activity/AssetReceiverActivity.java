@@ -15,6 +15,7 @@ import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.adapter.AssetRecyclerViewAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
+import com.example.administrator.assetsmanagement.bean.AssetPicture;
 import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 
@@ -142,13 +143,17 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
     }
 
     /**
-     * 遍历资产列表，修改所有图片编号等于传入编号的资产，并返回对象列表
+     * 遍历资产列表，修改所有图片等于传入编号的资产，并返回对象列表
      */
-    private List<BmobObject> updateAllSameImangeNumAssets(List<AssetInfo> list, String imageNum) {
+    private List<BmobObject> updateAllSameImangeNumAssets(List<AssetInfo> list, AssetInfo asset1) {
         List<BmobObject> objects = new ArrayList<>();
         List<AssetInfo> updated = new ArrayList<>();
+        AssetPicture picture = asset1.getPicture();
+        String imageNum = asset1.getPicture().getImageNum();
+        Integer  state = asset1.getStatus();
         for (AssetInfo asset : list) {
-            if (imageNum.equals(asset.getPicture().getImageNum())) {
+            String i = asset.getPicture().getImageNum();
+            if (imageNum.equals(asset.getPicture().getImageNum()) && asset.getStatus().equals(state)) {
                 updateAssetInfo(asset);
                 objects.add(asset);
                 updated.add(asset);//将已经更新的资产暂时存入临时列表中以备移除
@@ -165,7 +170,7 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
         List<BmobObject> objects = new ArrayList<>();
         for (AssetInfo asset : selectedAssets) {
             List<BmobObject> selectObject = updateAllSameImangeNumAssets(assetsList,
-                    asset.getPicture().getImageNum());
+                    asset);
             objects.addAll(selectObject);
 
         }

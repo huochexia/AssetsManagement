@@ -16,6 +16,7 @@ import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
 import com.example.administrator.assetsmanagement.bean.CategoryTree.AssetCategory;
+import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 
 import java.io.Serializable;
@@ -25,6 +26,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
@@ -97,10 +99,15 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
         mRcPicturesList.setLayoutManager(layoutManager);
         Intent intent = getIntent();
         isRegister = intent.getBooleanExtra("isRegister",true);
+        if (isRegister) {
+            title = intent.getStringExtra("category_name");
+            category = (AssetCategory) intent.getSerializableExtra("category");
+            getPictureList("category", category, handler);
+        } else {
+            title = "我的资产图片";
+            AssetsUtil.AndQueryAssets(this,"mOldManager", BmobUser.getCurrentUser(Person.class),handler);
+        }
 
-        title = intent.getStringExtra("category_name");
-        category = (AssetCategory) intent.getSerializableExtra("category");
-        getPictureList("category", category, handler);
         initNaviView();
     }
 

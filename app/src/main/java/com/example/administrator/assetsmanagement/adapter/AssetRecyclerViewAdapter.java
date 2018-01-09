@@ -41,7 +41,6 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
     LayoutInflater layoutInflater;
     boolean isSearch;
     Map<Integer, Boolean> map =new HashMap<>();
-    List<AssetInfo> checkedList;
     AssetSelectedListener listener;
     AssetItemClickListener clickListener;
     MenuItem.OnMenuItemClickListener menuClickLister;//弹出菜单项事件

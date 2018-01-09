@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -14,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.example.administrator.assetsmanagement.Interface.AssetItemClickListener;
 import com.example.administrator.assetsmanagement.Interface.AssetSelectedListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
@@ -108,6 +110,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     private Integer flag = 0;//标志，等于1是为新登记资产。
     private boolean isSingle = false;//判断是单体还是整体
     private AssetPicture mPicture;
+    private AssetInfo assetInfo;
 
 
     @Override
@@ -184,6 +187,34 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
             }
         });
         mRcTurnOverList.setAdapter(adapter);
+        //设置长按事件
+        adapter.setAssetItemClickListener(new AssetItemClickListener() {
+            @Override
+            public void onClick(AssetInfo asset) {
+                assetInfo = asset;
+            }
+        });
+        //设置上下文菜单事件
+        adapter.setMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case 0:
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("picture",assetInfo.getPicture());
+                        bundle.putString("title", assetInfo.getAssetName());
+                        startActivity(AssetPictureActivity.class,bundle,false);
+                        return true;
+                    case 1:
+                        Bundle bundle1 = new Bundle();
+                        bundle1.putInt("flay", 0);
+                        bundle1.putSerializable("picture", assetInfo.getPicture());
+                        startActivity(MakingLabelActivity.class, bundle1, false);
+                    default:
+                        return true;
+                }
+            }
+        });
     }
 
     /**

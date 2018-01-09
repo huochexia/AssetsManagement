@@ -281,6 +281,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                     Intent intentPhoto = new Intent(this, SelectAssetsPhotoActivity.class);
                     intentPhoto.putExtra("category", asset.getCategory());
                     intentPhoto.putExtra("category_name", mTvRegisterCategory.getText());
+                    intentPhoto.putExtra("isRegister", true);
                     startActivityForResult(intentPhoto, CHOOSET_PHOTO);
                 } else {
                     toast("请先选择资产类别！");
