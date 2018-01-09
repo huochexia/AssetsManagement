@@ -1,5 +1,7 @@
 package com.example.administrator.assetsmanagement.bean;
 
+import com.example.administrator.assetsmanagement.bean.CategoryTree.AssetCategory;
+
 import java.io.Serializable;
 
 import cn.bmob.v3.BmobObject;
@@ -23,7 +25,7 @@ public class AssetPicture extends BmobObject implements Serializable, Cloneable 
     /*
     资产类别编号
      */
-    private String categoryNum;
+    private AssetCategory category;
     /*
     是否选择
      */
@@ -63,12 +65,12 @@ public class AssetPicture extends BmobObject implements Serializable, Cloneable 
         this.imageNum = imageNum;
     }
 
-    public String getCategoryNum() {
-        return categoryNum;
+    public AssetCategory getCategory() {
+        return category;
     }
 
-    public void setCategoryNum(String categoryNum) {
-        this.categoryNum = categoryNum;
+    public void setCategory(AssetCategory category) {
+        this.category = category;
     }
 
     public Object clone() throws CloneNotSupportedException {

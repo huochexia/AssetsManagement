@@ -279,7 +279,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             case R.id.tv_assets_item_picture_lib:
                 if (asset.getCategory() != null) {
                     Intent intentPhoto = new Intent(this, SelectAssetsPhotoActivity.class);
-                    intentPhoto.putExtra("category_num", asset.getCategory());
+                    intentPhoto.putExtra("category", asset.getCategory());
                     intentPhoto.putExtra("category_name", mTvRegisterCategory.getText());
                     startActivityForResult(intentPhoto, CHOOSET_PHOTO);
                 } else {
@@ -615,7 +615,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             public void done(BmobException e) {
                 if (e == null) {
                     AssetPicture picture = new AssetPicture();
-                    picture.setCategoryNum(asset.getCategory().getId());
+                    picture.setCategory(asset.getCategory());
                     String imangNum = System.currentTimeMillis() + "";
                     picture.setImageNum(imangNum);
                     picture.setImageUrl(bmobFile.getFileUrl());
