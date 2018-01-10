@@ -100,45 +100,7 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
         mLvTreeStructure.setAdapter(adapter);
     }
 
-    /**
-     * 从服务器获取数据，并以此设置适配器
-     */
-    private void getDataFromBmob() {
-        String sql = "select * from AssetCategory";
-        new BmobQuery<AssetCategory>().doSQLQuery(sql, new SQLQueryListener<AssetCategory>() {
-            @Override
-            public void done(BmobQueryResult<AssetCategory> bmobQueryResult, BmobException e) {
-                List<AssetCategory> assetCategories = bmobQueryResult.getResults();
-                if (assetCategories != null && assetCategories.size() > 0) {
-                    treeNodeList.clear();
-                    treeNodeList.addAll(assetCategories);
-                    adapter = new CategoryCheckboxNodeAdapter(CategorySettingActivity.this, treeNodeList,
-                            0, R.mipmap.expand, R.mipmap.collapse);
-                    mLvTreeStructure.setAdapter(adapter);
-                    adapter.setCheckBoxSelectedListener(new CategoryNodeSelected() {
-                        @Override
-                        public void checked(AssetCategory node, int postion) {
-                            mBaseNode = node;
-                            mPosition = postion;
-                            String parent = "";
-                            if (node.getParent() != null) {
-                                parent = node.getParent().getCategoryName();
-                            }
-                            tvTreeStructureCurrentNode.setText(parent + "--" + node.getCategoryName());
-                        }
 
-                        @Override
-                        public void cancelCheck(AssetCategory node, int position) {
-                            mBaseNode = null;
-                            mPosition = 0;
-                            tvTreeStructureCurrentNode.setText("");
-                        }
-                    });
-                }
-
-            }
-        });
-    }
 
     @OnClick({R.id.btn_tree_add_node, R.id.btn_tree_replace_node, R.id.btn_tree_delete_node})
     public void onViewClicked(View view) {
@@ -196,6 +158,57 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
                 }
                 break;
         }
+    }
+    /**
+     * 从服务器获取数据，并以此设置适配器
+     */
+    private void getDataFromBmob() {
+        String sql = "select * from AssetCategory";
+        new BmobQuery<AssetCategory>().doSQLQuery(sql, new SQLQueryListener<AssetCategory>() {
+            @Override
+            public void done(BmobQueryResult<AssetCategory> bmobQueryResult, BmobException e) {
+                List<AssetCategory> assetCategories = bmobQueryResult.getResults();
+                if (e==null) {
+                    setListAdapter(assetCategories);
+                }
+
+            }
+        });
+    }
+
+    /**
+     * 设置列表适配器
+     * @param assetCategories
+     */
+    private void setListAdapter(List<AssetCategory> assetCategories) {
+        AssetCategory root_category = new AssetCategory("0","-1","固定资产");
+        List<AssetCategory> categoryArrayList = new ArrayList<>();
+        categoryArrayList.add(root_category);
+        treeNodeList.clear();
+        treeNodeList.addAll(assetCategories);
+        categoryArrayList.addAll(treeNodeList);
+        adapter = new CategoryCheckboxNodeAdapter(CategorySettingActivity.this, categoryArrayList,
+                1, R.mipmap.expand, R.mipmap.collapse);
+        mLvTreeStructure.setAdapter(adapter);
+        adapter.setCheckBoxSelectedListener(new CategoryNodeSelected() {
+            @Override
+            public void checked(AssetCategory node, int postion) {
+                mBaseNode = node;
+                mPosition = postion;
+                String parent = "";
+                if (node.getParent() != null) {
+                    parent = node.getParent().getCategoryName();
+                }
+                tvTreeStructureCurrentNode.setText(parent + "--" + node.getCategoryName());
+            }
+
+            @Override
+            public void cancelCheck(AssetCategory node, int position) {
+                mBaseNode = null;
+                mPosition = 0;
+                tvTreeStructureCurrentNode.setText("");
+            }
+        });
     }
 
     /**

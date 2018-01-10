@@ -40,10 +40,11 @@
     <string name="btn_cancel">取消</string>
     <string name="btn_no_agree">不同意</string>
     <string name="btn_agree">同意</string>
+    <string name="image_text">编辑</string>
+
     <string name="btn_making_label">打印</string>
     <string name="btn_print_and_move">打印并移交</string>
     <string name="btn_connect_printer">打印机：未连接打印机</string>
-
     <string name="connectprintersuccess">连接打印机成功！</string>
     <string name="connectprinterfailed">连接打印机失败</string>
     <string name="printsuccess">标签打印成功</string>

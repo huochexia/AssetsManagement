@@ -111,7 +111,8 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
             @Override
             public void done(BmobQueryResult<Department> bmobQueryResult, BmobException e) {
                 List<Department> departments = bmobQueryResult.getResults();
-                if (departments != null && departments.size() > 0) {
+                if (e == null) {
+
                     setListAdapter(departments);
                 }
 

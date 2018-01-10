@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/node_add"
+        android:title="增加"
+        app:showAsAction="never"/>
+    <item android:id="@+id/node_repair"
+        android:title="修改"
+        app:showAsAction="never"/>
+    <item android:id="@+id/node_delete"
+        android:title="删除"
+        app:showAsAction="never"/>
+</menu>

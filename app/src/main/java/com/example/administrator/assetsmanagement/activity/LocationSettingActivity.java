@@ -8,6 +8,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -70,6 +72,11 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
     }
 
     @Override
+    public Object right() {
+        return R.drawable.edit_node;
+    }
+
+    @Override
     public ToolbarClickListener getToolbarListener() {
         return new ToolbarClickListener() {
             @Override
@@ -102,34 +109,15 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
         mLvTreeStructure.setAdapter(adapter);
     }
 
-    /**
-     * 从服务器获取数据，并以此设置适配器。这里使用了异步处理。
-     */
-    private void getDataFromBmob() {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
-        BmobQuery<Location> query = new BmobQuery<>();
-        query.setLimit(500);
-        query.findObjects(new FindListener<Location>() {
-            @Override
-            public void done(final List<Location> list, BmobException e) {
-                if (e == null) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Message msg = new Message();
-                            msg.what = FIND_ALL;
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("list", (Serializable) list);
-                            msg.setData(bundle);
-                            handler.sendMessage(msg);
-                        }
-                    }).start();
-
-                }
-            }
-
-        });
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return true;
     }
 
     @OnClick({R.id.btn_tree_add_node, R.id.btn_tree_replace_node, R.id.btn_tree_delete_node})
@@ -192,7 +180,35 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
                 break;
         }
     }
+    /**
+     * 从服务器获取数据，并以此设置适配器。这里使用了异步处理。
+     */
+    private void getDataFromBmob() {
 
+        BmobQuery<Location> query = new BmobQuery<>();
+        query.setLimit(500);
+        query.findObjects(new FindListener<Location>() {
+            @Override
+            public void done(final List<Location> list, BmobException e) {
+                if (e == null) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Message msg = new Message();
+                            msg.what = FIND_ALL;
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("list", (Serializable) list);
+                            msg.setData(bundle);
+                            handler.sendMessage(msg);
+                        }
+                    }).start();
+
+                }
+            }
+
+        });
+
+    }
     /**
      * 修改节点
      *

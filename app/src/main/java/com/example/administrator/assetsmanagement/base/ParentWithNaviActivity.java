@@ -1,6 +1,8 @@
 package com.example.administrator.assetsmanagement.base;
 
 import android.graphics.Typeface;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -124,10 +126,5 @@ public abstract class ParentWithNaviActivity extends BaseActivity {
             right.setVisibility(View.INVISIBLE);
         }
     }
-    /**
-     * 获取当前用户
-     */
-//    public String getCurrentUid(){
-//        return BmobUser.getCurrentUser(User.class).getObjectId();
-//    }
+
 }
