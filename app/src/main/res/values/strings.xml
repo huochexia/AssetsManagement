@@ -26,7 +26,7 @@
     <string name="btn_new_location_text">新位置</string>
     <string name="btn_new_department_text">新部门</string>
     <string name="btn_new_receiver_text">接收者</string>
-    <string name="btn_confirm">确     定</string>
+    <string name="btn_confirm">确定</string>
     <string name="rb_single_text">单个</string>
     <string name="rb_overall_text">整体</string>
     <string name="turn_over_content">移交内容：</string>
@@ -56,4 +56,10 @@
     <string name="connect_printer">未连接打印机</string>
     <string name="pleaseconnectprinter">打印机未连接，请先连接打印机！</string>
     <string name="waitconnectingprinter">正在连接打印机，请稍候！</string>
+    <string name="btn_add">增加</string>
+    <string name="btn_edit">编辑</string>
+    <string name="btn_delete">删除</string>
+    <string name="dialog_title_add">请输入增加内容</string>
+    <string name="dialog_title_edit">请修改内容</string>
+    <string name="dialog_message_delete">是否确定删除该内容？</string>
 </resources>

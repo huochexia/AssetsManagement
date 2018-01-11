@@ -42,12 +42,7 @@ import cn.bmob.v3.listener.UpdateListener;
  */
 
 public class CategorySettingActivity extends ParentWithNaviActivity {
-    @BindView(R.id.tv_tree_structure_current_node_title)
-    TextView tvTreeStructureCurrentNodeTitle;
-    @BindView(R.id.tv_tree_structure_current_node)
-    TextView tvTreeStructureCurrentNode;
-    @BindView(R.id.ed_tree_structure_new)
-    EditText edTreeStructureNew;
+
     @BindView(R.id.lv_tree_structure)
     RecyclerView mLvTreeStructure;
 
@@ -88,11 +83,6 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
         setContentView(R.layout.activity_tree_node_setting);
         ButterKnife.bind(this);
         initNaviView();
-        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/隶书.ttf");
-        tvTreeStructureCurrentNodeTitle.setTypeface(typeface);
-        tvTreeStructureCurrentNode.setTypeface(typeface);
-        edTreeStructureNew.setTypeface(typeface);
-
         getDataFromBmob();
 
         LinearLayoutManager ll = new LinearLayoutManager(this);
@@ -106,43 +96,43 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_tree_add_node:
-                if (mBaseNode != null) {
-                    if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
-                        AssetCategory newNode = new AssetCategory();
-                        newNode.setCategoryName(edTreeStructureNew.getText().toString());
-                        newNode.setId(System.currentTimeMillis() + "");
-                        newNode.setParentId(mBaseNode.getId());
-                        addToBmob(newNode);
-                        addNode(newNode, mBaseNode.getLevel() + 1);
-                        mBaseNode = null;
-                    } else {
-                        toast("请输入新名称！");
-                    }
-                } else {
-                    if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
-                        //如果没有选择节点，则列表最后创建根节点
-                        mBaseNode = new AssetCategory(System.currentTimeMillis() + "",
-                                "0", edTreeStructureNew.getText().toString());
-                        addToBmob(mBaseNode);
-                        addNode(mBaseNode, 0);
-                        mBaseNode = null;
-                    } else {
-                        toast("请输入新名称！");
-                    }
-                }
+//                if (mBaseNode != null) {
+//                    if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
+//                        AssetCategory newNode = new AssetCategory();
+//                        newNode.setCategoryName(edTreeStructureNew.getText().toString());
+//                        newNode.setId(System.currentTimeMillis() + "");
+//                        newNode.setParentId(mBaseNode.getId());
+//                        addToBmob(newNode);
+//                        addNode(newNode, mBaseNode.getLevel() + 1);
+//                        mBaseNode = null;
+//                    } else {
+//                        toast("请输入新名称！");
+//                    }
+//                } else {
+//                    if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
+//                        //如果没有选择节点，则列表最后创建根节点
+//                        mBaseNode = new AssetCategory(System.currentTimeMillis() + "",
+//                                "0", edTreeStructureNew.getText().toString());
+//                        addToBmob(mBaseNode);
+//                        addNode(mBaseNode, 0);
+//                        mBaseNode = null;
+//                    } else {
+//                        toast("请输入新名称！");
+//                    }
+//                }
                 break;
             case R.id.btn_tree_replace_node:
-                if (mBaseNode != null) {
-                    if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
-                        updateToBmob(mBaseNode);
-                        updateNode(mBaseNode);
-                        mBaseNode = null;
-                    } else {
-                        toast("请输入新名称！");
-                    }
-                } else {
-                    toast("请选择要修改的类别！");
-                }
+//                if (mBaseNode != null) {
+//                    if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
+//                        updateToBmob(mBaseNode);
+//                        updateNode(mBaseNode);
+//                        mBaseNode = null;
+//                    } else {
+//                        toast("请输入新名称！");
+//                    }
+//                } else {
+//                    toast("请选择要修改的类别！");
+//                }
                 break;
             case R.id.btn_tree_delete_node:
                 if (mBaseNode != null &&  mBaseNode.getChildren().size()<=0) {
@@ -199,14 +189,12 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
                 if (node.getParent() != null) {
                     parent = node.getParent().getCategoryName();
                 }
-                tvTreeStructureCurrentNode.setText(parent + "--" + node.getCategoryName());
             }
 
             @Override
             public void cancelCheck(AssetCategory node, int position) {
                 mBaseNode = null;
                 mPosition = 0;
-                tvTreeStructureCurrentNode.setText("");
             }
         });
     }
@@ -216,7 +204,6 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
      * @param node
      */
     private void deleteNode(AssetCategory node) {
-        tvTreeStructureCurrentNode.setText("");
         adapter.deleteNode(node);
         adapter.notifyDataSetChanged();
 
@@ -228,14 +215,14 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
      * @param node
      */
     private void updateNode(AssetCategory node) {
-        node.setCategoryName(edTreeStructureNew.getText().toString());
-        if (node.getParent() != null) {
-            tvTreeStructureCurrentNode.setText(node.getParent().getCategoryName() + "--" + node.getCategoryName());
-        } else {
-            tvTreeStructureCurrentNode.setText("--" + node.getCategoryName());
-        }
-        adapter.notifyDataSetChanged();
-        edTreeStructureNew.setText("");
+//        node.setCategoryName(edTreeStructureNew.getText().toString());
+//        if (node.getParent() != null) {
+//            tvTreeStructureCurrentNode.setText(node.getParent().getCategoryName() + "--" + node.getCategoryName());
+//        } else {
+//            tvTreeStructureCurrentNode.setText("--" + node.getCategoryName());
+//        }
+//        adapter.notifyDataSetChanged();
+//        edTreeStructureNew.setText("");
     }
 
     /**
@@ -244,8 +231,6 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
      * @param newNode
      */
     private void addNode(AssetCategory newNode, int level) {
-        edTreeStructureNew.setText("");
-        tvTreeStructureCurrentNode.setText("");
         adapter.addData(mPosition, newNode, level);
         adapter.notifyDataSetChanged();
 

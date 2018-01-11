@@ -43,12 +43,7 @@ import cn.bmob.v3.listener.UpdateListener;
  */
 
 public class DepartmentSettingActivity extends ParentWithNaviActivity {
-    @BindView(R.id.tv_tree_structure_current_node_title)
-    TextView tvTreeStructureCurrentNodeTitle;
-    @BindView(R.id.tv_tree_structure_current_node)
-    TextView tvTreeStructureCurrentNode;
-    @BindView(R.id.ed_tree_structure_new)
-    EditText edTreeStructureNew;
+
     @BindView(R.id.lv_tree_structure)
     RecyclerView mLvTreeStructure;
 
@@ -89,10 +84,6 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
         setContentView(R.layout.activity_tree_node_setting);
         ButterKnife.bind(this);
         initNaviView();
-        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/隶书.ttf");
-        tvTreeStructureCurrentNodeTitle.setTypeface(typeface);
-        tvTreeStructureCurrentNode.setTypeface(typeface);
-        edTreeStructureNew.setTypeface(typeface);
 
         getDataFromBmob();
 
@@ -143,14 +134,12 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
                 if (node.getParent() != null) {
                     parent = node.getParent().getDepartmentName();
                 }
-                tvTreeStructureCurrentNode.setText(parent + "--" + node.getDepartmentName());
             }
 
             @Override
             public void cancelCheck(Department node, int position) {
                 mBaseNode = null;
                 mPosition = 0;
-                tvTreeStructureCurrentNode.setText("");
             }
         });
     }
@@ -159,43 +148,43 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_tree_add_node:
-                if (mBaseNode != null) {
-                    if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
-                        Department newNode = new Department();
-                        newNode.setDepartmentName(edTreeStructureNew.getText().toString());
-                        newNode.setId(System.currentTimeMillis() + "");
-                        newNode.setParentId(mBaseNode.getId());
-                        addToBmob(newNode);
-                        addNode(newNode, mBaseNode.getLevel() + 1);
-                        mBaseNode = null;
-                    } else {
-                        toast("请输入新名称！");
-                    }
-                } else {
-                    if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
-                        //如果没有选择节点，则列表最后创建根节点
-                        mBaseNode = new Department(System.currentTimeMillis() + "",
-                                "0", edTreeStructureNew.getText().toString());
-                        addToBmob(mBaseNode);
-                        addNode(mBaseNode, 0);
-                        mBaseNode = null;
-                    } else {
-                        toast("请输入新名称！");
-                    }
-                }
+//                if (mBaseNode != null) {
+//                    if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
+//                        Department newNode = new Department();
+//                        newNode.setDepartmentName(edTreeStructureNew.getText().toString());
+//                        newNode.setId(System.currentTimeMillis() + "");
+//                        newNode.setParentId(mBaseNode.getId());
+//                        addToBmob(newNode);
+//                        addNode(newNode, mBaseNode.getLevel() + 1);
+//                        mBaseNode = null;
+//                    } else {
+//                        toast("请输入新名称！");
+//                    }
+//                } else {
+//                    if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
+//                        //如果没有选择节点，则列表最后创建根节点
+//                        mBaseNode = new Department(System.currentTimeMillis() + "",
+//                                "0", edTreeStructureNew.getText().toString());
+//                        addToBmob(mBaseNode);
+//                        addNode(mBaseNode, 0);
+//                        mBaseNode = null;
+//                    } else {
+//                        toast("请输入新名称！");
+//                    }
+//                }
                 break;
             case R.id.btn_tree_replace_node:
-                if (mBaseNode != null) {
-                    if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
-                        updateToBmob(mBaseNode);
-                        updateNode(mBaseNode);
-
-                    } else {
-                        toast("请输入新名称！");
-                    }
-                } else {
-                    toast("请选择要修改的部门！");
-                }
+//                if (mBaseNode != null) {
+//                    if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
+//                        updateToBmob(mBaseNode);
+//                        updateNode(mBaseNode);
+//
+//                    } else {
+//                        toast("请输入新名称！");
+//                    }
+//                } else {
+//                    toast("请选择要修改的部门！");
+//                }
                 break;
             case R.id.btn_tree_delete_node:
                 if (mBaseNode != null && mBaseNode.getChildren().size()<=0) {
@@ -219,7 +208,6 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
      * @param node
      */
     private void deleteNode(Department node) {
-        tvTreeStructureCurrentNode.setText("");
         adapter.deleteNode(node);
         adapter.notifyDataSetChanged();
 
@@ -231,14 +219,14 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
      * @param node
      */
     private void updateNode(Department node) {
-        node.setDepartmentName(edTreeStructureNew.getText().toString());
-        if (node.getParent() != null) {
-            tvTreeStructureCurrentNode.setText(node.getParent().getDepartmentName() + "--" + node.getDepartmentName());
-        } else {
-            tvTreeStructureCurrentNode.setText("--" + node.getDepartmentName());
-        }
-        adapter.notifyDataSetChanged();
-        edTreeStructureNew.setText("");
+//        node.setDepartmentName(edTreeStructureNew.getText().toString());
+//        if (node.getParent() != null) {
+//            tvTreeStructureCurrentNode.setText(node.getParent().getDepartmentName() + "--" + node.getDepartmentName());
+//        } else {
+//            tvTreeStructureCurrentNode.setText("--" + node.getDepartmentName());
+//        }
+//        adapter.notifyDataSetChanged();
+//        edTreeStructureNew.setText("");
     }
 
     /**
@@ -247,8 +235,7 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
      * @param newNode
      */
     private void addNode(Department newNode, int level) {
-        edTreeStructureNew.setText("");
-        tvTreeStructureCurrentNode.setText("");
+
         adapter.addData(mPosition, newNode, level);
         adapter.notifyDataSetChanged();
 
