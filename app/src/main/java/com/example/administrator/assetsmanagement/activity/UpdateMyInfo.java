@@ -106,7 +106,11 @@ public class UpdateMyInfo extends ParentWithNaviActivity {
                     node = (Department) data.getSerializableExtra("node");
                 }
                 Person person = new Person();
-                person.setDepartment(node);
+                //因为Department是节点，它包含父节点属性，直接保存会产生死循环，所以新生成一个对象，
+                //只赋值给它objectId。即指针
+                Department newDepartment = new Department();
+                newDepartment.setObjectId(node.getObjectId());
+                person.setDepartment(newDepartment);
                 BmobUser bmobUser = BmobUser.getCurrentUser(Person.class);
                 person.update(bmobUser.getObjectId(), new UpdateListener() {
                     @Override

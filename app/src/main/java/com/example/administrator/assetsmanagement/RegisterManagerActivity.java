@@ -136,7 +136,7 @@ public class RegisterManagerActivity extends ParentWithNaviActivity {
                             @Override
                             public void done(Object o, BmobException e) {
                                 if (e == null) {
-                                    startActivity(MainActivity.class, null, true);
+                                    startActivity(FlashActivity.class, null, true);
                                 } else {
                                     if (e.getErrorCode() == 1001) {
                                         mEtPasswordAgain.setText("");

@@ -1,27 +1,28 @@
 package com.example.administrator.assetsmanagement.activity;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.example.administrator.assetsmanagement.AssetManagerApplication;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
+import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
 import com.example.administrator.assetsmanagement.bean.LocationTree.LocationCheckboxNodeAdapter;
 import com.example.administrator.assetsmanagement.bean.LocationTree.LocationNodeSelected;
+import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.CountListener;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
@@ -47,7 +49,7 @@ import cn.bmob.v3.listener.UpdateListener;
  */
 
 public class LocationSettingActivity extends ParentWithNaviActivity {
-
+    LinearLayout add_node;
     @BindView(R.id.lv_tree_structure)
     RecyclerView mLvTreeStructure;
 
@@ -97,118 +99,154 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
         mLvTreeStructure.setAdapter(adapter);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu,menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return true;
-    }
 
     @OnClick({R.id.btn_tree_add_node, R.id.btn_tree_replace_node, R.id.btn_tree_delete_node})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_tree_add_node:
-                LinearLayout add_node = (LinearLayout)getLayoutInflater().inflate(R.layout.dialog_image_view, null);
-                final EditText editText = (EditText) add_node.findViewById(R.id.ed_dialog_text);
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(R.string.dialog_title_add).setView(add_node);
-                builder.setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        if (mBaseNode != null) {
-                            if (!TextUtils.isEmpty(editText.getText())) {
-                                Location newNode = new Location();
-                                newNode.setLocationName(editText.getText().toString());
-                                newNode.setId(System.currentTimeMillis() + "");
-                                newNode.setParentId(mBaseNode.getId());
-                                addToBmob(newNode);
-                                addNode(newNode, mBaseNode.getLevel() + 1);
-                                mBaseNode = null;
-                                dialog.dismiss();
-                            } else {
-                                toast("请输入新名称！");
-                            }
-                        } else {
-                            toast("请选择位置！");
-                        }
-                    }
-                });
-                builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-
-                    }
-                });
-                builder.create().show();
+                if (mBaseNode == null) {
+                    toast("请选择要增加的位置！");
+                    return;
+                }
+                addNodeDialog();
                 break;
             case R.id.btn_tree_replace_node:
-                AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
-                builder2.setTitle(R.string.dialog_title_edit);
-                builder2.setView(new EditText(this));
-                builder2.setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                builder2.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                builder2.show();
-//                if (mBaseNode != null) {
-//                    String objectId = mBaseNode.getObjectId();
-//                    if (!TextUtils.isEmpty(edTreeStructureNew.getText())) {
-//                        mBaseNode.setLocationName(edTreeStructureNew.getText()+"");
-//                        updateToBmob(mBaseNode);
-//                        updateNode(mBaseNode);
-//
-//                    } else {
-//                        toast("请输入新名称！");
-//                    }
-//                } else {
-//                    toast("请选择要修改的位置！");
-//                }
+                if (mBaseNode == null) {
+                    toast("请选择要修改的位置！");
+                    return;
+                }
+                if (mBaseNode.getParentId().equals("-1")) {
+                    toast("不能修改单位名称");
+                    return;
+                }
+                editNodeDialog();
                 break;
             case R.id.btn_tree_delete_node:
-                AlertDialog.Builder builder3 = new AlertDialog.Builder(this);
-                builder3.setMessage(R.string.dialog_message_delete);
-                builder3.setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
+                if (mBaseNode == null) {
+                    toast("请选择要删除的位置！");
+                    return;
+                }
+                if (mBaseNode.getChildren().size()>0) {
+                    toast("它有子位置，不能删除！");
+                    return;
+                }
+                BmobQuery<AssetInfo> query = new BmobQuery<>();
+                query.addWhereEqualTo("mLocation", mBaseNode);
+                query.count(AssetInfo.class, new CountListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (mBaseNode != null && mBaseNode.getChildren().size() <= 0) {
-                            removeFromBmob(mBaseNode);
-                            deleteNode(mBaseNode);
-                            mBaseNode = null;
-                        } else {
-                            if (mBaseNode == null) {
-
-                                toast("请选择要删除的内容！");
-                            } else {
-                                toast("不能删除父节点！");
+                    public void done(final Integer integer, BmobException e) {
+                        runOnMain(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (integer > 0) {
+                                    toast("该位置内放有资产，不能删除！");
+                                } else {
+                                    deleteNodeDialog();
+                                }
                             }
-                        }
-                        dialog.dismiss();
+                        });
                     }
                 });
-                builder3.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                builder3.show();
+
                 break;
         }
     }
+
+    /**
+     * 删除节点对话框
+     */
+    private void deleteNodeDialog() {
+        AlertDialog.Builder builder3 = new AlertDialog.Builder(this);
+        String text  = mBaseNode.getLocationName();
+        String message = "确定要删除" + "\"" + text + "\""+"吗？";
+        builder3.setMessage(message);
+        builder3.setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                     removeFromBmob(mBaseNode);
+                    deleteNode(mBaseNode);
+                    mBaseNode = null;
+                   dialog.dismiss();
+            }
+        });
+        builder3.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder3.show();
+    }
+
+    /**
+     * 修改节点对话框
+     */
+    private void editNodeDialog() {
+        RelativeLayout mDialogView = (RelativeLayout) getLayoutInflater()
+                .inflate(R.layout.dialog_add_commodity, null);
+        final EditText editText = (EditText) mDialogView.findViewById(R.id.et_add_or_edit_content);
+        editText.setText(mBaseNode.getLocationName());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.dialog_title_edit).setView(mDialogView);
+        builder.setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (!TextUtils.isEmpty(editText.getText())) {
+                        mBaseNode.setLocationName(editText.getText() + "");
+                        updateToBmob(mBaseNode);
+                        updateNode(mBaseNode);
+                        dialog.dismiss();
+                    } else {
+                        toast("请输入新位置！");
+                    }
+            }
+        });
+        builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+    /**
+     * 生成增加节点对话框
+     */
+    private void addNodeDialog() {
+        //获得对话框自定义视图对象
+        RelativeLayout mDialogView = (RelativeLayout) getLayoutInflater()
+                .inflate(R.layout.dialog_add_commodity, null);
+        final EditText editText = (EditText) mDialogView.findViewById(R.id.et_add_or_edit_content);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.dialog_title_add).setView(mDialogView);
+        builder.setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                    if (!TextUtils.isEmpty(editText.getText())) {
+                        Location newNode = new Location();
+                        newNode.setLocationName(editText.getText().toString());
+                        newNode.setId(System.currentTimeMillis() + "");
+                        newNode.setParentId(mBaseNode.getId());
+                        addToBmob(newNode);
+                        addNode(newNode, mBaseNode.getLevel() + 1);
+//                        mBaseNode = null;
+                        dialog.dismiss();
+                    } else {
+                        toast("请输入新位置！");
+                    }
+            }
+        });
+        builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
     /**
      * 从服务器获取数据，并以此设置适配器。这里使用了异步处理。
      */
@@ -238,20 +276,16 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
         });
 
     }
+
     /**
      * 修改节点
      *
      * @param node
      */
     private void updateNode(Location node) {
-//        node.setLocationName(edTreeStructureNew.getText().toString());
-//        if (node.getParent() != null) {
-//            tvTreeStructureCurrentNode.setText(node.getParent().getLocationName() + "--" + node.getLocationName());
-//        } else {
-//            tvTreeStructureCurrentNode.setText("--" + node.getLocationName());
-//        }
-//        adapter.notifyDataSetChanged();
-//        edTreeStructureNew.setText("");
+
+        adapter.notifyDataSetChanged();
+
     }
 
     /**
@@ -268,6 +302,7 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
 
     /**
      * 删除节点
+     *
      * @param node
      */
     private void deleteNode(Location node) {
@@ -278,6 +313,7 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
 
     /**
      * 将新增加数据保存到服务器上
+     *
      * @param node
      */
     public void addToBmob(Location node) {
@@ -300,6 +336,7 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
 
     /**
      * 将修改服务器上的相应内容，使用了异步处理
+     *
      * @param node
      */
     public void updateToBmob(final Location node) {
@@ -338,7 +375,7 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
 
     }
 
-    public static final int FIND_ALL =0;
+    public static final int FIND_ALL = 0;
     public static final int UPDATE_FLAG = 1;
 
 
@@ -365,17 +402,18 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
                             if (e == null) {
                                 toast("修改成功！");
                             } else {
-                                toast("修改失败！"+e.toString());
+                                toast("修改失败！" + e.toString());
                             }
                         }
                     });
                     break;
-        }
+            }
         }
     }
 
     /**
      * 初始化创建适配器
+     *
      * @param list
      */
     private void initAdapter(List<Location> list) {
