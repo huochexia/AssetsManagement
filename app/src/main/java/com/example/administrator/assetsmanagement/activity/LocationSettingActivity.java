@@ -49,7 +49,6 @@ import cn.bmob.v3.listener.UpdateListener;
  */
 
 public class LocationSettingActivity extends ParentWithNaviActivity {
-    LinearLayout add_node;
     @BindView(R.id.lv_tree_structure)
     RecyclerView mLvTreeStructure;
 

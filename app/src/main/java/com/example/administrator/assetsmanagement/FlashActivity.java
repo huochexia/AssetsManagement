@@ -3,7 +3,6 @@ package com.example.administrator.assetsmanagement;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
@@ -42,7 +41,7 @@ public class FlashActivity extends BaseActivity {
         setContentView(R.layout.activity_flash);
         mImageView = (ImageView) findViewById(R.id.bing_pic_img);
         handler = new Handler();
-        loadBingPic();
+//        loadBingPic();
         queryRole();
         runnable = new Runnable() {
             @Override

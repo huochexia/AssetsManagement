@@ -11,6 +11,7 @@ import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.Person;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -98,6 +99,7 @@ public class RepairPWActivity extends ParentWithNaviActivity {
             return;
         }
         checkPassword(OldPw,NewPw);
+//        updateCurrentUserPwd(OldPw, NewPw);
     }
     /**
      * 验证旧密码是否正确
@@ -106,17 +108,21 @@ public class RepairPWActivity extends ParentWithNaviActivity {
      * @return void
      */
     private void checkPassword(final String oldPw, final String newPw) {
-        BmobQuery<Person> query = new BmobQuery<>();
-        final Person bmobUser = BmobUser.getCurrentUser(Person.class);
+        List<BmobQuery<BmobUser>> and = new ArrayList<>();
+        final BmobUser bmobUser = BmobUser.getCurrentUser();
         // 如果你传的密码是正确的，那么arg0.size()的大小是1，这个就代表你输入的旧密码是正确的，否则是失败的
-        query.addWhereEqualTo("password", oldPw);
-        query.addWhereEqualTo("username", bmobUser.getUsername());
-        addSubscription(query.findObjects(new FindListener<Person>() {
+        BmobQuery<BmobUser> query1 = new BmobQuery<>();
+        query1.addWhereEqualTo("password", oldPw);
+        and.add(query1);
+        BmobQuery<BmobUser> query2 = new BmobQuery<>();
+        query2.addWhereEqualTo("objectId", bmobUser.getObjectId());
+        BmobQuery<BmobUser> query = new BmobQuery<>();
+        query.and(and);
+        query.findObjects(new FindListener<BmobUser>() {
 
             @Override
-            public void done(List<Person> object, BmobException e) {
+            public void done(List<BmobUser> object, BmobException e) {
                 if (e == null) {
-
                     if (object.size() == 1) {
                         updateCurrentUserPwd(oldPw, newPw);
                     } else {
@@ -128,7 +134,7 @@ public class RepairPWActivity extends ParentWithNaviActivity {
                 }
             }
 
-        }));
+        });
     }
 
     /**
@@ -138,7 +144,8 @@ public class RepairPWActivity extends ParentWithNaviActivity {
      * @throws
      */
     private void updateCurrentUserPwd(String oldPw, String newPw) {
-        addSubscription(BmobUser.updateCurrentUserPassword(oldPw, newPw, new UpdateListener() {
+
+        BmobUser.updateCurrentUserPassword(oldPw, newPw, new UpdateListener() {
             @Override
             public void done(BmobException e) {
                 if (e == null) {
@@ -149,6 +156,6 @@ public class RepairPWActivity extends ParentWithNaviActivity {
                     toast(e.getErrorCode()+e.getMessage());
                 }
             }
-        }));
+        });
     }
 }

@@ -62,4 +62,5 @@
     <string name="dialog_title_add">请输入增加内容</string>
     <string name="dialog_title_edit">请修改内容</string>
     <string name="dialog_message_delete">是否确定删除该内容？</string>
+    <string name="query_condition">查询条件</string>
 </resources>
