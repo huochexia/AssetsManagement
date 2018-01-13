@@ -57,6 +57,7 @@ public class MakingLabelsListAdapter extends RecyclerView.Adapter<MakingLabelsLi
     public void onBindViewHolder(LabelViewHolder holder, final int position) {
         holder.mAssetNum.setText(mAssetInfoList.get(position).getAssetsNum());
         holder.mCheckBox.setVisibility(View.VISIBLE);
+        holder.mAssetLocation.setText(mAssetInfoList.get(position).getLocation().getLocationName());
         holder.serial_number.setText((position+1)+"");
         holder.mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

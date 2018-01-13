@@ -17,6 +17,7 @@ import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -67,7 +68,9 @@ public class MyAssetListActivity extends ParentWithNaviActivity {
         initNaviView();
         LinearLayoutManager ll = new LinearLayoutManager(this);
         mRcMyAssetsList.setLayoutManager(ll);
-        AssetsUtil.AndQueryAssets(this,"mOldManager", BmobUser.getCurrentUser(Person.class),handler);
+        AssetsUtil.count=0;
+        List<AssetInfo> allList = new ArrayList<>();
+        AssetsUtil.AndQueryAssets2(this,"mOldManager", BmobUser.getCurrentUser(Person.class),handler,allList);
     }
 
     MyAssetHandler handler = new MyAssetHandler();

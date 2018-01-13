@@ -37,6 +37,7 @@ import cn.bmob.v3.listener.UpdateListener;
 
 public class AssetsUtil {
     public static final int SEARCH_ONE_ASSET = 1;
+    public static int count = 0;
 
     /**
      * 分组后合并：因为同种资产的状态不一定一样，所以将资产列表中不同状态下同种资产合并为一项，
@@ -151,12 +152,59 @@ public class AssetsUtil {
     }
     /**
      * 依据某一个参数，查询资产
+     * 调用这个函数时，要先把静态变量清0
+     * @param
+     */
+    public static void AndQueryAssets2(final Context context, final String para, final Object value, final Handler handler
+            , final List<AssetInfo> allList) {
+        BmobQuery<AssetInfo> query = new BmobQuery<>();
+        query.addWhereEqualTo(para, value);
+        query.order("-createdAt");
+        query.setSkip(count*500);
+        query.setLimit(500);
+        query.include("mPicture,mOldManager,mLocation,mDepartment");
+        query.findObjects(new FindListener<AssetInfo>() {
+            @Override
+            public void done(final List<AssetInfo> list, BmobException e) {
+                if (e == null) {
+                    if (list == null || list.size() == 0) {
+                        Toast.makeText(context, "查询结束!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    allList.addAll(list);
+                    if (list.size() >= 500) {
+                        count++;
+                        AndQueryAssets2(context, para, value, handler, allList);
+                    } else {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Message msg = new Message();
+                                msg.what = AssetsUtil.SEARCH_ONE_ASSET;
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("assets", (Serializable) allList);
+                                msg.setData(bundle);
+                                handler.sendMessage(msg);
+                            }
+                        }).start();
+                    }
+
+                } else {
+                    {
+                        Toast.makeText(context, "查询失败，请稍后再查！", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+    }/**
+     * 依据某一个参数，查询资产
      *
      * @param
      */
     public static void AndQueryAssets(final Context context, String para, Object value, final Handler handler) {
         BmobQuery<AssetInfo> query = new BmobQuery<>();
         query.addWhereEqualTo(para, value);
+        query.order("mAssetsNum");
         query.setLimit(500);
         query.include("mPicture,mOldManager,mLocation,mDepartment");
         query.findObjects(new FindListener<AssetInfo>() {
@@ -203,6 +251,7 @@ public class AssetsUtil {
         and.add(query2);
         BmobQuery<AssetInfo> query= new BmobQuery<>();
         query.and(and);
+        query.order("mAssetsNum");
         query.setLimit(500);
         query.include("mPicture,mOldManager,mLocation,mDepartment");
         query.findObjects(new FindListener<AssetInfo>() {
@@ -254,6 +303,7 @@ public class AssetsUtil {
 
         BmobQuery<AssetInfo> query= new BmobQuery<>();
         query.and(and);
+        query.order("mAssetsNum");
         query.setLimit(500);
         query.include("mPicture,mOldManager,mLocation,mDepartment");
         query.findObjects(new FindListener<AssetInfo>() {

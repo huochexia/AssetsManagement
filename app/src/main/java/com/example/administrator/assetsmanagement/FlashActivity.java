@@ -124,10 +124,7 @@ public class FlashActivity extends BaseActivity {
                             mROLE = list.get(0);
                         }
                     });
-//                    runOnMain(new Runnable() {
-//                        @Override
-//
-//                    });
+
                 }
             }
         });

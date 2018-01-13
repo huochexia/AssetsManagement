@@ -36,12 +36,12 @@ public class BaseSettingFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view ;
-        if (FlashActivity.mROLE.getRights().contains("设置")) {
+//        if (FlashActivity.mROLE.getRights().contains("设置")) {
             view = inflater.inflate(R.layout.fragment_main_baseset, container, false);
             unbinder = ButterKnife.bind(this, view);
-        } else {
-            view = inflater.inflate(R.layout.fragment_no_system_manager, container, false);
-        }
+//        } else {
+//            view = inflater.inflate(R.layout.fragment_no_system_manager, container, false);
+//        }
 
         return view;
     }
@@ -54,9 +54,9 @@ public class BaseSettingFragment extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (FlashActivity.mROLE.getRights().contains("设置")){
+//        if (FlashActivity.mROLE.getRights().contains("设置")){
             unbinder.unbind();
-        }
+//        }
 
     }
 

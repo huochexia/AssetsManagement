@@ -406,7 +406,7 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
         //初始化界面列表头
         mLlItemHeaderStatus.setVisibility(View.INVISIBLE);
         mTvItemHeaderName.setText("资产编号");
-        mTvItemHeaderQuantity.setText("名称");
+        mTvItemHeaderQuantity.setText("地点");
 
         //初始化列表内容
         Bundle bundle = getBundle();

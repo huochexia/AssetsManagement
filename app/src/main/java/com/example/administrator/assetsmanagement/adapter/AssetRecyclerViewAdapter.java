@@ -174,7 +174,7 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
                 @Override
                 public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
                     MenuItem picture = menu.add(0, 0, 0, "图片");
-                    MenuItem printer = menu.add(0, 1, 0, "打印");
+                    MenuItem printer = menu.add(0, 1, 0, "明细");
                     picture.setOnMenuItemClickListener(menuClickLister);
                     printer.setOnMenuItemClickListener(menuClickLister);
 
