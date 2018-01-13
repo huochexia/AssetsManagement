@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background"
-    android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/background"
+                android:orientation="vertical">
 
     <include
         android:id="@+id/include"
-        layout="@layout/include_navi" />
+        layout="@layout/include_navi"/>
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardView_query_condition"
@@ -21,77 +21,59 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <RadioGroup
+            <com.example.administrator.assetsmanagement.utils.FlowRadioGroup
+                android:id="@+id/rg_query_condition"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true">
 
-                <TableLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                <RadioButton
+                    android:id="@+id/rb_location_s"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="存放地点"
+                    android:textSize="16sp"
+                    />
 
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="@dimen/margin_10">
+                <RadioButton
+                    android:id="@+id/rb_department_s"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="所属部门"
+                    android:textSize="16sp"/>
 
-                        <RadioButton
-                            android:id="@+id/rb_location_s"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="存放地点"
-                            android:textSize="16sp" />
 
-                        <RadioButton
-                            android:id="@+id/rb_department_s"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="所属部门"
-                            android:textSize="16sp" />
-                    </TableRow>
+                <RadioButton
+                    android:id="@+id/rb_category_s"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="所属类别"
+                    android:textSize="16sp"/>
 
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="@dimen/margin_10">
+                <RadioButton
+                    android:id="@+id/rb_manager_s"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="管理人员"
+                    android:textSize="16sp"/>
 
-                        <RadioButton
-                            android:id="@+id/rb_category_s"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="所属类别"
-                            android:textSize="16sp" />
 
-                        <RadioButton
-                            android:id="@+id/rb_manager_s"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="管理人员"
-                            android:textSize="16sp" />
-                    </TableRow>
+                <RadioButton
+                    android:id="@+id/rb_picture_s"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="资产图片"
+                    android:textSize="16sp"/>
 
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="@dimen/margin_10">
+                <RadioButton
+                    android:id="@+id/rb_dipose_s"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="非正常资产"
+                    android:textSize="16sp"/>
 
-                        <RadioButton
-                            android:id="@+id/rb_picture_s"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="资产图片"
-                            android:textSize="16sp" />
 
-                        <RadioButton
-                            android:id="@+id/rb_dipose_s"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="非正常资产"
-                            android:textSize="16sp" />
-                    </TableRow>
-
-                </TableLayout>
-            </RadioGroup>
+            </com.example.administrator.assetsmanagement.utils.FlowRadioGroup>
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>
@@ -116,7 +98,7 @@
             android:padding="10dp"
             android:text="选择内容"
             android:textColor="@color/base_color_text_white"
-            android:textSize="16sp" />
+            android:textSize="16sp"/>
 
         <TextView
             android:id="@+id/tv_query_content"
@@ -126,8 +108,8 @@
             android:layout_alignBottom="@+id/btn_select_content"
             android:layout_alignStart="@+id/btn_select_content"
             android:layout_marginStart="118dp"
-            android:textSize="16sp"
-            android:hint="请选择要查询的具体内容"/>
+            android:hint="请选择要查询的具体内容"
+            android:textSize="16sp"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -142,12 +124,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:background="@drawable/btn_login_selector"
-           android:layout_marginStart="@dimen/margin_10"
             android:layout_marginEnd="@dimen/margin_10"
+            android:layout_marginStart="@dimen/margin_10"
+            android:background="@drawable/btn_login_selector"
             android:text="查询"
             android:textColor="@color/base_color_text_white"
-            android:textSize="16sp" />
+            android:textSize="16sp"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -165,7 +147,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="42dp"
             android:text="@string/query_condition"
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
     </RelativeLayout>
 
 </RelativeLayout>

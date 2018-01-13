@@ -25,6 +25,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+
 /**
  * Created by Administrator on 2017/12/26.
  */
@@ -41,7 +42,7 @@ public class FlashActivity extends BaseActivity {
         setContentView(R.layout.activity_flash);
         mImageView = (ImageView) findViewById(R.id.bing_pic_img);
         handler = new Handler();
-//        loadBingPic();
+        loadBingPic();
         queryRole();
         runnable = new Runnable() {
             @Override

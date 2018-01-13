@@ -98,8 +98,8 @@ public class RepairPWActivity extends ParentWithNaviActivity {
             toast("两次输入的新密码不一致，请重新输入！");
             return;
         }
-        checkPassword(OldPw,NewPw);
-//        updateCurrentUserPwd(OldPw, NewPw);
+//        checkPassword(OldPw,NewPw);
+        updateCurrentUserPwd(OldPw, NewPw);
     }
     /**
      * 验证旧密码是否正确

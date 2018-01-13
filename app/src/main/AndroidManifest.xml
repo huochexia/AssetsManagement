@@ -65,6 +65,8 @@
         <activity android:name=".activity.MyAssetListActivity"/>
         <activity android:name=".activity.ApprovalAssetActivity"/>
         <activity android:name=".activity.MakingLabelActivity"/>
+        <activity android:name=".activity.QueryAssetsActivity"/>
+        <activity android:name=".activity.AssetsListActivity"/>
     </application>
 
 </manifest>
