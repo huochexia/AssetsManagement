@@ -152,15 +152,28 @@ public class ManageAssetsActivity extends ParentWithNaviActivity {
         }
     }
 
+    /**
+     * 获取将要接收的资产数量，做为角标显示出来。查找状态为4待移交或者为6维送移交的
+     */
     private void queryCountOfReceiver() {
-        List<BmobQuery<AssetInfo>> and = new ArrayList<>();
+        List<BmobQuery<AssetInfo>> or  = new ArrayList<>();
+        //第一组or关系,状态为4 or 6
         BmobQuery<AssetInfo> query1 = new BmobQuery<>();
-        Person person = BmobUser.getCurrentUser(Person.class);
-        query1.addWhereEqualTo("mNewManager", person);
+        query1.addWhereEqualTo("mStatus", 4);
         BmobQuery<AssetInfo> query2 = new BmobQuery<>();
-        query2.addWhereEqualTo("mStatus", 4);
-        and.add(query1);
-        and.add(query2);
+        query2.addWhereEqualTo("mStatus", 6);
+        or.add(query1);
+        or.add(query2);
+        BmobQuery<AssetInfo> first = new BmobQuery<>();
+        first.or(or);
+        //第二组 and关系，新管理 和第一组结果
+        List<BmobQuery<AssetInfo>> and = new ArrayList<>();
+        BmobQuery<AssetInfo> query3 = new BmobQuery<>();
+        Person person = BmobUser.getCurrentUser(Person.class);
+        query3.addWhereEqualTo("mNewManager", person);
+        and.add(query3);
+        and.add(first);
+        //最后结果
         BmobQuery<AssetInfo> query = new BmobQuery<>();
         query.and(and);
         query.count(AssetInfo.class, new CountListener() {

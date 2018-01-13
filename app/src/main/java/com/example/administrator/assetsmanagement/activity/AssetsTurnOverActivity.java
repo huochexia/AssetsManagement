@@ -100,6 +100,8 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
      * 传入的是原始列表，深度复制为中转列表，如果是整体移交则将中转列表汇总。列表适配器使用的是中转
      * 列表。用户选择内容的存入选择列表中。然后依据选择列表的内容在原始列表中进行更新，然后在从原始
      * 列表中去除选择列表
+     * 说明：如果资产状态为0、1、4的资产可进行移交。目前暂定为丢失、已报废、待报废（审批中）的资产
+     * 不能进行移交，如果要移交的话，先变更为正常0，再进行移交，移交后，再调整为原状态。
      */
     private List<AssetInfo> assetsList = new ArrayList<>();//原始列表
     private List<AssetInfo> temp_list = new ArrayList<>();//中转列表
@@ -108,7 +110,6 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     private AssetRecyclerViewAdapter adapter;
     private RecyclerView mRcTurnOverList;
     private Integer flag = 0;//标志，等于1是为新登记资产。
-    private boolean isSingle = false;//判断是单体还是整体
     private AssetPicture mPicture;
     private AssetInfo assetInfo;
 
@@ -154,17 +155,11 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         Bundle bundle = getBundle();
         if (bundle != null) {
             flag = bundle.getInt("flag");
-//            isSingle = bundle.getBoolean("oneOrAll");
             if (flag == 1) {
                 mLlAssetsTurnOverTop.setVisibility(View.GONE);
                 mBtnTurnOverOk.setEnabled(true);
                 assetsList = (List<AssetInfo>) bundle.getSerializable("newasset");
-//                if (isSingle) {
-//                    //单体移交因为不进行汇总操作，所以不需要复制
-//                    temp_list.addAll(assetsList);
-//                } else {
                 temp_list.addAll(AssetsUtil.GroupAfterMerge(AssetsUtil.deepCopy(assetsList)));
-//                }
                 setListAdapter();
             }
         }
@@ -207,7 +202,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                         return true;
                     case 1:
                         Bundle bundle1 = new Bundle();
-                        bundle1.putInt("flay", 0);
+                        bundle1.putInt("flag", 0);
                         bundle1.putSerializable("picture", assetInfo.getPicture());
                         startActivity(MakingLabelActivity.class, bundle1, false);
                     default:
@@ -299,6 +294,13 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
             case R.id.btn_turn_over_ok:
                 //如果是新登记的，位置和部门不能为空。
                 if (selectedAssets.size() > 0) {
+                    //轮查状态是否可以进行移交
+                    for (AssetInfo ass : selectedAssets) {
+                        if (ass.getStatus() == 2 || ass.getStatus() == 3) {
+                            toast("丢失、报废资产不能进行移交！");
+                            return;
+                        }
+                    }
                     if (mNewManager != null) {
                         if (flag == 1 && (mNewLocation == null || mNewDept == null)) {
                             toast("新登记资产必须分配位置和部门！");
@@ -309,11 +311,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                                 AssetsUtil.updateBmobLibrary(this, updateAllSelectedAssetInfo(assetsList, selectedAssets));
                             }
                             temp_list.clear();
-//                            if (isSingle) {
-//                                temp_list.addAll(assetsList);
-//                            } else {
                             temp_list.addAll(AssetsUtil.GroupAfterMerge(AssetsUtil.deepCopy(assetsList)));
-//                            }
                             adapter.initMap();
                             adapter.notifyDataSetChanged();
                         }
@@ -329,41 +327,54 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         }
     }
 
+    /**
+     * 接收返回结果
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_SELECTED:
-                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    oldLocation = (Location) data.getSerializableExtra("node");
-                    mTvSearchContent.setText(LocationNodeHelper.getSearchContentName(oldLocation));
-                }
-                break;
-            case REQUEST_NAME:
-                if (resultCode == SelectAssetsPhotoActivity.RESULT_OK) {
-                    Bundle bundle = data.getBundleExtra("assetpicture");
-                    mPicture = (AssetPicture) bundle.getSerializable("imageFile");
-                    mTvSearchContent.setText(mPicture.getImageNum());
-                }
-                break;
-            case REQUEST_RECEIVE_LOCATION:
-                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    mNewLocation = (Location) data.getSerializableExtra("node");
-                    mTvReceiveNewLocation.setText(LocationNodeHelper.getSearchContentName(mNewLocation));
-                }
-                break;
-            case REQUEST_RECEIVE_DEPT:
-                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    mNewDept = (Department) data.getSerializableExtra("node");
-                    mTvReceiveNewDept.setText(DepartmentNodeHelper.getSearchContentName(mNewDept));
-                }
-                break;
-            case REQUEST_RECEIVE_MANAGER:
-                if (resultCode == ManagerListActivity.SEARCH_OK) {
-                    mNewManager = (Person) data.getSerializableExtra("manager");
-                    mTvNewManager.setText(mNewManager.getUsername());
-                }
-            default:
+        if (data != null) {
+            switch (requestCode) {
+                case REQUEST_SELECTED:
+                    if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
+                        oldLocation = (Location) data.getSerializableExtra("node");
+                        mTvSearchContent.setText(LocationNodeHelper.getSearchContentName(oldLocation));
+                    }
+                    break;
+                case REQUEST_NAME:
+                    if (resultCode == SelectAssetsPhotoActivity.RESULT_OK) {
+
+                        Bundle bundle = data.getBundleExtra("assetpicture");
+                        mPicture = (AssetPicture) bundle.getSerializable("imageFile");
+                        mTvSearchContent.setText(mPicture.getImageNum());
+
+                    }
+                    break;
+                case REQUEST_RECEIVE_LOCATION:
+                    if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
+
+                        mNewLocation = (Location) data.getSerializableExtra("node");
+                        mTvReceiveNewLocation.setText(LocationNodeHelper.getSearchContentName(mNewLocation));
+
+                    }
+                    break;
+                case REQUEST_RECEIVE_DEPT:
+                    if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
+                        mNewDept = (Department) data.getSerializableExtra("node");
+                        mTvReceiveNewDept.setText(DepartmentNodeHelper.getSearchContentName(mNewDept));
+                    }
+                    break;
+                case REQUEST_RECEIVE_MANAGER:
+                    if (resultCode == ManagerListActivity.SEARCH_OK) {
+                        mNewManager = (Person) data.getSerializableExtra("manager");
+                        mTvNewManager.setText(mNewManager.getUsername());
+                    }
+                default:
+            }
         }
+
     }
 
     /**
@@ -467,7 +478,16 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
             asset.setDepartment(d);
         }
         asset.setNewManager(mNewManager);
-        asset.setStatus(4);
+        //如果资产状态为0或4时，移交确认后状态改为4；如果资产状态为1时，移交确认后改为6。
+        // 目前暂定为丢失、已报废、待报废（审批中）的资产不能进行移交，如果要移交的话，先
+        //变更为正常0，再进行移交，移交后，再调整为原状态。
+        if (asset.getStatus() == 0 || asset.getStatus() == 4) {
+            asset.setStatus(4);
+        }
+        if (asset.getStatus() == 1) {
+            asset.setStatus(6);
+        }
+
     }
 
     /**
@@ -501,21 +521,9 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     private List<BmobObject> updateAllSelectedAssetInfo(List<AssetInfo> assetsList, List<AssetInfo> selectedAssets) {
         List<BmobObject> objects = new ArrayList<>();
         for (AssetInfo asset : selectedAssets) {
-//            if (flag == 1) {
-//                if (asset.getQuantity() == 1) {
-//                    updateAssetInfo(asset);
-//                    objects.add(asset);
-//                    assetsList.remove(asset);
-//                } else {
-//                    List<BmobObject> selectObject = updateAllSameImangeNumAssets(assetsList,
-//                            asset.getPicture().getImageNum(), asset.getStatus());
-//                    objects.addAll(selectObject);
-//                }
-//            } else {
                 List<BmobObject> selectObject = updateAllSameImangeNumAssets(assetsList,
                         asset.getPicture().getImageNum(), asset.getStatus());
                 objects.addAll(selectObject);
-//            }
 
         }
         return objects;

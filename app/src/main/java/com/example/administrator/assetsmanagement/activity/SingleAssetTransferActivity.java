@@ -15,8 +15,6 @@ import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department
 import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
 import com.example.administrator.assetsmanagement.bean.LocationTree.LocationNodeHelper;
 import com.example.administrator.assetsmanagement.bean.Person;
-import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
-import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -100,16 +98,21 @@ public class SingleAssetTransferActivity extends ParentWithNaviActivity {
             case R.id.btn_single_asset_transfer_ok:
                 Location l = new Location();
                 if (newLoction != null) {
-                    l.setObjectId(newLoction.getObjectId());
+                    l.setObjectId(newLoction.getObjectId());//因为节点属性，防止死循环
                     mSingleasset.setLocation(l);
                 }
-                Department d = new Department();;
-                if (newDepartment != null)
-                    d.setObjectId(newDepartment.getObjectId());
+                Department d = new Department();
+                if (newDepartment != null) {
+                    d.setObjectId(newDepartment.getObjectId());//因为节点属性，防止死循环}
                     mSingleasset.setDepartment(d);
+                }
                 if (mNewManager != null) {
                     mSingleasset.setNewManager(mNewManager);
-                    mSingleasset.setStatus(4);
+                    //如果是正常资产移交，则改变为4待移交状态；如果是维送状态，则不变
+                    if (mSingleasset.getStatus() == 0) {
+                        mSingleasset.setStatus(4);
+                    }
+
                 } else {
                     toast("接收人不能为空！");
                     return;

@@ -15,8 +15,6 @@ import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
-import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department;
-import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
 import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 
@@ -25,10 +23,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
 
 /**
@@ -79,7 +75,6 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
     TextView mTvScanAssetComment;
 
 
-
     @Override
     public String title() {
         return title;
@@ -126,7 +121,7 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
             case R.id.btn_single_asset_change:
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("asset", mAssetInfo);
-                startActivity(SingleAssetTransferActivity.class, bundle, false);
+                startActivity(SingleAssetTransferActivity.class, bundle, true);
                 break;
             case R.id.btn_single_asset_maintain:
                 mAssetInfo.setStatus(1);
@@ -153,8 +148,17 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
                 setButtonStatus();
                 break;
             case R.id.btn_single_asset_receive:
-                mAssetInfo.setValue("mOldManager", BmobUser.getCurrentUser(Person.class));
-                mAssetInfo.setValue("mNewManager", null);
+                mAssetInfo.setOldManager(BmobUser.getCurrentUser(Person.class));
+                mAssetInfo.setNewManager( null);
+                //如果是维修送交，接收后状态改为1损坏
+                if (mAssetInfo.getStatus() == 6) {
+                    mAssetInfo.setStatus(1);
+                }
+                //如果是移交，接收后状态改为0正常
+                if (mAssetInfo.getStatus() == 4) {
+                    mAssetInfo.setStatus(0);
+                }
+                setButtonStatus();
                 break;
 
         }
@@ -180,7 +184,7 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
                         mTvScanAssetLocation.setText(mAssetInfo.getLocation().getLocationName());
                         mTvScanAssetDepartment.setText(mAssetInfo.getDepartment().getDepartmentName());
                         mTvScanAssetRegisterDate.setText(mAssetInfo.getRegisterDate());
-                        mTvScanAssetPrice.setText(mAssetInfo.getPrice()+"");
+                        mTvScanAssetPrice.setText(mAssetInfo.getPrice() + "");
                         mTvScanAssetComment.setText(mAssetInfo.getComment());
                         setButtonStatus();
                         String id = mAssetInfo.getOldManager().getObjectId();
@@ -204,7 +208,7 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
      * 设置所有按钮状态
      */
     private void setButtonStatus() {
-
+        initAllButton();
         switch (mAssetInfo.getStatus()) {
             case 0:
                 mTvScanAssetState.setText("正常");
@@ -233,14 +237,34 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
                 break;
             case 4:
                 mTvScanAssetState.setText("待移交");
+                mBtnSingleAssetChange.setVisibility(View.GONE);
+                mBtnSingleAssetReceive.setVisibility(View.VISIBLE);
                 break;
             case 5:
-                mTvScanAssetState.setText("送修");
+                mTvScanAssetState.setText("已报废");
+                break;
+            case 6:
+                mTvScanAssetState.setText("维修移交");
+                mBtnSingleAssetChange.setVisibility(View.GONE);
+                mBtnSingleAssetReceive.setVisibility(View.VISIBLE);
                 break;
             case 9:
                 mTvScanAssetState.setText("新登记未移交");
         }
     }
 
+    /**
+     * 初始化按钮
+     */
+    public void initAllButton() {
+        mBtnSingleAssetChange.setVisibility(View.INVISIBLE);
+        mBtnSingleAssetReceive.setVisibility(View.INVISIBLE);
+        mBtnSingleAssetCancelLose.setVisibility(View.INVISIBLE);
+        mBtnSingleAssetLose.setVisibility(View.INVISIBLE);
+        mBtnSingleAssetMaintain.setVisibility(View.INVISIBLE);
+        mBtnSingleAssetCancelMaintain.setVisibility(View.INVISIBLE);
+        mBtnSingleAssetScrap.setVisibility(View.INVISIBLE);
+        mBtnSingleAssetCancelScrap.setVisibility(View.INVISIBLE);
+    }
 
 }

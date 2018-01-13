@@ -53,6 +53,7 @@ public class AssetRepairActivity extends ParentWithNaviActivity {
     private String ScanResult;
     private AssetInfo asset;
 
+    private boolean willRepair ;//用于判断这个资产是将要维修移送。
     @Override
     public String title() {
         return "资产报修";
@@ -105,6 +106,7 @@ public class AssetRepairActivity extends ParentWithNaviActivity {
                 break;
             case R.id.btn_single_asset_manage_ok:
                 AssetsUtil.changeAssetStatus(this, list.get(0), 1);
+                willRepair = true;
                 turnOverDialog();
                 list.clear();
                 adapter.notifyDataSetChanged();
@@ -114,6 +116,7 @@ public class AssetRepairActivity extends ParentWithNaviActivity {
                 String m1=list.get(0).getOldManager().getObjectId();
                 String currentUser = BmobUser.getCurrentUser().getObjectId();
                 if (m1.equals(currentUser)) {
+                    willRepair = false;
                     turnOverDialog();
                 }
                 list.clear();
@@ -131,6 +134,10 @@ public class AssetRepairActivity extends ParentWithNaviActivity {
         builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                if (willRepair) {
+                    //如果维修需要移送维修点，则状态改为6，维送
+                    asset.setStatus(6);
+                }
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("asset",asset);
                 startActivity(SingleAssetTransferActivity.class,bundle,false);

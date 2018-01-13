@@ -59,7 +59,7 @@ public class AssetsUtil {
      * @return
      */
     @NonNull
-    private static List<AssetInfo> mergeAsset(List<AssetInfo> list) {
+    public static List<AssetInfo> mergeAsset(List<AssetInfo> list) {
         Map<String, AssetInfo> map = new HashMap();
         Iterator it = list.iterator();
         while (it.hasNext()) {
@@ -234,7 +234,7 @@ public class AssetsUtil {
         });
     }
     /**
-     * 依据某三个参数组合，查询资产
+     * 依据某三个参数组合，进行查询资产
      *
      * @param
      */
@@ -252,6 +252,67 @@ public class AssetsUtil {
         query1.addWhereEqualTo(para3, value3);
         and.add(query3);
 
+        BmobQuery<AssetInfo> query= new BmobQuery<>();
+        query.and(and);
+        query.setLimit(500);
+        query.include("mPicture,mOldManager,mLocation,mDepartment");
+        query.findObjects(new FindListener<AssetInfo>() {
+            @Override
+            public void done(final List<AssetInfo> list, BmobException e) {
+                if (e == null) {
+                    if (list != null && list.size() > 0) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Message msg = new Message();
+                                msg.what = AssetsUtil.SEARCH_ONE_ASSET;
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("assets", (Serializable) list);
+                                msg.setData(bundle);
+                                handler.sendMessage(msg);
+                            }
+                        }).start();
+                    } else {
+                        Toast.makeText(context, "没有符合条件的资产!", Toast.LENGTH_SHORT).show();
+
+                    }
+                } else {
+                    {
+                        Toast.makeText(context, "查询失败，请稍后再查！", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * 三组参数，前两组先or，再和后一组and。进行查询
+     * @param context
+     * @param para1
+     * @param value1
+     * @param para2
+     * @param value2
+     * @param para3
+     * @param value3
+     * @param handler
+     */
+    public static void OrAndQueryAssets(final Context context, String para1, Object value1,
+                                      String para2, Object value2,String para3,Object value3,
+                                      final Handler handler) {
+        List<BmobQuery<AssetInfo>> or = new ArrayList<>();
+        BmobQuery<AssetInfo> query1= new BmobQuery<>();
+        query1.addWhereEqualTo(para1, value1);
+        or.add(query1);
+        BmobQuery<AssetInfo> query2= new BmobQuery<>();
+        query1.addWhereEqualTo(para2, value2);
+        or.add(query2);
+        BmobQuery<AssetInfo> query3= new BmobQuery<>();
+        query3.or(or);
+        List<BmobQuery<AssetInfo>> and = new ArrayList<>();
+        and.add(query3);
+        BmobQuery<AssetInfo> query4 = new BmobQuery<>();
+        query4.addWhereEqualTo(para3, value3);
+        and.add(query4);
         BmobQuery<AssetInfo> query= new BmobQuery<>();
         query.and(and);
         query.setLimit(500);

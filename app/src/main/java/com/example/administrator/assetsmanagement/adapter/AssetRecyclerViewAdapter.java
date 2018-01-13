@@ -1,31 +1,22 @@
 package com.example.administrator.assetsmanagement.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.administrator.assetsmanagement.Interface.AssetItemClickListener;
 import com.example.administrator.assetsmanagement.Interface.AssetSelectedListener;
 import com.example.administrator.assetsmanagement.R;
-import com.example.administrator.assetsmanagement.activity.AssetPictureActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -40,25 +31,28 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
     Context mContext;
     LayoutInflater layoutInflater;
     boolean isSearch;
-    Map<Integer, Boolean> map =new HashMap<>();
+    Map<Integer, Boolean> map = new HashMap<>();
     AssetSelectedListener listener;
     AssetItemClickListener clickListener;
     MenuItem.OnMenuItemClickListener menuClickLister;//弹出菜单项事件
-    public AssetRecyclerViewAdapter(Context context, List<AssetInfo> list,boolean isSearch) {
+
+    public AssetRecyclerViewAdapter(Context context, List<AssetInfo> list, boolean isSearch) {
         mContext = context;
         assetInfoList = list;
         layoutInflater = LayoutInflater.from(mContext);
         this.isSearch = isSearch;
         initMap();
     }
+
     public void initMap() {
-        for(int i = 0;i<assetInfoList.size();i++) {
+        for (int i = 0; i < assetInfoList.size(); i++) {
             map.put(i, false);
         }
     }
 
     /**
      * 选择事件监听器
+     *
      * @param listener
      */
     public void getAssetSelectListener(AssetSelectedListener listener) {
@@ -69,7 +63,6 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
      * 点击事件监听器
      *
      * @param
-     *
      */
     public void setAssetItemClickListener(AssetItemClickListener listener) {
         this.clickListener = listener;
@@ -78,6 +71,7 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
     public void setMenuItemClickListener(MenuItem.OnMenuItemClickListener listener) {
         this.menuClickLister = listener;
     }
+
     @Override
     public AssetHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = layoutInflater.inflate(R.layout.item_asset, parent, false);
@@ -132,6 +126,9 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
             case 5:
                 holder.assetStatus.setText("已报废");
                 break;
+            case 6:
+                holder.assetStatus.setText("维修移交");
+                break;
             case 9:
                 holder.assetStatus.setText("新登记");
                 break;
@@ -163,6 +160,7 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
         TextView assetQuantity;
         TextView assetStatus;
         CheckBox selected;
+
         public AssetHolder(View itemView) {
             super(itemView);
             item = (LinearLayout) itemView.findViewById(R.id.ll_asset_item);
@@ -175,8 +173,8 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
             itemView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
                 @Override
                 public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-                    MenuItem picture = menu.add(0,0,0,"图片");
-                    MenuItem printer =menu.add(0, 1, 0, "打印");
+                    MenuItem picture = menu.add(0, 0, 0, "图片");
+                    MenuItem printer = menu.add(0, 1, 0, "打印");
                     picture.setOnMenuItemClickListener(menuClickLister);
                     printer.setOnMenuItemClickListener(menuClickLister);
 

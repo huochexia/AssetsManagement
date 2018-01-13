@@ -78,16 +78,21 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
         LinearLayoutManager ll = new LinearLayoutManager(this);
         mRcReceiverAssets.setLayoutManager(ll);
         Person person = BmobUser.getCurrentUser(Person.class);
-        AssetsUtil.AndQueryAssets(this, "mNewManager", person, "mStatus", 4, handler);
+        AssetsUtil.OrAndQueryAssets(this, "mStatus", 4,"mStatus",6,"mNewManager", person,  handler);
     }
 
     @OnClick(R.id.btn_receive_ok)
     public void onViewClicked(View view) {
-        AssetsUtil.updateBmobLibrary(this, updateAllSelectedAssetInfo(mAssetInfoList, selectedList));
-        temp_list.clear();
-        temp_list.addAll(AssetsUtil.GroupAfterMerge(AssetsUtil.deepCopy(mAssetInfoList)));
-        adapter.initMap();
-        adapter.notifyDataSetChanged();
+        if (selectedList.size() > 0) {
+            AssetsUtil.updateBmobLibrary(this, updateAllSelectedAssetInfo(mAssetInfoList, selectedList));
+            temp_list.clear();
+            temp_list.addAll(AssetsUtil.GroupAfterMerge(AssetsUtil.deepCopy(mAssetInfoList)));
+            adapter.initMap();
+            adapter.notifyDataSetChanged();
+        } else {
+            toast("请选择要接收的资产！");
+        }
+
     }
 
     /**
@@ -139,7 +144,15 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
         asset.setOldManager(BmobUser.getCurrentUser(Person.class));
         Person person = new Person();
         asset.setNewManager(person);
-        asset.setStatus(0);
+        //如果资产为移交状态，接收后改为0,否则改为1，维修状态。因为只有正常和维修的可以移交。
+        // 丢失的不能移交，报废的暂时也不考虑移交。
+        if (asset.getStatus() == 4) {
+            asset.setStatus(0);
+        } else if (asset.getStatus() == 6) {
+            asset.setStatus(1);
+        }
+
+
     }
 
     /**
@@ -148,11 +161,9 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
     private List<BmobObject> updateAllSameImangeNumAssets(List<AssetInfo> list, AssetInfo asset1) {
         List<BmobObject> objects = new ArrayList<>();
         List<AssetInfo> updated = new ArrayList<>();
-        AssetPicture picture = asset1.getPicture();
         String imageNum = asset1.getPicture().getImageNum();
         Integer  state = asset1.getStatus();
         for (AssetInfo asset : list) {
-            String i = asset.getPicture().getImageNum();
             if (imageNum.equals(asset.getPicture().getImageNum()) && asset.getStatus().equals(state)) {
                 updateAssetInfo(asset);
                 objects.add(asset);

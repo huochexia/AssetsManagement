@@ -47,7 +47,7 @@ public class AssetInfo extends BmobObject implements Cloneable {
 
     /*
     资产状态：0正常，1损坏，2丢失，3待报废：即管理员提交报废，但还没有得到批准；4待移交，即管理员准
-    备移交，但接受者还没有确认,5已经批准报废。9新登记未移交
+    备移交，但接受者还没有确认,5已经批准报废,6维修并移交，9新登记未移交
      */
     private Integer mStatus ;
     /*

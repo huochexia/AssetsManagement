@@ -30,7 +30,7 @@ import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
-import static com.example.administrator.assetsmanagement.utils.AssetsUtil.SEARCH_ONE_ASSET;
+
 
 /**
  * 依据资产类别编号下载图片列表，选择图片后，返回图片信息对象
@@ -149,11 +149,13 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case TAKE_PHOTO:
+                    photoLists.clear();
                     photoLists = (List<AssetPicture>) msg.getData().getSerializable("photo");
                     break;
-                case SEARCH_ONE_ASSET :
+                case AssetsUtil.SEARCH_ONE_ASSET :
                     List<AssetInfo> list = (List<AssetInfo>) msg.getData().getSerializable("assets");
-                    List<AssetInfo> mergeList = AssetsUtil.GroupAfterMerge(list);
+                    List<AssetInfo> mergeList = AssetsUtil.mergeAsset(list);
+                    photoLists.clear();
                     for (AssetInfo asset : mergeList) {
                         photoLists.add(asset.getPicture());
                     }
