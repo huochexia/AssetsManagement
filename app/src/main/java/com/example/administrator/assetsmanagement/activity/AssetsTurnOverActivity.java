@@ -430,20 +430,21 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
      */
     private void getSearchResultList() {
         Person current = BmobUser.getCurrentUser(Person.class);
+        List<AssetInfo> allList = new ArrayList<>();
+        AssetsUtil.count=0;
         switch (select_type) {
             case SEARCH_LOCATION:
                 if (oldLocation != null) {
                     AssetsUtil.AndQueryAssets(this, "mLocation", oldLocation.getId(),
-                            "mOldManager", current, handler);
+                            "mOldManager", current, handler,allList);
                 }
                 break;
             case SEARCH_NAME:
                 AssetsUtil.AndQueryAssets(this, "mPicture", mPicture,
-                        "mOldManager", current, handler);
+                        "mOldManager", current, handler,allList);
                 break;
             case SEARCH_ALL:
-                List<AssetInfo> allList = new ArrayList<>();
-                AssetsUtil.count=0;
+
                 AssetsUtil.AndQueryAssets(this, "mOldManager", current, handler,allList);
                 break;
         }

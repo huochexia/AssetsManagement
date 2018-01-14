@@ -44,7 +44,7 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
     Person person;
     SetManagerRightAdapter adapter;
     Role role;
-
+    int count =0;//计数器，每500条加1
     @Override
     public String title() {
         return "权限设置";
@@ -80,7 +80,9 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
 
         LinearLayoutManager ll = new LinearLayoutManager(this);
         mLvTreeStructure.setLayoutManager(ll);
-        queryPerson();
+        List<Person> allPerson = new ArrayList<>();
+        count=0;
+        queryPerson(allPerson);
 
     }
 
@@ -147,28 +149,39 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
         builder.setNegativeButton("返回",null );
         builder.show();
     }
+
     /**
-     * 查询人员
+     * 查询人员,有可能超过500人
      */
-    private void queryPerson() {
-        BmobQuery<Person> query = new BmobQuery<>();
+
+    private void queryPerson(final List<Person> allPerson) {
+        final BmobQuery<Person> query = new BmobQuery<>();
+        query.order("username");
+        query.setSkip(count * 500);
         query.setLimit(500);
         //执行查询方法
         query.findObjects(new FindListener<Person>() {
             @Override
             public void done(final List<Person> list, BmobException e) {
                 if (e == null) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Message msg = new Message();
-                            msg.what = REQUEST_USER;
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("person", (Serializable) list);
-                            msg.setData(bundle);
-                            handler.sendMessage(msg);
-                        }
-                    }).start();
+                    allPerson.addAll(list);
+                    if (list.size() > 500) {
+                        count++;
+                        queryPerson(allPerson);
+                    } else {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Message msg = new Message();
+                                msg.what = REQUEST_USER;
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("person", (Serializable) allPerson);
+                                msg.setData(bundle);
+                                handler.sendMessage(msg);
+                            }
+                        }).start();
+                    }
+
                 } else {
                     toast("查询人员失败：" + e.toString());
                 }

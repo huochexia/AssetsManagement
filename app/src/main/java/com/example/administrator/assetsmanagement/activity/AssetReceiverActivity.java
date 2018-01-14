@@ -78,7 +78,10 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
         LinearLayoutManager ll = new LinearLayoutManager(this);
         mRcReceiverAssets.setLayoutManager(ll);
         Person person = BmobUser.getCurrentUser(Person.class);
-        AssetsUtil.OrAndQueryAssets(this, "mStatus", 4,"mStatus",6,"mNewManager", person,  handler);
+        List<AssetInfo> allList = new ArrayList<>();
+        AssetsUtil.count=0;
+        AssetsUtil.OrAndQueryAssets(this, "mStatus", 4,"mStatus",
+                6,"mNewManager", person,  handler,allList);
     }
 
     @OnClick(R.id.btn_receive_ok)

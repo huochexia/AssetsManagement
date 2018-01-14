@@ -39,7 +39,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.RegisterAssetsActivity"/>
-        <activity android:name=".activity.SearchAssetsActivity"/>
         <activity android:name=".activity.ManageAssetsActivity"/>
         <activity android:name=".activity.LocationSettingActivity"/>
         <activity android:name=".activity.DepartmentSettingActivity"/>

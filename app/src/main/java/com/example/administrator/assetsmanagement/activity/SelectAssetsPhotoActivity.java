@@ -50,6 +50,8 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
     private List<AssetPicture> photoLists=new ArrayList<>();
     private boolean isRegister;
 
+    private int count;
+
     @Override
     public String title() {
         return title;
@@ -99,10 +101,13 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
         mRcPicturesList.setLayoutManager(layoutManager);
         Intent intent = getIntent();
         isRegister = intent.getBooleanExtra("isRegister",true);
+
         if (isRegister) {
             title = intent.getStringExtra("category_name");
             category = (AssetCategory) intent.getSerializableExtra("category");
-            getPictureList("category", category, handler);
+            List<AssetPicture> allPicture = new ArrayList<>();
+            count = 0;
+            getPictureList("category", category, handler,allPicture);
         } else {
             title = "我的资产图片";
             List<AssetInfo> allList = new ArrayList<>();
@@ -118,25 +123,39 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
      * @param para
      * @param value
      * @param handler
+     * @param allPicture
      */
-    private void getPictureList(String para, Object value, final Handler handler) {
+    private void getPictureList(final String para, final Object value, final Handler handler, final List<AssetPicture> allPicture) {
         BmobQuery<AssetPicture> query = new BmobQuery<>();
         query.addWhereEqualTo(para, value);
+        query.order("createdAt");
+        query.setSkip(count * 500);
         query.setLimit(500);
         query.findObjects(new FindListener<AssetPicture>() {
             @Override
             public void done(final List<AssetPicture> list, BmobException e) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Message message = new Message();
-                        message.what = TAKE_PHOTO;
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("photo", (Serializable) list);
-                        message.setData(bundle);
-                        handler.sendMessage(message);
+                if (e == null) {
+                    allPicture.addAll(list);
+                    if (list.size() > 500) {
+                        count++;
+                        getPictureList(para, value, handler, allPicture);
+                    } else {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Message message = new Message();
+                                message.what = TAKE_PHOTO;
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("photo", (Serializable) allPicture);
+                                message.setData(bundle);
+                                handler.sendMessage(message);
+                            }
+                        }).start();
                     }
-                }).start();
+                } else {
+                    toast("查询出现异常，请稍后再试！");
+                }
+
             }
         });
     }

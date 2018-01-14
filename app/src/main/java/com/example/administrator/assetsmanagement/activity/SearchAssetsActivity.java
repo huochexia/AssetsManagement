@@ -217,9 +217,10 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
                         }
                         break;
                     case SEARCH_STATUS:
+
                         //所有已批准报废，所有丢失资产
                         AssetsUtil.AndQueryAssets(SearchAssetsActivity.this,
-                                "mStatus", 2, "mStatus", 5, sHandler);
+                                "mStatus", 2, "mStatus", 5, sHandler,allList);
                         break;
                 }
             }

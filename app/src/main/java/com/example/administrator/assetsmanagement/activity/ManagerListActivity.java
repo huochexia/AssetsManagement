@@ -16,6 +16,7 @@ import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.Person;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -27,6 +28,7 @@ import cn.bmob.v3.listener.FindListener;
 
 
 /**
+ *
  * Created by Administrator on 2017/12/14 0014.
  */
 
@@ -36,6 +38,7 @@ public class ManagerListActivity extends ParentWithNaviActivity {
     ManagerRecyclerViewAdapter adapter;
     RecyclerView mRecyclerView;
     private Person manager;
+    private int count;
 
     @Override
     public String title() {
@@ -72,29 +75,45 @@ public class ManagerListActivity extends ParentWithNaviActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_manager_list_view);
         LinearLayoutManager ll = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(ll);
-        getManager();
+        List<Person> allManager = new ArrayList<>();
+        count = 0;
+        getManager(allManager);
 
     }
 
-    private void getManager() {
+    /**
+     *
+     * @param allManager
+     */
+    private void getManager(final List<Person> allManager) {
         BmobQuery<Person> query = new BmobQuery<>();
+        query.order("username");
+        query.setSkip(count * 500);
         query.setLimit(500);
         query.include("department");
         query.findObjects(new FindListener<Person>() {
             @Override
             public void done(final List<Person> list, BmobException e) {
                 if (e == null) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Message msg = new Message();
-                            msg.what = 1;
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("manager", (Serializable) list);
-                            msg.setData(bundle);
-                            handler.sendMessage(msg);
-                        }
-                    }).start();
+                    allManager.addAll(list);
+                    if (list.size() > 500) {
+                        count++;
+                        getManager(allManager);
+                    } else {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Message msg = new Message();
+                                msg.what = 1;
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("manager", (Serializable) allManager);
+                                msg.setData(bundle);
+                                handler.sendMessage(msg);
+                            }
+                        }).start();
+                    }
+                } else {
+                    toast("查询出现异常，请稍后再试！");
                 }
             }
         });

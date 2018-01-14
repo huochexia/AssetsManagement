@@ -13,7 +13,6 @@ import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.activity.ManageAssetsActivity;
 import com.example.administrator.assetsmanagement.activity.QueryAssetsActivity;
 import com.example.administrator.assetsmanagement.activity.RegisterAssetsActivity;
-import com.example.administrator.assetsmanagement.activity.SearchAssetsActivity;
 import com.example.administrator.assetsmanagement.base.BaseFragment;
 
 import butterknife.BindView;
@@ -81,7 +80,6 @@ public class AssetsManagementFragment extends BaseFragment {
                 break;
             case R.id.iv_assets_search:
                 //启动资产查询活动
-//                startActivity(SearchAssetsActivity.class, null);
                 startActivity(QueryAssetsActivity.class,null);
                 break;
         }

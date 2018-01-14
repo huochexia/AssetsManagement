@@ -57,6 +57,7 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
     private Location mBaseNode;
     private int mPosition;
     protected LocationCheckboxNodeAdapter adapter;
+    private int count;
 
     @Override
     public String title() {
@@ -90,8 +91,9 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
         setContentView(R.layout.activity_tree_node_setting);
         ButterKnife.bind(this);
         initNaviView();
-
-        getDataFromBmob();
+        List<Location> allList = new ArrayList<>();//临时列表，用于处理超过500条记录时暂存数据
+        count = 0;
+        getDataFromBmob(allList);
 
         LinearLayoutManager ll = new LinearLayoutManager(this);
         mLvTreeStructure.setLayoutManager(ll);
@@ -249,26 +251,35 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
     /**
      * 从服务器获取数据，并以此设置适配器。这里使用了异步处理。
      */
-    private void getDataFromBmob() {
+    private void getDataFromBmob(final List<Location> allLocation) {
 
         BmobQuery<Location> query = new BmobQuery<>();
+        query.order("id");
+        query.setSkip(count * 500);
         query.setLimit(500);
         query.findObjects(new FindListener<Location>() {
             @Override
             public void done(final List<Location> list, BmobException e) {
                 if (e == null) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Message msg = new Message();
-                            msg.what = FIND_ALL;
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("list", (Serializable) list);
-                            msg.setData(bundle);
-                            handler.sendMessage(msg);
-                        }
-                    }).start();
-
+                    allLocation.addAll(list);
+                    if (list.size() > 500) {
+                        count++;
+                        getDataFromBmob(allLocation);
+                    } else {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Message msg = new Message();
+                                msg.what = FIND_ALL;
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("list", (Serializable) allLocation);
+                                msg.setData(bundle);
+                                handler.sendMessage(msg);
+                            }
+                        }).start();
+                    }
+                } else {
+                    toast("查询出现异常，请稍后再试！");
                 }
             }
 
