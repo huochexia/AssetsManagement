@@ -182,36 +182,38 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
         btnSearchStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                List<AssetInfo> allList = new ArrayList<>();
+                AssetsUtil.count=0;
                 switch (search_type) {
                     case SEARCH_LOCATION:
                         if (mLocation != null) {
                             AssetsUtil.AndQueryAssets(SearchAssetsActivity.this,
-                                    "mLocation", mLocation, handler);
+                                    "mLocation", mLocation, handler,allList);
                         }
                         break;
                     case SEARCH_CATEGORY:
                         if (mCategory != null) {
                             AssetsUtil.AndQueryAssets(SearchAssetsActivity.this,
-                                    "mCategory", mCategory, handler);
+                                    "mCategory", mCategory, handler,allList);
 
                         }
                         break;
                     case SEARCH_DEPARTMENT:
                         if (mDepartment != null) {
                             AssetsUtil.AndQueryAssets(SearchAssetsActivity.this,
-                                    "mDepartment", mDepartment, handler);
+                                    "mDepartment", mDepartment, handler,allList);
                         }
                         break;
                     case SEARCH_MANAGER:
                         if (person != null) {
                             AssetsUtil.AndQueryAssets(SearchAssetsActivity.this,
-                                    "mOldManager", person, handler);
+                                    "mOldManager", person, handler,allList);
                         }
                         break;
                     case SEARCH_NAME:
                         if (mPicture != null) {
                             AssetsUtil.AndQueryAssets(SearchAssetsActivity.this,
-                                    "mPicture", mPicture, handler);
+                                    "mPicture", mPicture, handler,allList);
                         }
                         break;
                     case SEARCH_STATUS:
@@ -369,54 +371,57 @@ public class SearchAssetsActivity extends ParentWithNaviActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case SelectedTreeNodeActivity.SEARCH_LOCATION:
-                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                   mLocation = (Location) data.getSerializableExtra("node");
-                    mTvSearchContent.setText(LocationNodeHelper.getSearchContentName(mLocation));
-                }
-                break;
-            case SelectedTreeNodeActivity.SEARCH_CATEGORY:
-                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    mCategory = (AssetCategory) data.getSerializableExtra("node");
-                    mTvSearchContent.setText(CategoryNodeHelper.getSearchContentName(mCategory));
-                }
-                break;
-            case SelectedTreeNodeActivity.SEARCH_DEPARTMENT:
-                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    mDepartment = (Department) data.getSerializableExtra("node");
-                    mTvSearchContent.setText(DepartmentNodeHelper.getSearchContentName(mDepartment));
-                }
-                break;
-            case REQUEST_SELECTE_MANAGER:
-                if (resultCode == ManagerListActivity.SEARCH_OK) {
-                    person = (Person) data.getSerializableExtra("manager");
-                    mTvSearchContent.setText(person.getUsername());
-                }
-                break;
-            case REQUEST_PICTURE:
-                if (resultCode == SelectAssetsPhotoActivity.RESULT_OK) {
-                    Bundle bundle = data.getBundleExtra("assetpicture");
-                    mPicture = (AssetPicture) bundle.getSerializable("imageFile");
-                    mTvSearchContent.setText(mPicture.getImageNum());
-                }
-                break;
-            default:
-                IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-                if (intentResult != null) {
-                    if (intentResult.getContents() == null) {
-                        Toast.makeText(this, "内容为空", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(this, "扫描成功", Toast.LENGTH_LONG).show();
-                        // ScanResult 为 获取到的字符串
-                        String ScanResult = intentResult.getContents();
-                        mTvSearchContent.setText("资产编号"+ScanResult);
-
+        if (data != null) {
+            switch (requestCode) {
+                case SelectedTreeNodeActivity.SEARCH_LOCATION:
+                    if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
+                        mLocation = (Location) data.getSerializableExtra("node");
+                        mTvSearchContent.setText(LocationNodeHelper.getSearchContentName(mLocation));
                     }
-                } else {
-                    super.onActivityResult(requestCode, resultCode, data);
-                }
+                    break;
+                case SelectedTreeNodeActivity.SEARCH_CATEGORY:
+                    if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
+                        mCategory = (AssetCategory) data.getSerializableExtra("node");
+                        mTvSearchContent.setText(CategoryNodeHelper.getSearchContentName(mCategory));
+                    }
+                    break;
+                case SelectedTreeNodeActivity.SEARCH_DEPARTMENT:
+                    if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
+                        mDepartment = (Department) data.getSerializableExtra("node");
+                        mTvSearchContent.setText(DepartmentNodeHelper.getSearchContentName(mDepartment));
+                    }
+                    break;
+                case REQUEST_SELECTE_MANAGER:
+                    if (resultCode == ManagerListActivity.SEARCH_OK) {
+                        person = (Person) data.getSerializableExtra("manager");
+                        mTvSearchContent.setText(person.getUsername());
+                    }
+                    break;
+                case REQUEST_PICTURE:
+                    if (resultCode == SelectAssetsPhotoActivity.RESULT_OK) {
+                        Bundle bundle = data.getBundleExtra("assetpicture");
+                        mPicture = (AssetPicture) bundle.getSerializable("imageFile");
+                        mTvSearchContent.setText(mPicture.getImageNum());
+                    }
+                    break;
+                default:
+                    IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+                    if (intentResult != null) {
+                        if (intentResult.getContents() == null) {
+                            Toast.makeText(this, "内容为空", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(this, "扫描成功", Toast.LENGTH_LONG).show();
+                            // ScanResult 为 获取到的字符串
+                            String ScanResult = intentResult.getContents();
+                            mTvSearchContent.setText("资产编号"+ScanResult);
+
+                        }
+                    } else {
+                        super.onActivityResult(requestCode, resultCode, data);
+                    }
+            }
         }
+
     }
 
     /**

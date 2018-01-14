@@ -105,7 +105,9 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
             getPictureList("category", category, handler);
         } else {
             title = "我的资产图片";
-            AssetsUtil.AndQueryAssets(this,"mOldManager", BmobUser.getCurrentUser(Person.class),handler);
+            List<AssetInfo> allList = new ArrayList<>();
+            AssetsUtil.count=0;
+            AssetsUtil.AndQueryAssets(this,"mOldManager", BmobUser.getCurrentUser(Person.class),handler,allList);
         }
 
         initNaviView();

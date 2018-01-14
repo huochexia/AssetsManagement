@@ -326,54 +326,57 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
+        if (data != null) {
+            switch (requestCode) {
 
-            case REGISTER_CATEGORY:
-                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    mCategory = (AssetCategory) data.getSerializableExtra("node");
-                    mTvRegisterCategory.setText(getNodeAllPathName(mCategory));
-                    AssetCategory ac = new AssetCategory();
-                    ac.setObjectId(mCategory.getObjectId());
-                    asset.setCategory(ac);
-                }
-                break;
+                case REGISTER_CATEGORY:
+                    if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
+                        mCategory = (AssetCategory) data.getSerializableExtra("node");
+                        mTvRegisterCategory.setText(getNodeAllPathName(mCategory));
+                        AssetCategory ac = new AssetCategory();
+                        ac.setObjectId(mCategory.getObjectId());
+                        asset.setCategory(ac);
+                    }
+                    break;
 
-            case CHOOSET_PHOTO:
-                if (data != null) {
-                    Bundle bundle = data.getBundleExtra("assetpicture");
-                    AssetPicture image1 = (AssetPicture) bundle.getSerializable("imageFile");
-                    asset.setPicture(image1);
-                    hasPhoto = true;
-                    Glide.with(this).load(image1.getImageUrl()).into(mIvRegisterPicture);
-                }
-                break;
-            case TAKE_PHOTO:
-                if (resultCode == RESULT_OK) {
-                    try {
-                        //第一步：将拍照得到原始图片存入文件
-                        BitmapFactory.decodeStream(getContentResolver().
-                                openInputStream(imageUri));
-                        //第二步：将文件进行压缩处理后得到新的Bitmap
-                        Bitmap bm = ImageFactory.getSmallBitmap(Imagefile.getPath());
-                        //第三步：创建文件输入流
-                        FileOutputStream baos = new FileOutputStream(Imagefile);
-                        //第四步：将位图以JPG格式，按100比例，再次压缩形成新文件
-                        bm.compress(Bitmap.CompressFormat.JPEG, 90, baos);
-                        baos.flush();
-                        baos.close();
-                        mIvRegisterPicture.setImageBitmap(bm);
-                        uploadPhotoFile(Imagefile);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                case CHOOSET_PHOTO:
+                    if (data != null) {
+                        Bundle bundle = data.getBundleExtra("assetpicture");
+                        AssetPicture image1 = (AssetPicture) bundle.getSerializable("imageFile");
+                        asset.setPicture(image1);
+                        hasPhoto = true;
+                        Glide.with(this).load(image1.getImageUrl()).into(mIvRegisterPicture);
+                    }
+                    break;
+                case TAKE_PHOTO:
+                    if (resultCode == RESULT_OK) {
+                        try {
+                            //第一步：将拍照得到原始图片存入文件
+                            BitmapFactory.decodeStream(getContentResolver().
+                                    openInputStream(imageUri));
+                            //第二步：将文件进行压缩处理后得到新的Bitmap
+                            Bitmap bm = ImageFactory.getSmallBitmap(Imagefile.getPath());
+                            //第三步：创建文件输入流
+                            FileOutputStream baos = new FileOutputStream(Imagefile);
+                            //第四步：将位图以JPG格式，按100比例，再次压缩形成新文件
+                            bm.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+                            baos.flush();
+                            baos.close();
+                            mIvRegisterPicture.setImageBitmap(bm);
+                            uploadPhotoFile(Imagefile);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
                     }
 
-                }
+                    break;
 
-                break;
-
+            }
         }
+
     }
 
     /**
@@ -500,19 +503,18 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
      * @return
      */
     private boolean checkAlltext() {
+        //一次登记资产50小于等于50的原因，1、Bmob的批处理最多50条，虽然已通过算法可以多次处理大于50的
+        // 记录，但是由于网络固有原因，不可靠，存在上传丢数量现象，所以为了安全起见，限制数量50；
+        //2、利用Intent进行大数据传递（如list对象）是受限制的，如果数据量过大，接受的Activity不会启动。
+        //经实验，一次传递190以上资产，则出现异常。
 
         if (!TextUtils.isEmpty(mEtRegisterAssetsQuantity.getText())) {
             int quantity = Integer.parseInt(mEtRegisterAssetsQuantity.getText().toString());
-            if (quantity == 0) {
-                toast("请填写资产数量！");
+            if (quantity == 0 ||quantity>50) {
+                toast("请填写小于等于50的数量！");
                 return false;
             }
         }
-        if (TextUtils.isEmpty(mEtRegisterAssetsQuantity.getText())) {
-            toast("请填写资产数量！");
-            return false;
-        }
-
         if (TextUtils.isEmpty(mTvRegisterCategory.getText())) {
             toast("请选择资产类别！");
             return false;

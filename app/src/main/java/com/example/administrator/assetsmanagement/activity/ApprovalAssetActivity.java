@@ -74,7 +74,9 @@ public class ApprovalAssetActivity extends ParentWithNaviActivity {
         initNaviView();
         LinearLayoutManager ll = new LinearLayoutManager(this);
         mRcApprovalAssetsList.setLayoutManager(ll);
-        AssetsUtil.AndQueryAssets(ApprovalAssetActivity.this,"mStatus",3,handler);
+        List<AssetInfo> allList = new ArrayList<>();
+        AssetsUtil.count=0;
+        AssetsUtil.AndQueryAssets(ApprovalAssetActivity.this,"mStatus",3,handler,allList);
 
     }
 

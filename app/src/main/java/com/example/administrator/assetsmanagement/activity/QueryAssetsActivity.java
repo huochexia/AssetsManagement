@@ -188,53 +188,50 @@ public class QueryAssetsActivity extends ParentWithNaviActivity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case SelectedTreeNodeActivity.SEARCH_LOCATION:
-                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    mLocation = (Location) data.getSerializableExtra("node");
-                    mTvQueryContent.setText(LocationNodeHelper.getSearchContentName(mLocation));
-                }
-                break;
-            case SelectedTreeNodeActivity.SEARCH_CATEGORY:
-                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    mCategory = (AssetCategory) data.getSerializableExtra("node");
-                    mTvQueryContent.setText(CategoryNodeHelper.getSearchContentName(mCategory));
-                }
-                break;
-            case SelectedTreeNodeActivity.SEARCH_DEPARTMENT:
-                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    mDepartment = (Department) data.getSerializableExtra("node");
-                    mTvQueryContent.setText(DepartmentNodeHelper.getSearchContentName(mDepartment));
-                }
-                break;
-            case REQUEST_SELECTE_MANAGER:
-                if (resultCode == ManagerListActivity.SEARCH_OK) {
-                    person = (Person) data.getSerializableExtra("manager");
-                    mTvQueryContent.setText(person.getUsername());
-                }
-                break;
-//            case REQUEST_PICTURE:
-//                if (resultCode == SelectAssetsPhotoActivity.RESULT_OK) {
-//                    Bundle bundle = data.getBundleExtra("assetpicture");
-//                    mPicture = (AssetPicture) bundle.getSerializable("imageFile");
-//                    mTvQueryContent.setText(mPicture.getImageNum());
-//                }
-//                break;
-            default:
-                IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-                if (intentResult != null) {
-                    if (intentResult.getContents() == null) {
-                        Toast.makeText(this, "内容为空", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(this, "扫描成功", Toast.LENGTH_LONG).show();
-                        // ScanResult 为 获取到的字符串
-                        String ScanResult = intentResult.getContents();
-                        mTvQueryContent.setText("资产编号" + ScanResult);
-
+        if (data != null) {
+            switch (requestCode) {
+                case SelectedTreeNodeActivity.SEARCH_LOCATION:
+                    if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
+                        mLocation = (Location) data.getSerializableExtra("node");
+                        mTvQueryContent.setText(LocationNodeHelper.getSearchContentName(mLocation));
                     }
-                } else {
-                    super.onActivityResult(requestCode, resultCode, data);
-                }
+                    break;
+                case SelectedTreeNodeActivity.SEARCH_CATEGORY:
+                    if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
+                        mCategory = (AssetCategory) data.getSerializableExtra("node");
+                        mTvQueryContent.setText(CategoryNodeHelper.getSearchContentName(mCategory));
+                    }
+                    break;
+                case SelectedTreeNodeActivity.SEARCH_DEPARTMENT:
+                    if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
+                        mDepartment = (Department) data.getSerializableExtra("node");
+                        mTvQueryContent.setText(DepartmentNodeHelper.getSearchContentName(mDepartment));
+                    }
+                    break;
+                case REQUEST_SELECTE_MANAGER:
+                    if (resultCode == ManagerListActivity.SEARCH_OK) {
+                        person = (Person) data.getSerializableExtra("manager");
+                        mTvQueryContent.setText(person.getUsername());
+                    }
+                    break;
+
+                default:
+                    IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+                    if (intentResult != null) {
+                        if (intentResult.getContents() == null) {
+                            Toast.makeText(this, "内容为空", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(this, "扫描成功", Toast.LENGTH_LONG).show();
+                            // ScanResult 为 获取到的字符串
+                            String ScanResult = intentResult.getContents();
+                            mTvQueryContent.setText("资产编号" + ScanResult);
+
+                        }
+                    } else {
+                        super.onActivityResult(requestCode, resultCode, data);
+                    }
+            }
         }
+
     }
 }

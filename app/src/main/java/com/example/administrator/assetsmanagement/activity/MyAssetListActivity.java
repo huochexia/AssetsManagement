@@ -70,7 +70,7 @@ public class MyAssetListActivity extends ParentWithNaviActivity {
         mRcMyAssetsList.setLayoutManager(ll);
         AssetsUtil.count=0;
         List<AssetInfo> allList = new ArrayList<>();
-        AssetsUtil.AndQueryAssets2(this,"mOldManager", BmobUser.getCurrentUser(Person.class),handler,allList);
+        AssetsUtil.AndQueryAssets(this,"mOldManager", BmobUser.getCurrentUser(Person.class),handler,allList);
     }
 
     MyAssetHandler handler = new MyAssetHandler();

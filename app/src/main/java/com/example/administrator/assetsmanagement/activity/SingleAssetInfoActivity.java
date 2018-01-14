@@ -18,6 +18,7 @@ import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -107,7 +108,9 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
         ButterKnife.bind(this);
         Bundle bundle = getBundle();
         assetNum = bundle.getString("assetNum");
-        AssetsUtil.AndQueryAssets(this, "mAssetsNum", assetNum, handler);
+        List<AssetInfo> allList = new ArrayList<>();
+        AssetsUtil.count=0;
+        AssetsUtil.AndQueryAssets(this, "mAssetsNum", assetNum, handler,allList);
 
     }
 

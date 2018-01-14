@@ -21,13 +21,13 @@ import com.example.administrator.assetsmanagement.utils.LineEditText;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobUser;
-import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
  * Created by Administrator on 2017/12/13.
@@ -88,27 +88,29 @@ public class AssetLoseActivity extends ParentWithNaviActivity {
     @OnClick({R.id.iv_barcode_2d, R.id.btn_single_asset_search, R.id.btn_single_asset_manage_ok,
             R.id.btn_single_asset_manage_cancel})
     public void onViewClicked(View view) {
+
         switch (view.getId()) {
             case R.id.iv_barcode_2d:
                 customScan();
                 break;
             case R.id.btn_single_asset_search:
-                 String num =etSearchAssetNum.getText().toString();
-                AssetsUtil.AndQueryAssets(this,"mAssetsNum",num,handler);
+                String num = etSearchAssetNum.getText().toString();
+                List<AssetInfo> allList = new ArrayList<>();
+                AssetsUtil.count = 0;
+                AssetsUtil.AndQueryAssets(this, "mAssetsNum", num, handler, allList);
                 break;
             case R.id.btn_single_asset_manage_ok:
-                AssetsUtil.changeAssetStatus(this,list.get(0),2);
+                AssetsUtil.changeAssetStatus(this, list.get(0), 2);
                 list.clear();
                 adapter.notifyDataSetChanged();
                 break;
             case R.id.btn_single_asset_manage_cancel:
-                AssetsUtil.changeAssetStatus(this,list.get(0),0);
+                AssetsUtil.changeAssetStatus(this, list.get(0), 0);
                 list.clear();
                 adapter.notifyDataSetChanged();
                 break;
         }
     }
-
 
 
     RepairHandler handler = new RepairHandler();
@@ -129,9 +131,9 @@ public class AssetLoseActivity extends ParentWithNaviActivity {
                         toast("对不起，您不是该资产管理员！");
                         return;
                     } else {
-                        if ( asset.getStatus() == 2) {
+                        if (asset.getStatus() == 2) {
                             btnSingleAssetManageCancel.setEnabled(true);
-                        } else  {
+                        } else {
                             btnSingleAssetManageOk.setEnabled(true);
                         }
                     }
@@ -139,10 +141,11 @@ public class AssetLoseActivity extends ParentWithNaviActivity {
             }
         }
     }
+
     /**
      * 扫描二维码点击事件
      */
-    public  void customScan() {
+    public void customScan() {
         new IntentIntegrator(this)
                 .setOrientationLocked(false)
                 .setCaptureActivity(CustomScanActivity.class) // 设置自定义的activity是CustomActivity

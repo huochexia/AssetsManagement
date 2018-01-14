@@ -25,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -86,25 +87,27 @@ public class AssetsListActivity extends ParentWithNaviActivity {
         Bundle bundle = getBundle();
         condition = bundle.getInt("condition");//得到查询条件
         value = bundle.getSerializable("content");
+        List<AssetInfo> allList = new ArrayList<>();
+        AssetsUtil.count=0;
         switch (condition) {
             case QueryAssetsActivity.ASSET_LOCATION:
                 title = ((Location) value).getLocationName();
                 AssetsUtil.AndQueryAssets(AssetsListActivity.this,
-                        "mLocation", value, handler);
+                        "mLocation", value, handler,allList);
                 break;
             case QueryAssetsActivity.ASSET_DEPARTMENT:
                 AssetsUtil.AndQueryAssets(AssetsListActivity.this,
-                        "mDepartment", value, handler);
+                        "mDepartment", value, handler,allList);
                 title = ((Department) value).getDepartmentName();
                 break;
             case QueryAssetsActivity.ASSET_CATEGORY:
                 AssetsUtil.AndQueryAssets(AssetsListActivity.this,
-                        "mCategory", value, handler);
+                        "mCategory", value, handler,allList);
                 title = ((AssetCategory) value).getCategoryName();
                 break;
             case QueryAssetsActivity.ASSET_MANAGER:
                 AssetsUtil.AndQueryAssets(AssetsListActivity.this,
-                        "mOldManager", value, handler);
+                        "mOldManager", value, handler,allList);
                 title = ((Person) value).getUsername();
                 break;
         }

@@ -442,7 +442,9 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                         "mOldManager", current, handler);
                 break;
             case SEARCH_ALL:
-                AssetsUtil.AndQueryAssets(this, "mOldManager", current, handler);
+                List<AssetInfo> allList = new ArrayList<>();
+                AssetsUtil.count=0;
+                AssetsUtil.AndQueryAssets(this, "mOldManager", current, handler,allList);
                 break;
         }
 

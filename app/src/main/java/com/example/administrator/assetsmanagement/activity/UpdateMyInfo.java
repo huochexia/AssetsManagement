@@ -100,30 +100,33 @@ public class UpdateMyInfo extends ParentWithNaviActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUSET_DEPARTMENT:
-                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    node = (Department) data.getSerializableExtra("node");
-                }
-                Person person = new Person();
-                //因为Department是节点，它包含父节点属性，直接保存会产生死循环，所以新生成一个对象，
-                //只赋值给它objectId。即指针
-                Department newDepartment = new Department();
-                newDepartment.setObjectId(node.getObjectId());
-                person.setDepartment(newDepartment);
-                BmobUser bmobUser = BmobUser.getCurrentUser(Person.class);
-                person.update(bmobUser.getObjectId(), new UpdateListener() {
-                    @Override
-                    public void done(BmobException e) {
-                        if (e == null) {
-                            toast("更新用户信息成功");
-                           btnUpdateMyDepartment.setText("我所在部门："+node.getDepartmentName());
-                        } else {
-                            toast("更新用户信息失败:" + e.getMessage());
-                        }
+        if (data != null) {
+            switch (requestCode) {
+                case REQUSET_DEPARTMENT:
+                    if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
+                        node = (Department) data.getSerializableExtra("node");
                     }
-                });
-                break;
+                    Person person = new Person();
+                    //因为Department是节点，它包含父节点属性，直接保存会产生死循环，所以新生成一个对象，
+                    //只赋值给它objectId。即指针
+                    Department newDepartment = new Department();
+                    newDepartment.setObjectId(node.getObjectId());
+                    person.setDepartment(newDepartment);
+                    BmobUser bmobUser = BmobUser.getCurrentUser(Person.class);
+                    person.update(bmobUser.getObjectId(), new UpdateListener() {
+                        @Override
+                        public void done(BmobException e) {
+                            if (e == null) {
+                                toast("更新用户信息成功");
+                                btnUpdateMyDepartment.setText("我所在部门："+node.getDepartmentName());
+                            } else {
+                                toast("更新用户信息失败:" + e.getMessage());
+                            }
+                        }
+                    });
+                    break;
+            }
         }
+
     }
 }

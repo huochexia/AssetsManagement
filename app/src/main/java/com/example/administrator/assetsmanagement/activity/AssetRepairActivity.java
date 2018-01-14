@@ -23,6 +23,7 @@ import com.example.administrator.assetsmanagement.utils.LineEditText;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -102,7 +103,9 @@ public class AssetRepairActivity extends ParentWithNaviActivity {
                 break;
             case R.id.btn_single_asset_search:
                 String number = etSearchAssetNum.getText().toString();
-                AssetsUtil.AndQueryAssets(this, "mAssetsNum", number, handler);
+                List<AssetInfo> allList = new ArrayList<>();
+                AssetsUtil.count=0;
+                AssetsUtil.AndQueryAssets(this, "mAssetsNum", number, handler,allList);
                 break;
             case R.id.btn_single_asset_manage_ok:
                 AssetsUtil.changeAssetStatus(this, list.get(0), 1);
@@ -196,6 +199,7 @@ public class AssetRepairActivity extends ParentWithNaviActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (intentResult != null) {
             if (intentResult.getContents() == null) {
