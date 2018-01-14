@@ -64,4 +64,6 @@
     <string name="dialog_message_delete">是否确定删除该内容？</string>
     <string name="query_condition">查询条件</string>
     <string name="bmob_common_action_cancel">取消</string>
+
+    <string name="list_no_data">没有新的内容了哦~</string>
 </resources>

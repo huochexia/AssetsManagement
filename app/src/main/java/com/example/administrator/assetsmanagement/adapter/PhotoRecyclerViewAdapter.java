@@ -2,40 +2,32 @@ package com.example.administrator.assetsmanagement.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RadioButton;
+import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.assetsmanagement.Interface.PhotoSelectedListener;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import cn.bmob.v3.datatype.BmobFile;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.DownloadFileListener;
 
 /**
  * 照片适配器:主要用于资产登记图片选择列表,
  * Created by Administrator on 2017/11/19 0019.
  */
 
-public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecyclerViewAdapter.PhotoViewHolder> {
+public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    public final static int TYPE_NORMAL = 1; // 正常的一条文章
+    public final static int TYPE_FOOTER = 2;//底部--往往是loading_more
+
     Context mContext;
     List<AssetPicture> mPictureList;
     LayoutInflater mInflater;
@@ -60,27 +52,45 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
     }
 
     @Override
-    public PhotoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.item_select_photo, parent, false);
-        return new PhotoViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder vh =null;
+        View view;
+        switch (viewType) {
+            case TYPE_NORMAL:
+                view = mInflater.inflate(R.layout.item_select_photo, parent, false);
+                vh = new PhotoViewHolder(view);
+                return vh;
+            case TYPE_FOOTER:
+                view = mInflater.inflate(R.layout.recyclerview_footer, parent, false);
+                vh = new FooterViewHolder(view);
+                return vh;
+        }
+        return vh;
     }
 
     @Override
-    public void onBindViewHolder(final PhotoViewHolder holder, final int position) {
-        Glide.with(mContext).load(mPictureList.get(position).getImageUrl())
-                .placeholder(R.drawable.pictures_no)
-                .into(holder.assetPhoto);
-        //图片选择与不选择时角图和过滤色不同
-        if (mPictureList.get(position).getSelected()) {
-            holder.selected.setImageResource(R.drawable.pictures_selected);
-            holder.assetPhoto.setColorFilter(null);
-        } else {
-            holder.selected.setImageResource(R.drawable.picture_unselected);
-            holder.assetPhoto.setColorFilter(Color.parseColor("#77000000"));
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+        //这时候 article是 null，先把 footer 处理了
+        if (holder instanceof FooterViewHolder) {
+//            ((FooterViewHolder) holder).mProgressBar;
+            return;
         }
-        holder.assetPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (holder instanceof PhotoViewHolder) {
+            PhotoViewHolder newholder = (PhotoViewHolder)holder;
+            Glide.with(mContext).load(mPictureList.get(position).getImageUrl())
+                    .placeholder(R.drawable.pictures_no)
+                    .into(newholder.assetPhoto);
+            //图片选择与不选择时角图和过滤色不同
+            if (mPictureList.get(position).getSelected()) {
+                newholder.selected.setImageResource(R.drawable.pictures_selected);
+                newholder.assetPhoto.setColorFilter(null);
+            } else {
+                newholder.selected.setImageResource(R.drawable.picture_unselected);
+                newholder.assetPhoto.setColorFilter(Color.parseColor("#77000000"));
+            }
+            newholder.assetPhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
                     if (!mPictureList.get(position).getSelected()) {
                         for (int i = 0; i < mPictureList.size(); i++) {
@@ -91,8 +101,9 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
                         notifyDataSetChanged();
                     }
 
-            }
-        });
+                }
+            });
+        }
 
     }
 
@@ -101,6 +112,15 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
         return mPictureList.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        AssetPicture picture = mPictureList.get(position);
+        if (picture==null) {
+            return TYPE_FOOTER;
+        } else {
+            return TYPE_NORMAL;
+        }
+    }
 
     /**
      * ViewHolder
@@ -118,4 +138,14 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<PhotoRecycler
 
     }
 
+    /**
+     * Footer ViewHolder
+     */
+    class FooterViewHolder extends RecyclerView.ViewHolder {
+        ProgressBar mProgressBar;
+        public FooterViewHolder(View itemView) {
+            super(itemView);
+            mProgressBar = (ProgressBar) itemView.findViewById(R.id.rcv_load_more);
+        }
+    }
 }
