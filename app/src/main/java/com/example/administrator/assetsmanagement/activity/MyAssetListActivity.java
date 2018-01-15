@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.administrator.assetsmanagement.Interface.AssetItemClickListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
@@ -34,6 +36,8 @@ public class MyAssetListActivity extends ParentWithNaviActivity {
     AssetRecyclerViewAdapter adapter;
     @BindView(R.id.rc_my_assets_list)
     RecyclerView mRcMyAssetsList;
+    @BindView(R.id.download_progress)
+    ProgressBar downloadProgress;
 
     @Override
     public String title() {
@@ -68,12 +72,13 @@ public class MyAssetListActivity extends ParentWithNaviActivity {
         initNaviView();
         LinearLayoutManager ll = new LinearLayoutManager(this);
         mRcMyAssetsList.setLayoutManager(ll);
-        AssetsUtil.count=0;
+        AssetsUtil.count = 0;
         List<AssetInfo> allList = new ArrayList<>();
-        AssetsUtil.AndQueryAssets(this,"mOldManager", BmobUser.getCurrentUser(Person.class),handler,allList);
+        AssetsUtil.AndQueryAssets(this, "mOldManager", BmobUser.getCurrentUser(Person.class), handler, allList);
     }
 
     MyAssetHandler handler = new MyAssetHandler();
+
     class MyAssetHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
@@ -95,9 +100,9 @@ public class MyAssetListActivity extends ParentWithNaviActivity {
                             switch (item.getItemId()) {
                                 case 0:
                                     Bundle bundle = new Bundle();
-                                    bundle.putSerializable("picture",assetInfo.getPicture());
+                                    bundle.putSerializable("picture", assetInfo.getPicture());
                                     bundle.putString("title", assetInfo.getAssetName());
-                                    startActivity(AssetPictureActivity.class,bundle,false);
+                                    startActivity(AssetPictureActivity.class, bundle, false);
                                     return true;
                                 case 1:
                                     Bundle bundle1 = new Bundle();
@@ -109,6 +114,7 @@ public class MyAssetListActivity extends ParentWithNaviActivity {
                             }
                         }
                     });
+                    downloadProgress.setVisibility(View.GONE);
                     break;
             }
         }

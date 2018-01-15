@@ -7,7 +7,16 @@
 
     <include layout="@layout/include_navi"/>
     <include layout="@layout/item_asset_header"/>
+
+
+
+
     <include layout="@layout/view_line_between"/>
+    <ProgressBar
+    android:id="@+id/download_progress"
+    style="?android:attr/progressBarStyle"
+    android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
