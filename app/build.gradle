@@ -17,6 +17,22 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets{
+        main{
+            jniLibs.srcDirs=  ['libs']
+        }
+    }
+//    //删除META-INF信息
+//    packagingOptions {
+//        exclude 'META-INF/rxjava.properties'
+//        exclude 'META-INF/maven/com.squareup.okhttp3/okhttp/pom.xml'
+//        exclude 'META-INF/maven/com.squareup.okhttp3/okhttp/pom.properties'
+//        exclude 'META-INF/maven/com.squareup.okio/okio/pom.xml'
+//        exclude 'META-INF/maven/com.squareup.okio/okio/pom.properties'
+//        exclude 'META-INF/maven/com.google.code.gson/gson/pom.xml'
+//        exclude 'META-INF/maven/com.google.code.gson/gson/pom.properties'
+//    }
+
     //兼容Android6.0系统所需，如果这句话报错，可在dependencies标签下使用compile 'cn.bmob.android:http-legacy:1.0'**
     useLibrary 'org.apache.http.legacy'
 
@@ -44,7 +60,7 @@ dependencies {
     //bmob-sdk：Bmob的android sdk包，包含了Bmob的数据存储、文件等服务，以下是最新的bmob-sdk:
     //使用3.5.8版本出错com.android.builder.dexing.DexArchiveMergerException: Unable to merge dex
     //原因不明
-    compile 'cn.bmob.android:bmob-sdk:3.5.5'
+    //    compile 'cn.bmob.android:bmob-sdk:3.5.5'
     compile 'cn.bmob.android:http-legacy:1.0'
     /*Glide图片加载框架*/
     compile 'com.github.bumptech.glide:glide:3.7.0'
@@ -53,4 +69,10 @@ dependencies {
     compile 'com.google.zxing:core:3.3.0'
     compile 'com.journeyapps:zxing-android-embedded:3.3.0'
     implementation files('libs/LPAPI-2017-10-17.jar')
+    implementation files('libs/BmobSDK_3.5.9_20180102.jar')
+    implementation files('libs/okhttp-3.4.1.jar')
+    implementation files('libs/okio-1.10.0.jar')
+    implementation files('libs/rxjava-2.0.1.jar')
+    implementation files('libs/RxAndroid.jar')
+    implementation files('libs/retrofit-2.1.0.jar')
 }

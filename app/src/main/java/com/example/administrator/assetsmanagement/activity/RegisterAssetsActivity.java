@@ -612,11 +612,13 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             @Override
             public void onProgress(Integer arg0) {
                 // TODO Auto-generated method stub
+//                toast(arg0+"");
             }
 
             @Override
             public void done(BmobException e) {
                 if (e == null) {
+                    toast("拍照成功！");
                     AssetPicture picture = new AssetPicture();
                     picture.setCategory(asset.getCategory());
                     String imangNum = System.currentTimeMillis() + "";
