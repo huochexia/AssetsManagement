@@ -1,7 +1,6 @@
 package com.example.administrator.assetsmanagement.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -45,6 +44,7 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
     RecyclerView mRcPicturesList;
 
 
+
     private String title;
     private AssetCategory category;
     private AssetPicture imageFile;
@@ -52,9 +52,8 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
     private PhotoRecyclerViewAdapter mAdapter;
     private List<AssetPicture> photoLists = new ArrayList<>();
     private boolean isRegister;
-    private String para;
-    private Object value;
-    private int count;
+
+    private int page;//分页获取数据的当前页数
 
     @Override
     public String title() {
@@ -103,29 +102,30 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
         ButterKnife.bind(this);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         mRcPicturesList.setLayoutManager(layoutManager);
-//        mRcPicturesList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-//                super.onScrollStateChanged(recyclerView, newState);
-//            }
-//
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                GridLayoutManager gl = (GridLayoutManager) mRcPicturesList.getLayoutManager();
-//                int lastVisibleItemPosition=gl.findLastVisibleItemPosition();
-//                if (lastVisibleItemPosition >= gl.getItemCount() - 1) {//到达页末
-//                    //TODO:加载数据
-//                    count = photoLists.size()/18;
-//                    getPictureList2("category", category, handler);
-//                }
-//            }
-//        });
+        mRcPicturesList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                GridLayoutManager gl = (GridLayoutManager) mRcPicturesList.getLayoutManager();
+                int lastVisibleItemPosition=gl.findLastVisibleItemPosition();
+                if (lastVisibleItemPosition >= gl.getItemCount() - 1) {//到达页末
+                    getPictureList("category", category, handler);
+                }
+            }
+        });
+
         Intent intent = getIntent();
         isRegister = intent.getBooleanExtra("isRegister", true);
         if (isRegister) {
             title = intent.getStringExtra("category_name");
             category = (AssetCategory) intent.getSerializableExtra("category");
+            photoLists.clear();
+            page=0;
             getPictureList("category", category, handler);
         } else {
             title = "我的资产图片";
@@ -142,18 +142,20 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
      * @param para
      * @param value
      * @param handler
-     *
      */
     private void getPictureList(final String para, final Object value, final Handler handler) {
         BmobQuery<AssetPicture> query = new BmobQuery<>();
         query.addWhereEqualTo(para, value);
         query.order("-createdAt");
-        query.setLimit(500);
+
+        query.setSkip(page * 15);
+        query.setLimit(15);
         query.findObjects(new FindListener<AssetPicture>() {
             @Override
             public void done(final List<AssetPicture> list, BmobException e) {
                 if (e == null) {
-                           new Thread(new Runnable() {
+                    if (list.size() > 0) {
+                        new Thread(new Runnable() {
                             @Override
                             public void run() {
                                 Message message = new Message();
@@ -164,6 +166,10 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
                                 handler.sendMessage(message);
                             }
                         }).start();
+                    } else {
+                        toast("没有更多数据了！");
+                    }
+
                 } else {
                     toast("查询出现异常，请稍后再试！");
                 }
@@ -171,34 +177,8 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
             }
         });
     }
-    private void getPictureList2(final String para, final Object value, final Handler handler) {
-        BmobQuery<AssetPicture> query = new BmobQuery<>();
-        query.addWhereEqualTo(para, value);
-        query.order("-createdAt");
-        query.setSkip(count * 18);
-        query.setLimit(18);
-        query.findObjects(new FindListener<AssetPicture>() {
-            @Override
-            public void done(final List<AssetPicture> list, BmobException e) {
-                if (e == null) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Message message = new Message();
-                            message.what = TAKE_PHOTO;
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("photo", (Serializable)list);
-                            message.setData(bundle);
-                            handler.sendMessage(message);
-                        }
-                    }).start();
-                } else {
-                    toast("查询出现异常，请稍后再试！");
-                }
 
-            }
-        });
-    }
+
 
 
     public static final int TAKE_PHOTO = 0;
@@ -209,10 +189,17 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case TAKE_PHOTO:
-//                    List<AssetPicture> templist = (List<AssetPicture>) msg.getData().getSerializable("photo");
-//                    photoLists.addAll(templist);
-                    photoLists.clear();
-                    photoLists = (List<AssetPicture>) msg.getData().getSerializable("photo");
+                    if (photoLists.size() > 0) {
+                        if (photoLists.get(photoLists.size() - 1) == null) {//如果最后一条记录为null时，删除
+                            photoLists.remove(null);
+                        }
+                    }
+                    //增加新查询的数据
+                    photoLists.addAll((List<AssetPicture>) msg.getData().getSerializable("photo"));
+                    page++;
+                    if (photoLists.size() >15 && photoLists.size()%15==0) {//在底部增加一个空对象,用于标记底部
+                       photoLists.add(photoLists.size()-1,null);
+                    }
                     break;
                 case AssetsUtil.SEARCH_ONE_ASSET:
                     List<AssetInfo> list = (List<AssetInfo>) msg.getData().getSerializable("assets");
@@ -232,57 +219,6 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
                 }
 
             });
-        }
-    }
-
-    /**
-     * 上拉加载更多的图片
-     */
-    class MoreArticleTask extends AsyncTask<Void,Void, List<AssetPicture>> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            if (photoLists != null && photoLists.size() > 0) {
-                photoLists.add(null);//增加了一个null标记Footer
-                // notifyItemInserted(int position)，这个方法是在第position位置
-                // 被插入了一条数据的时候可以使用这个方法刷新，
-                // 注意这个方法调用后会有插入的动画，这个动画可以使用默认的，也可以自己定义。
-                mAdapter.notifyItemInserted(photoLists.size() - 1);
-            }
-        }
-
-        @Override
-        protected List<AssetPicture> doInBackground(Void... params) {
-            List<AssetPicture> datas = new ArrayList<>();
-            if (photoLists.size() == 0) {
-                count = 0;
-            } else {
-            }
-            //TODO:利用分页显示原理从Bmob数据库中获取,
-            return datas;
-        }
-
-        @Override
-        protected void onPostExecute(List<AssetPicture> datas) {
-            super.onPostExecute(datas);
-            if (photoLists.size() == 0) {
-                photoLists.addAll(datas);
-                mAdapter.notifyDataSetChanged();
-            } else {
-                //删除footer
-                photoLists.remove(photoLists.size() - 1);
-                //只有到达最底部才加载
-                //防止上拉到了倒数两三个也加载
-//                if (!bottom && lastVisibleItem == totalItemCount - 1 && moreArticles.size() == 0) {
-//                    Snackbar.with(mActivity.getApplicationContext()) // context
-//                            .text(mActivity.getResources().getString(R.string.list_no_data)) // text to display
-//                            .duration(Snackbar.SnackbarDuration.LENGTH_SHORT) // make it shorter
-//                            .show(mActivity); // activity where it is displayed
-//                    bottom = true;
-//                }
-                photoLists.addAll(datas);
-                mAdapter.notifyDataSetChanged();
-            }
         }
     }
 
