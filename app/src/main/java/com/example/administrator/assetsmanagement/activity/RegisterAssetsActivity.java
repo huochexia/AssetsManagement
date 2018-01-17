@@ -326,7 +326,6 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (data != null) {
             switch (requestCode) {
 
                 case REGISTER_CATEGORY:
@@ -375,7 +374,6 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                     break;
 
             }
-        }
 
     }
 

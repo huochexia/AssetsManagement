@@ -1,7 +1,6 @@
 package com.example.administrator.assetsmanagement.activity;
 
 import android.content.DialogInterface;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,21 +11,17 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.example.administrator.assetsmanagement.AssetManagerApplication;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
-import com.example.administrator.assetsmanagement.Interface.TreeNodeSelected;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department;
 import com.example.administrator.assetsmanagement.bean.DepartmentTree.DepartmentCheckboxNodeAdapter;
 import com.example.administrator.assetsmanagement.bean.DepartmentTree.DepartmentNodeSelected;
-import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
-import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
-import com.example.administrator.assetsmanagement.treeUtil.CheckboxTreeNodeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +50,8 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
 
     public myHandler handler = new myHandler();
     protected List<Department> treeNodeList = new ArrayList<>();
+    @BindView(R.id.download_progress_location)
+    ProgressBar downloadProgressLocation;
     private Department mBaseNode;
     private int mPosition;
     protected DepartmentCheckboxNodeAdapter adapter;
@@ -97,13 +94,14 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
         mLvTreeStructure.setLayoutManager(ll);
         mLvTreeStructure.setAdapter(adapter);
     }
+
     /**
      * 删除节点对话框
      */
     private void deleteNodeDialog() {
         AlertDialog.Builder builder3 = new AlertDialog.Builder(this);
-        String text  = mBaseNode.getDepartmentName();
-        String message = "确定要删除" + "\"" + text + "\""+"吗？";
+        String text = mBaseNode.getDepartmentName();
+        String message = "确定要删除" + "\"" + text + "\"" + "吗？";
         builder3.setMessage(message);
         builder3.setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
             @Override
@@ -213,6 +211,7 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
 
     /**
      * 设置列表适配器
+     *
      * @param departments 列表内容
      */
     private void setListAdapter(List<Department> departments) {
@@ -222,6 +221,7 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
         treeNodeList.clear();
         treeNodeList.addAll(departments);
         departmentList.addAll(treeNodeList);
+        downloadProgressLocation.setVisibility(View.GONE);
         adapter = new DepartmentCheckboxNodeAdapter(DepartmentSettingActivity.this, departmentList,
                 1, R.mipmap.expand, R.mipmap.collapse);
         mLvTreeStructure.setAdapter(adapter);
@@ -230,10 +230,6 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
             public void checked(Department node, int postion) {
                 mBaseNode = node;
                 mPosition = postion;
-                String parent = "";
-                if (node.getParent() != null) {
-                    parent = node.getParent().getDepartmentName();
-                }
             }
 
             @Override
@@ -270,7 +266,7 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
                     toast("请选择要删除的部门！");
                     return;
                 }
-                if (mBaseNode.getChildren().size()>0) {
+                if (mBaseNode.getChildren().size() > 0) {
                     toast("它有子部门，不能删除！");
                     return;
                 }
@@ -297,6 +293,7 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
 
     /**
      * 删除节点
+     *
      * @param node
      */
     private void deleteNode(Department node) {
@@ -328,6 +325,7 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
 
     /**
      * 将新增加数据保存到服务器上
+     *
      * @param node
      */
     public void addToBmob(Department node) {
@@ -350,6 +348,7 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
 
     /**
      * 将修改服务器上的相应内容
+     *
      * @param node
      */
     public void updateToBmob(final Department node) {
@@ -414,7 +413,7 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
     /**
      * 异步处理类
      */
-    
+
     class myHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
@@ -430,7 +429,7 @@ public class DepartmentSettingActivity extends ParentWithNaviActivity {
                             if (e == null) {
                                 toast("修改成功！");
                             } else {
-                                toast("修改失败！"+e.toString());
+                                toast("修改失败！" + e.toString());
                             }
                         }
 

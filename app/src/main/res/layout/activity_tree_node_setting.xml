@@ -5,6 +5,10 @@
     android:orientation="vertical">
 
     <include layout="@layout/include_navi" />
-
+    <ProgressBar
+        android:id="@+id/download_progress_location"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <include layout="@layout/tree_structrue_setting" />
 </LinearLayout>

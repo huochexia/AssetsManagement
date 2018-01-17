@@ -1,7 +1,6 @@
 package com.example.administrator.assetsmanagement.activity;
 
 import android.content.DialogInterface;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,20 +11,16 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
-import com.example.administrator.assetsmanagement.Interface.TreeNodeSelected;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.CategoryTree.AssetCategory;
 import com.example.administrator.assetsmanagement.bean.CategoryTree.CategoryCheckboxNodeAdapter;
 import com.example.administrator.assetsmanagement.bean.CategoryTree.CategoryNodeSelected;
-import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
-import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
-import com.example.administrator.assetsmanagement.treeUtil.CheckboxTreeNodeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +28,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobQueryResult;
 import cn.bmob.v3.exception.BmobException;
@@ -55,6 +49,8 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
 
     public myHandler handler = new myHandler();
     protected List<AssetCategory> treeNodeList = new ArrayList<>();
+    @BindView(R.id.download_progress_location)
+    ProgressBar downloadProgressLocation;
     private AssetCategory mBaseNode;
     private int mPosition;
     protected CategoryCheckboxNodeAdapter adapter;
@@ -98,7 +94,6 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
     }
 
 
-
     @OnClick({R.id.btn_tree_add_node, R.id.btn_tree_replace_node, R.id.btn_tree_delete_node})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -126,7 +121,7 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
                     toast("请选择要删除的类别！");
                     return;
                 }
-                if (mBaseNode.getChildren().size()>0) {
+                if (mBaseNode.getChildren().size() > 0) {
                     toast("它有子类别，不能删除！");
                     return;
                 }
@@ -141,7 +136,7 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
                             public void run() {
                                 if (integer > 0) {
                                     toast("该类别下有资产，不能删除！");
-                                }else {
+                                } else {
                                     deleteNodeDialog();
                                 }
                             }
@@ -152,13 +147,14 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
                 break;
         }
     }
+
     /**
      * 删除节点对话框
      */
     private void deleteNodeDialog() {
         AlertDialog.Builder builder3 = new AlertDialog.Builder(this);
-        String text  = mBaseNode.getCategoryName();
-        String message = "确定要删除" + "\"" + text + "\""+"吗？";
+        String text = mBaseNode.getCategoryName();
+        String message = "确定要删除" + "\"" + text + "\"" + "吗？";
         builder3.setMessage(message);
         builder3.setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
             @Override
@@ -210,6 +206,7 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
         });
         builder.show();
     }
+
     /**
      * 生成增加节点对话框
      */
@@ -244,6 +241,7 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
         });
         builder.create().show();
     }
+
     /**
      * 从服务器获取数据，并以此设置适配器
      */
@@ -253,7 +251,7 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
             @Override
             public void done(BmobQueryResult<AssetCategory> bmobQueryResult, BmobException e) {
                 List<AssetCategory> assetCategories = bmobQueryResult.getResults();
-                if (e==null) {
+                if (e == null) {
                     setListAdapter(assetCategories);
                 }
 
@@ -263,15 +261,17 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
 
     /**
      * 设置列表适配器
+     *
      * @param assetCategories
      */
     private void setListAdapter(List<AssetCategory> assetCategories) {
-        AssetCategory root_category = new AssetCategory("0","-1","固定资产");
+        AssetCategory root_category = new AssetCategory("0", "-1", "固定资产");
         List<AssetCategory> categoryArrayList = new ArrayList<>();
         categoryArrayList.add(root_category);
         treeNodeList.clear();
         treeNodeList.addAll(assetCategories);
         categoryArrayList.addAll(treeNodeList);
+        downloadProgressLocation.setVisibility(View.GONE);
         adapter = new CategoryCheckboxNodeAdapter(CategorySettingActivity.this, categoryArrayList,
                 1, R.mipmap.expand, R.mipmap.collapse);
         mLvTreeStructure.setAdapter(adapter);
@@ -280,10 +280,6 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
             public void checked(AssetCategory node, int postion) {
                 mBaseNode = node;
                 mPosition = postion;
-                String parent = "";
-                if (node.getParent() != null) {
-                    parent = node.getParent().getCategoryName();
-                }
             }
 
             @Override
@@ -296,6 +292,7 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
 
     /**
      * 删除节点
+     *
      * @param node
      */
     private void deleteNode(AssetCategory node) {
@@ -306,8 +303,6 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
 
     /**
      * 修改节点
-     *
-     *
      */
     private void updateNode() {
         adapter.notifyDataSetChanged();
@@ -326,6 +321,7 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
 
     /**
      * 将新增加数据保存到服务器上
+     *
      * @param node
      */
     public void addToBmob(AssetCategory node) {
@@ -347,6 +343,7 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
 
     /**
      * 将修改服务器上的相应内容
+     *
      * @param node
      */
     public void updateToBmob(final AssetCategory node) {
@@ -407,7 +404,7 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
                             if (e == null) {
                                 toast("修改成功！");
                             } else {
-                                toast("修改失败！"+e.toString());
+                                toast("修改失败！" + e.toString());
                             }
                         }
 
@@ -420,9 +417,9 @@ public class CategorySettingActivity extends ParentWithNaviActivity {
                         @Override
                         public void done(BmobException e) {
                             if (e == null) {
-                                    toast("删除成功");
-                            }else{
-                                toast("删除失败"+e.toString());
+                                toast("删除成功");
+                            } else {
+                                toast("删除失败" + e.toString());
                             }
 
                         }

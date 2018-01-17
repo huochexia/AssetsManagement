@@ -11,7 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.example.administrator.assetsmanagement.AssetManagerApplication;
@@ -22,7 +22,6 @@ import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
 import com.example.administrator.assetsmanagement.bean.LocationTree.LocationCheckboxNodeAdapter;
 import com.example.administrator.assetsmanagement.bean.LocationTree.LocationNodeSelected;
-import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -54,6 +53,8 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
 
     public myHandler handler = new myHandler();
     protected List<Location> treeNodeList = new ArrayList<>();
+    @BindView(R.id.download_progress_location)
+    ProgressBar downloadProgressLocation;
     private Location mBaseNode;
     private int mPosition;
     protected LocationCheckboxNodeAdapter adapter;
@@ -127,7 +128,7 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
                     toast("请选择要删除的位置！");
                     return;
                 }
-                if (mBaseNode.getChildren().size()>0) {
+                if (mBaseNode.getChildren().size() > 0) {
                     toast("它有子位置，不能删除！");
                     return;
                 }
@@ -158,16 +159,16 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
      */
     private void deleteNodeDialog() {
         AlertDialog.Builder builder3 = new AlertDialog.Builder(this);
-        String text  = mBaseNode.getLocationName();
-        String message = "确定要删除" + "\"" + text + "\""+"吗？";
+        String text = mBaseNode.getLocationName();
+        String message = "确定要删除" + "\"" + text + "\"" + "吗？";
         builder3.setMessage(message);
         builder3.setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                     removeFromBmob(mBaseNode);
-                    deleteNode(mBaseNode);
-                    mBaseNode = null;
-                   dialog.dismiss();
+                removeFromBmob(mBaseNode);
+                deleteNode(mBaseNode);
+                mBaseNode = null;
+                dialog.dismiss();
             }
         });
         builder3.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
@@ -194,13 +195,13 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (!TextUtils.isEmpty(editText.getText())) {
-                        mBaseNode.setLocationName(editText.getText() + "");
-                        updateToBmob(mBaseNode);
-                        updateNode(mBaseNode);
-                        dialog.dismiss();
-                    } else {
-                        toast("请输入新位置！");
-                    }
+                    mBaseNode.setLocationName(editText.getText() + "");
+                    updateToBmob(mBaseNode);
+                    updateNode(mBaseNode);
+                    dialog.dismiss();
+                } else {
+                    toast("请输入新位置！");
+                }
             }
         });
         builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
@@ -225,18 +226,18 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
         builder.setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                    if (!TextUtils.isEmpty(editText.getText())) {
-                        Location newNode = new Location();
-                        newNode.setLocationName(editText.getText().toString());
-                        newNode.setId(System.currentTimeMillis() + "");
-                        newNode.setParentId(mBaseNode.getId());
-                        addToBmob(newNode);
-                        addNode(newNode, mBaseNode.getLevel() + 1);
+                if (!TextUtils.isEmpty(editText.getText())) {
+                    Location newNode = new Location();
+                    newNode.setLocationName(editText.getText().toString());
+                    newNode.setId(System.currentTimeMillis() + "");
+                    newNode.setParentId(mBaseNode.getId());
+                    addToBmob(newNode);
+                    addNode(newNode, mBaseNode.getLevel() + 1);
 //                        mBaseNode = null;
-                        dialog.dismiss();
-                    } else {
-                        toast("请输入新位置！");
-                    }
+                    dialog.dismiss();
+                } else {
+                    toast("请输入新位置！");
+                }
             }
         });
         builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
@@ -436,15 +437,13 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
         adapter = new LocationCheckboxNodeAdapter(LocationSettingActivity.this, locations,
                 1, R.mipmap.expand, R.mipmap.collapse);
         mLvTreeStructure.setAdapter(adapter);
+        downloadProgressLocation.setVisibility(View.GONE);
         adapter.setCheckBoxSelectedListener(new LocationNodeSelected() {
             @Override
             public void checked(Location node, int postion) {
                 mBaseNode = node;
                 mPosition = postion;
-                String parent = "";
-                if (node.getParent() != null) {
-                    parent = node.getParent().getLocationName();
-                }
+
             }
 
             @Override
