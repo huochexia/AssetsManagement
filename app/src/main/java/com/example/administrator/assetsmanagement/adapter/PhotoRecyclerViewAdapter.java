@@ -25,7 +25,7 @@ import java.util.Map;
  */
 
 public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    public final static int TYPE_NORMAL = 1; // 正常的一条文章
+    public final static int TYPE_NORMAL = 1; // 正常
     public final static int TYPE_FOOTER = 2;//底部--往往是loading_more
 
     Context mContext;
@@ -72,7 +72,7 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         //这时候 article是 null，先把 footer 处理了
         if (holder instanceof FooterViewHolder) {
-//            ((FooterViewHolder) holder).mProgressBar;
+            ((FooterViewHolder) holder).mProgressBar.setVisibility(View.VISIBLE);
             return;
         }
         if (holder instanceof PhotoViewHolder) {
