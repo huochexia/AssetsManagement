@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.assetsmanagement.Interface.PhotoSelectedListener;
@@ -32,7 +33,15 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     List<AssetPicture> mPictureList;
     LayoutInflater mInflater;
     PhotoSelectedListener listener;
-    Map<Integer,Boolean> map ;
+    Map<Integer, Boolean> map;
+
+    //正在加载更多
+    static final int LOADING_MORE = 1;
+    //没有更多
+    static final int NO_MORE = 2;
+    //脚布局当前的状态,默认为没有更多
+    int footer_state = 1;
+
     public PhotoRecyclerViewAdapter(Context context, List<AssetPicture> list) {
         mContext = context;
         mPictureList = list;
@@ -42,7 +51,7 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
     private void initMap() {
         map = new HashMap<>();
-        for(int i = 0; i<mPictureList.size();i++) {
+        for (int i = 0; i < mPictureList.size(); i++) {
             map.put(i, false);
         }
     }
@@ -53,7 +62,7 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder vh =null;
+        RecyclerView.ViewHolder vh = null;
         View view;
         switch (viewType) {
             case TYPE_NORMAL:
@@ -72,11 +81,24 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         //这时候 article是 null，先把 footer 处理了
         if (holder instanceof FooterViewHolder) {
-            ((FooterViewHolder) holder).mProgressBar.setVisibility(View.VISIBLE);
-            return;
+            if (position == 0) {
+                ((FooterViewHolder) holder).isBaseLine.setVisibility(View.GONE);
+                ((FooterViewHolder) holder).mProgressBar.setVisibility(View.GONE);
+            }
+            switch (footer_state) {
+                case LOADING_MORE:
+                    ((FooterViewHolder) holder).mProgressBar.setVisibility(View.VISIBLE);
+                    ((FooterViewHolder) holder).isBaseLine.setVisibility(View.GONE);
+                    break;
+                case NO_MORE:
+                    ((FooterViewHolder) holder).mProgressBar.setVisibility(View.GONE);
+                    ((FooterViewHolder) holder).isBaseLine.setVisibility(View.VISIBLE);
+                    ((FooterViewHolder) holder).isBaseLine.setText("没有更多的数据了！");
+            }
+
         }
         if (holder instanceof PhotoViewHolder) {
-            PhotoViewHolder newholder = (PhotoViewHolder)holder;
+            PhotoViewHolder newholder = (PhotoViewHolder) holder;
             Glide.with(mContext).load(mPictureList.get(position).getImageUrl())
                     .placeholder(R.drawable.pictures_no)
                     .into(newholder.assetPhoto);
@@ -107,15 +129,23 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
     }
 
+    /**
+     * 改变脚布局的状态的方法,在activity根据请求数据的状态来改变这个状态
+     * @param footer_state
+     */
+    public void changeState(int footer_state) {
+        this.footer_state = footer_state;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
-        return mPictureList.size();
+        return mPictureList != null ? mPictureList.size() + 1 : 0;
     }
 
     @Override
     public int getItemViewType(int position) {
-        AssetPicture picture = mPictureList.get(position);
-        if (picture==null) {
+        if (position + 1 == getItemCount()) {
             return TYPE_FOOTER;
         } else {
             return TYPE_NORMAL;
@@ -143,9 +173,15 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
      */
     class FooterViewHolder extends RecyclerView.ViewHolder {
         ProgressBar mProgressBar;
+        TextView isBaseLine;
+
         public FooterViewHolder(View itemView) {
             super(itemView);
             mProgressBar = (ProgressBar) itemView.findViewById(R.id.rcv_load_more);
+            isBaseLine = (TextView) itemView.findViewById(R.id.is_base_line);
         }
+
     }
+
+
 }

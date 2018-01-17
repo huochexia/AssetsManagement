@@ -52,8 +52,17 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
     private PhotoRecyclerViewAdapter mAdapter;
     private List<AssetPicture> photoLists = new ArrayList<>();
     private boolean isRegister;
-
+    boolean isloading;
     private int page;//分页获取数据的当前页数
+    /**
+     * 最后一个可见的item的位置
+     */
+    private int lastVisibleItemPosition;
+
+    /**
+     * 当前滑动的状态
+     */
+    private int currentScrollState = 0;
 
     @Override
     public String title() {
@@ -100,25 +109,42 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_photo);
         ButterKnife.bind(this);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
+        final GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         mRcPicturesList.setLayoutManager(layoutManager);
         mRcPicturesList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                if ((visibleItemCount > 0 && currentScrollState == RecyclerView.SCROLL_STATE_IDLE &&
+                        (lastVisibleItemPosition) >= totalItemCount - 1) ) {
+                    getPictureList("category", category, handler);
+
+                    mAdapter.changeState(1);
+                }
             }
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                GridLayoutManager gl = (GridLayoutManager) mRcPicturesList.getLayoutManager();
-                int lastVisibleItemPosition=gl.findLastVisibleItemPosition();
-                if (lastVisibleItemPosition >= gl.getItemCount() - 1) {//到达页末
-                    getPictureList("category", category, handler);
+                lastVisibleItemPosition=layoutManager.findLastVisibleItemPosition();
+
+            }
+        });
+        //让Footer占据整行
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                int type = mRcPicturesList.getAdapter().getItemViewType(position);
+                if (type == PhotoRecyclerViewAdapter.TYPE_FOOTER) {
+                    return layoutManager.getSpanCount();
+                } else {
+                    return 1;
                 }
             }
         });
-
         Intent intent = getIntent();
         isRegister = intent.getBooleanExtra("isRegister", true);
         if (isRegister) {
@@ -178,9 +204,6 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
         });
     }
 
-
-
-
     public static final int TAKE_PHOTO = 0;
     public MyHandler handler = new MyHandler();
 
@@ -189,17 +212,13 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case TAKE_PHOTO:
-                    if (photoLists.size() > 0) {
-                        if (photoLists.get(photoLists.size() - 1) == null) {//如果最后一条记录为null时，删除
-                            photoLists.remove(null);
-                        }
-                    }
                     //增加新查询的数据
-                    photoLists.addAll((List<AssetPicture>) msg.getData().getSerializable("photo"));
-                    page++;
-                    if (photoLists.size() >15 && photoLists.size()%15==0) {//在底部增加一个空对象,用于标记底部
-                       photoLists.add(photoLists.size()-1,null);
+                    List<AssetPicture> pictureList = (List<AssetPicture>) msg.getData().getSerializable("photo");
+                    if (pictureList.size() > 0) {
+                        photoLists.addAll(pictureList);
+                        page++;
                     }
+
                     break;
                 case AssetsUtil.SEARCH_ONE_ASSET:
                     List<AssetInfo> list = (List<AssetInfo>) msg.getData().getSerializable("assets");
@@ -219,7 +238,22 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
                 }
 
             });
+
         }
     }
 
-}
+    /**
+     * 判断列表是否达到底部
+     * @param recyclerView
+     * @return
+     */
+
+    public boolean isSlideToBottom(RecyclerView recyclerView) {
+        if (recyclerView == null) return false;
+        if (recyclerView.computeVerticalScrollExtent() + recyclerView.computeVerticalScrollOffset()
+                >= recyclerView.computeVerticalScrollRange())
+            return true;
+        return false;
+    }
+
+   }
