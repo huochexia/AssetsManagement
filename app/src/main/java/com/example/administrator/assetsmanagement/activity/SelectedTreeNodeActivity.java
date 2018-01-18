@@ -7,9 +7,10 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
-import com.example.administrator.assetsmanagement.Interface.TreeNodeSelected;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.CategoryTree.AssetCategory;
@@ -21,10 +22,7 @@ import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department
 import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
 import com.example.administrator.assetsmanagement.bean.LocationTree.LocationCheckboxNodeAdapter;
 import com.example.administrator.assetsmanagement.bean.LocationTree.LocationNodeSelected;
-import com.example.administrator.assetsmanagement.bean.LocationTree.LocationTreeNodeAdapter;
 import com.example.administrator.assetsmanagement.bean.Person;
-import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
-import com.example.administrator.assetsmanagement.treeUtil.CheckboxTreeNodeAdapter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -51,18 +49,19 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
     public static final int SEARCH_RESULT_OK = 100;
     protected List<BmobObject> treeNodeList = new ArrayList<>();
     List<Location> mLocations = new ArrayList<>();
-    Location mLocation;
     List<AssetCategory> mCategorys = new ArrayList<>();
-    AssetCategory mCategory;
     List<Department> mDepartments = new ArrayList<>();
-    Department mDepartment;
     @BindView(R.id.lv_tree_structure)
     RecyclerView mLvTreeStructure;
+    @BindView(R.id.loading_node_progress)
+    ProgressBar loadingNodeProgress;
     private BmobObject mBaseNode;
     private int mPosition;
-
+    //根据不同的类型，选择查询不同的内容
     private int type;
-    private boolean isPerson;
+    //标志，因为查询的目的不同，正常0标志，是返回选择节点内容。进一步标志1，则不回返回结果，而是将选
+    // 择的结果用于进行下一阶段查询
+    private int flag = 0;
 
 
     @Override
@@ -109,6 +108,7 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
         ButterKnife.bind(this);
         Intent intent = getIntent();
         type = intent.getIntExtra("type", 0);
+        flag = intent.getIntExtra("flag", 0);
 //        isPerson = intent.getBooleanExtra("person", false);
         initNaviView();
         LinearLayoutManager ll = new LinearLayoutManager(this);
@@ -124,7 +124,7 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
                 getPersonFromBmob();
                 break;
             case SEARCH_CATEGORY:
-               getCategoryFromBmob();
+                getCategoryFromBmob();
                 break;
             default:
                 break;
@@ -136,7 +136,7 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
     /**
      * 从服务器获取位置数据，并以此设置适配器
      */
-    private  void getLocationFromBmob() {
+    private void getLocationFromBmob() {
         BmobQuery<Location> query = new BmobQuery<>();
         query.setLimit(500);
         query.findObjects(new FindListener<Location>() {
@@ -153,7 +153,7 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
     /**
      * 从服务器获取部门数据，并以此设置适配器
      */
-    private  void getDepartmentFromBmob() {
+    private void getDepartmentFromBmob() {
         BmobQuery<Department> query = new BmobQuery<>();
         query.setLimit(500);
         query.findObjects(new FindListener<Department>() {
@@ -171,7 +171,7 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
     /**
      * 从服务器获取资产类别数据，并以此设置适配器
      */
-    private  void getCategoryFromBmob() {
+    private void getCategoryFromBmob() {
         BmobQuery<AssetCategory> query = new BmobQuery<>();
         query.setLimit(500);
         query.findObjects(new FindListener<AssetCategory>() {
@@ -183,10 +183,11 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
             }
         });
     }
+
     /**
      * 从服务器获取人员数据，并以此设置适配器
      */
-    private  void getPersonFromBmob() {
+    private void getPersonFromBmob() {
         BmobQuery<Person> query = new BmobQuery<>();
         query.setLimit(500);
         query.findObjects(new FindListener<Person>() {
@@ -200,13 +201,13 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
     }
 
 
-
     /**
      * 创建适配器
+     *
      * @param list
      */
     private void createAdapter(List<BmobObject> list) {
-        treeNodeList=list;
+        treeNodeList = list;
         switch (type) {
             case SEARCH_LOCATION:
                 for (BmobObject location : list) {
@@ -218,7 +219,7 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
                 ladapter.setCheckBoxSelectedListener(new LocationNodeSelected() {
                     @Override
                     public void checked(Location node, int position) {
-                        mBaseNode =node;
+                        mBaseNode = node;
                         mPosition = position;
                     }
 
@@ -239,7 +240,7 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
                 dadapter.setCheckBoxSelectedListener(new DepartmentNodeSelected() {
                     @Override
                     public void checked(Department node, int position) {
-                        mBaseNode =node;
+                        mBaseNode = node;
                         mPosition = position;
                     }
 
@@ -263,7 +264,7 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
                 cadapter.setCheckBoxSelectedListener(new CategoryNodeSelected() {
                     @Override
                     public void checked(AssetCategory node, int position) {
-                        mBaseNode =node;
+                        mBaseNode = node;
                         mPosition = position;
                     }
 
@@ -277,10 +278,12 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
             default:
                 break;
         }
-
+        loadingNodeProgress.setVisibility(View.GONE);
     }
+
     /**
      * 生成异步传递信息
+     *
      * @param list
      */
     private void createMessage(Serializable list) {
@@ -291,10 +294,12 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
         msg.setData(bundle);
         handler.sendMessage(msg);
     }
+
     /**
      * 异步处理
      */
     public myHander handler = new myHander();
+
     class myHander extends Handler {
         @Override
         public void handleMessage(Message msg) {
@@ -307,12 +312,24 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
 
         }
     }
+
     @OnClick(R.id.btn_tree_search_node_ok)
     public void onViewClicked() {
-
         if (mBaseNode != null) {
-                sendNodeInfo(mBaseNode);
-                finish();
+            switch (flag) {
+                case 0://返回选择的结果
+                    sendNodeInfo(mBaseNode);
+                    finish();
+                    break;
+                case 1://利用选择结果，继续查询
+                    Intent intent = new Intent(this,SelectAssetsPhotoActivity.class);
+                    intent.putExtra("isRegister", true);
+                    intent.putExtra("category", mBaseNode);
+                    intent.putExtra("category_name", ((AssetCategory) mBaseNode).getCategoryName());
+                    startActivity(intent);
+                    finish();
+                    break;
+            }
         } else {
             toast("请选择要查询的内容！");
         }

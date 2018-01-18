@@ -145,7 +145,10 @@ public class QueryAssetsActivity extends ParentWithNaviActivity {
                         break;
                     case ASSET_PICTURE:
                         //TODO:
-                        toast("待开发中...");
+                        Intent intent1 = new Intent(this, SelectedTreeNodeActivity.class);
+                        intent1.putExtra("type",SelectedTreeNodeActivity.SEARCH_CATEGORY);
+                        intent1.putExtra("flag", 1);
+                        startActivity(intent1);
                         break;
                     case ASSET_NOT_NORMAL:
                         //TODO:

@@ -42,16 +42,13 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
     @BindView(R.id.rc_pictures_list)
     RecyclerView mRcPicturesList;
 
-
-
     private String title;
     private AssetCategory category;
     private AssetPicture imageFile;
 
     private PhotoRecyclerViewAdapter mAdapter;
     private List<AssetPicture> photoLists = new ArrayList<>();
-    private boolean isRegister;
-    boolean isloading;
+
     private int page;//分页获取数据的当前页数
     /**
      * 最后一个可见的item的位置
@@ -116,6 +113,7 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 currentScrollState = newState;
+
 //                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
 //                int visibleItemCount = layoutManager.getChildCount();
 //                int totalItemCount = layoutManager.getItemCount();
@@ -151,7 +149,9 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
         });
 
         Intent intent = getIntent();
-        isRegister = intent.getBooleanExtra("isRegister", true);
+        //有两种情况启动这个Activity，一是登记；二是个人资产查询。如果是登记，根据类别显示图片；如果是
+        // 个人资产查询，则根据个人所拥有的资产，显示个人拥有资产的图片。
+        boolean isRegister = intent.getBooleanExtra("isRegister", true);
         if (isRegister) {
             title = intent.getStringExtra("category_name");
             category = (AssetCategory) intent.getSerializableExtra("category");
