@@ -1,14 +1,13 @@
 package com.example.administrator.assetsmanagement.activity;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 
 import com.example.administrator.assetsmanagement.Interface.PhotoSelectedListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
@@ -109,27 +108,32 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_photo);
         ButterKnife.bind(this);
+
         final GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         mRcPicturesList.setLayoutManager(layoutManager);
         mRcPicturesList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-                int visibleItemCount = layoutManager.getChildCount();
-                int totalItemCount = layoutManager.getItemCount();
-                if ((visibleItemCount > 0 && currentScrollState == RecyclerView.SCROLL_STATE_IDLE &&
-                        (lastVisibleItemPosition) >= totalItemCount - 1) ) {
-                    getPictureList("category", category, handler);
-
+                currentScrollState = newState;
+//                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+//                int visibleItemCount = layoutManager.getChildCount();
+//                int totalItemCount = layoutManager.getItemCount();
+//                if ((visibleItemCount > 0 && currentScrollState== RecyclerView.SCROLL_STATE_IDLE &&
+//                        (lastVisibleItemPosition) >= totalItemCount - 1) ) {
+//                    mAdapter.changeState(1);
+//                    getPictureList("category", category, handler);
+//                }
+                if (currentScrollState == RecyclerView.SCROLL_STATE_IDLE && isSlideToBottom(recyclerView)) {
                     mAdapter.changeState(1);
+                    getPictureList("category", category, handler);
                 }
             }
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                lastVisibleItemPosition=layoutManager.findLastVisibleItemPosition();
+                lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
 
             }
         });
@@ -145,13 +149,14 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
                 }
             }
         });
+
         Intent intent = getIntent();
         isRegister = intent.getBooleanExtra("isRegister", true);
         if (isRegister) {
             title = intent.getStringExtra("category_name");
             category = (AssetCategory) intent.getSerializableExtra("category");
             photoLists.clear();
-            page=0;
+            page = 0;
             getPictureList("category", category, handler);
         } else {
             title = "我的资产图片";
@@ -193,7 +198,7 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
                             }
                         }).start();
                     } else {
-                        toast("没有更多数据了！");
+                        mAdapter.changeState(2);
                     }
 
                 } else {
@@ -216,6 +221,9 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
                     List<AssetPicture> pictureList = (List<AssetPicture>) msg.getData().getSerializable("photo");
                     if (pictureList.size() > 0) {
                         photoLists.addAll(pictureList);
+                        //图片定位，将刚下载的图片定位到屏幕定部。（原理：刚下载下来的第一个图片位于全部图片
+                        // 的页数乘15减1的位置。
+                        mRcPicturesList.scrollToPosition(page*15-1);
                         page++;
                     }
 
@@ -231,6 +239,7 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
             }
             mAdapter = new PhotoRecyclerViewAdapter(SelectAssetsPhotoActivity.this, photoLists);
             mRcPicturesList.setAdapter(mAdapter);
+
             mAdapter.getSelectedListener(new PhotoSelectedListener() {
                 @Override
                 public void selectPhoto(AssetPicture picture) {
@@ -244,6 +253,7 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
 
     /**
      * 判断列表是否达到底部
+     *
      * @param recyclerView
      * @return
      */
@@ -256,4 +266,4 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
         return false;
     }
 
-   }
+}

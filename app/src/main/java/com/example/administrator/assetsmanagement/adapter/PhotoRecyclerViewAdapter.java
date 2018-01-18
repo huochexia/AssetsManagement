@@ -3,6 +3,7 @@ package com.example.administrator.assetsmanagement.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.administrator.assetsmanagement.Interface.PhotoSelectedListener;
 import com.example.administrator.assetsmanagement.R;
+import com.example.administrator.assetsmanagement.activity.SearchAssetsActivity;
+import com.example.administrator.assetsmanagement.activity.SelectAssetsPhotoActivity;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
 
 import java.util.HashMap;
@@ -79,23 +82,25 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        //这时候 article是 null，先把 footer 处理了
         if (holder instanceof FooterViewHolder) {
-            if (position == 0) {
-                ((FooterViewHolder) holder).isBaseLine.setVisibility(View.GONE);
-                ((FooterViewHolder) holder).mProgressBar.setVisibility(View.GONE);
+            if (position == 0 || getItemCount() < 15) {
+                ((FooterViewHolder)holder).closeAllView();
+            } else {
+                switch (footer_state) {
+                    case LOADING_MORE:
+                        ((FooterViewHolder)holder).closeAllView();
+                        ((FooterViewHolder) holder).mProgressBar.setVisibility(View.VISIBLE);
+                        ((FooterViewHolder) holder).isBaseLine.setVisibility(View.VISIBLE);
+                        break;
+                    case NO_MORE:
+                        ((FooterViewHolder)holder).closeAllView();
+                        ((FooterViewHolder) holder).isBaseLine.setVisibility(View.VISIBLE);
+                        ((FooterViewHolder) holder).isBaseLine.setText("没有更多的数据了！");
+                        ((FooterViewHolder)holder).left_line.setVisibility(View.VISIBLE);
+                        ((FooterViewHolder)holder).right_line.setVisibility(View.VISIBLE);
+                        break;
+                }
             }
-            switch (footer_state) {
-                case LOADING_MORE:
-                    ((FooterViewHolder) holder).mProgressBar.setVisibility(View.VISIBLE);
-                    ((FooterViewHolder) holder).isBaseLine.setVisibility(View.GONE);
-                    break;
-                case NO_MORE:
-                    ((FooterViewHolder) holder).mProgressBar.setVisibility(View.GONE);
-                    ((FooterViewHolder) holder).isBaseLine.setVisibility(View.VISIBLE);
-                    ((FooterViewHolder) holder).isBaseLine.setText("没有更多的数据了！");
-            }
-
         }
         if (holder instanceof PhotoViewHolder) {
             PhotoViewHolder newholder = (PhotoViewHolder) holder;
@@ -164,6 +169,7 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             super(itemView);
             selected = (ImageButton) itemView.findViewById(R.id.rb_selected_photo);
             assetPhoto = (ImageView) itemView.findViewById(R.id.iv_selected_image);
+
         }
 
     }
@@ -174,13 +180,22 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     class FooterViewHolder extends RecyclerView.ViewHolder {
         ProgressBar mProgressBar;
         TextView isBaseLine;
-
+        TextView left_line;
+        TextView right_line;
         public FooterViewHolder(View itemView) {
             super(itemView);
             mProgressBar = (ProgressBar) itemView.findViewById(R.id.rcv_load_more);
             isBaseLine = (TextView) itemView.findViewById(R.id.is_base_line);
+            left_line = (TextView) itemView.findViewById(R.id.tv_line1);
+            right_line = (TextView) itemView.findViewById(R.id.tv_line2);
         }
 
+        public void closeAllView() {
+            mProgressBar.setVisibility(View.GONE);
+            isBaseLine.setVisibility(View.GONE);
+            left_line.setVisibility(View.GONE);
+            right_line.setVisibility(View.GONE);
+        }
     }
 
 
