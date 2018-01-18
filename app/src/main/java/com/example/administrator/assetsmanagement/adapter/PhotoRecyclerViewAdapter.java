@@ -3,7 +3,6 @@ package com.example.administrator.assetsmanagement.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +14,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.administrator.assetsmanagement.Interface.PhotoSelectedListener;
 import com.example.administrator.assetsmanagement.R;
-import com.example.administrator.assetsmanagement.activity.SearchAssetsActivity;
-import com.example.administrator.assetsmanagement.activity.SelectAssetsPhotoActivity;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
 
 import java.util.HashMap;

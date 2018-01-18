@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,6 +74,8 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
     TextView tvPrinterState;
     @BindView(R.id.iv_printer_state)
     ImageView mIvPrinterState;
+    @BindView(R.id.loading_progress)
+    ProgressBar loadingProgress;
     private List<AssetInfo> mInfoList;
     private List<AssetInfo> mSelectedList = new ArrayList<>();
     private AssetPicture mAssetPicture;
@@ -316,6 +319,7 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
         // 结束绘图任务提交打印
         return api.commitJob();
     }
+
     // 判断当前打印机是否连接
     private boolean isPrinterConnected() {
         // 调用LPAPI对象的getPrinterState方法获取当前打印机的连接状态
@@ -336,6 +340,7 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
         // 打印机已连接
         return true;
     }
+
     /**
      * 界面部分
      */
@@ -419,8 +424,8 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
             mBtnPrintLabelAndMoveAsset.setEnabled(false);//旧资产在这里只打印，不做移交。
             mAssetPicture = (AssetPicture) bundle.getSerializable("picture");
             List<AssetInfo> allList = new ArrayList<>();
-            AssetsUtil.count=0;
-            AssetsUtil.AndQueryAssets(this, "mPicture", mAssetPicture, handler,allList);
+            AssetsUtil.count = 0;
+            AssetsUtil.AndQueryAssets(this, "mPicture", mAssetPicture, handler, allList);
         }
 
 
@@ -486,12 +491,12 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
                         printAssetLabel(asset);
                     }
                     Bundle bundle = new Bundle();
-                    bundle.putInt("flag",1);
+                    bundle.putInt("flag", 1);
                     bundle.putSerializable("newasset", (Serializable) mSelectedList);
-                    startActivity(AssetsTurnOverActivity.class,bundle,false);
+                    startActivity(AssetsTurnOverActivity.class, bundle, false);
                     refreshList();
                 }
-               break;
+                break;
         }
 
 
@@ -517,6 +522,7 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
                 case AssetsUtil.SEARCH_ONE_ASSET:
                     mInfoList = (List<AssetInfo>) msg.getData().getSerializable("assets");
                     setListAdapter();
+                    loadingProgress.setVisibility(View.GONE);
                     break;
             }
         }

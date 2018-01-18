@@ -144,8 +144,12 @@ public class QueryAssetsActivity extends ParentWithNaviActivity {
                         startActivityForResult(intent, REQUEST_SELECTE_MANAGER);
                         break;
                     case ASSET_PICTURE:
+                        //TODO:
+                        toast("待开发中...");
                         break;
                     case ASSET_NOT_NORMAL:
+                        //TODO:
+                        toast("待开发中...");
                         break;
                     default:
                         toast("请选择查询条件！");
@@ -153,6 +157,7 @@ public class QueryAssetsActivity extends ParentWithNaviActivity {
                 }
               break;
             case R.id.btn_query_assets:
+
                 Bundle bundle = new Bundle();
                 bundle.putInt("condition",mCondition);
                 switch (mCondition) {
