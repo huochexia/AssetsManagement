@@ -8,6 +8,8 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.administrator.assetsmanagement.Interface.SelectManagerClickListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
@@ -27,7 +29,6 @@ import butterknife.ButterKnife;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
 /**
@@ -44,7 +45,10 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
     Person person;
     SetManagerRightAdapter adapter;
     Role role;
-    int count =0;//计数器，每500条加1
+    int count = 0;//计数器，每500条加1
+    @BindView(R.id.loading_person_progress)
+    ProgressBar mLoadingPersonProgress;
+
     @Override
     public String title() {
         return "权限设置";
@@ -81,7 +85,7 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
         LinearLayoutManager ll = new LinearLayoutManager(this);
         mLvTreeStructure.setLayoutManager(ll);
         List<Person> allPerson = new ArrayList<>();
-        count=0;
+        count = 0;
         queryPerson(allPerson);
 
     }
@@ -89,31 +93,31 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
     /**
      * 选择权限对话框
      */
-    private void startSelectDialog(final Role role , final Person person) {
+    private void startSelectDialog(final Role role, final Person person) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("选择人员权限");
-        final boolean[] items = new boolean[]{false,false,false,false,false};
+        final boolean[] items = new boolean[]{false, false, false, false, false};
         //确定权限初始值
         if (role.getRights() != null) {
-            if( role.getRights().contains("登记")){
-                items[0]=true;
+            if (role.getRights().contains("登记")) {
+                items[0] = true;
             }
-            if( role.getRights().contains("查询")){
-                items[1]=true;
+            if (role.getRights().contains("查询")) {
+                items[1] = true;
             }
 
-            if( role.getRights().contains("设置")){
-               items[2]=true;
+            if (role.getRights().contains("设置")) {
+                items[2] = true;
             }
-            if( role.getRights().contains("审批")){
-               items[3]=true;
+            if (role.getRights().contains("审批")) {
+                items[3] = true;
             }
-            if( role.getRights().contains("处置")){
-               items[4]=true;
+            if (role.getRights().contains("处置")) {
+                items[4] = true;
             }
 
         }
-        final String[] rights =new String[]{"登记","查询","设置","审批","处置"};
+        final String[] rights = new String[]{"登记", "查询", "设置", "审批", "处置"};
         builder.setMultiChoiceItems(rights, items, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
@@ -122,31 +126,31 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
                         role.addUnique("rights", rights[which]);
                     } catch (NullPointerException e) {
                     }
-                        role.update(new UpdateListener() {
-                            @Override
-                            public void done(BmobException e) {
-                                if (e != null) {
-                                    toast("设置失败："+e.getMessage());
-                                }
+                    role.update(new UpdateListener() {
+                        @Override
+                        public void done(BmobException e) {
+                            if (e != null) {
+                                toast("设置失败：" + e.getMessage());
                             }
-                        });
+                        }
+                    });
 
                 } else {
-                   role.removeAll("rights", Arrays.asList(rights[which]));
-                   role.update(new UpdateListener() {
-                       @Override
-                       public void done(BmobException e) {
-                           if (e != null) {
-                               toast("设置失败："+e.getMessage());
-                           }
-                       }
-                   });
+                    role.removeAll("rights", Arrays.asList(rights[which]));
+                    role.update(new UpdateListener() {
+                        @Override
+                        public void done(BmobException e) {
+                            if (e != null) {
+                                toast("设置失败：" + e.getMessage());
+                            }
+                        }
+                    });
 
                 }
             }
         });
 
-        builder.setNegativeButton("返回",null );
+        builder.setNegativeButton("返回", null);
         builder.show();
     }
 
@@ -203,6 +207,7 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
                     userlist = (List<Person>) msg.getData().getSerializable("person");
                     adapter = new SetManagerRightAdapter(PersonSettingActivity.this, userlist);
                     mLvTreeStructure.setAdapter(adapter);
+                    mLoadingPersonProgress.setVisibility(View.GONE);
                     adapter.setOnClickListener(new SelectManagerClickListener() {
                         @Override
                         public void select(final Person person) {
@@ -210,7 +215,7 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
                                 @Override
                                 public void run() {
                                     BmobQuery<Role> query = new BmobQuery<>();
-                                    query.addWhereEqualTo("user",person);
+                                    query.addWhereEqualTo("user", person);
                                     query.findObjects(new FindListener<Role>() {
                                         @Override
                                         public void done(List<Role> list, BmobException e) {
@@ -219,7 +224,7 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
                                             } else {
                                                 role = new Role();
                                             }
-                                            startSelectDialog(role,person);
+                                            startSelectDialog(role, person);
                                         }
                                     });
                                 }

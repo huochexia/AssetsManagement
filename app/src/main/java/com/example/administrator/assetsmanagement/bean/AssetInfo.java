@@ -70,6 +70,18 @@ public class AssetInfo extends BmobObject implements Cloneable {
     资产单价
      */
     private Float price =0.0f;
+    /*
+    是否固定资产
+     */
+    private Boolean isFixedAsset;
+
+    public Boolean getFixedAsset() {
+        return isFixedAsset;
+    }
+
+    public void setFixedAsset(Boolean fixedAsset) {
+        isFixedAsset = fixedAsset;
+    }
 
     public String getAssetName() {
         return mAssetName;

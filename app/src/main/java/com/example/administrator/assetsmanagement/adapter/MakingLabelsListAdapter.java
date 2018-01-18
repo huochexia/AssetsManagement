@@ -24,12 +24,13 @@ import java.util.Map;
  */
 
 public class MakingLabelsListAdapter extends RecyclerView.Adapter<MakingLabelsListAdapter.LabelViewHolder> {
-    List<AssetInfo>  mAssetInfoList;
+    List<AssetInfo> mAssetInfoList;
     Context mContext;
     LayoutInflater mInflater;
 
-    Map<Integer,Boolean> map=new HashMap<>();
+    Map<Integer, Boolean> map = new HashMap<>();
     AssetSelectedListener listener;
+
     public MakingLabelsListAdapter(Context context, List<AssetInfo> list) {
         mContext = context;
         mAssetInfoList = list;
@@ -37,8 +38,9 @@ public class MakingLabelsListAdapter extends RecyclerView.Adapter<MakingLabelsLi
         initMap();
 
     }
+
     public void initMap() {
-        for (int i = 0;i<mAssetInfoList.size();i++) {
+        for (int i = 0; i < mAssetInfoList.size(); i++) {
             map.put(i, false);
         }
     }
@@ -46,6 +48,7 @@ public class MakingLabelsListAdapter extends RecyclerView.Adapter<MakingLabelsLi
     public void setSelectedListener(AssetSelectedListener listener) {
         this.listener = listener;
     }
+
     @Override
     public LabelViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.item_asset, parent, false);
@@ -57,12 +60,14 @@ public class MakingLabelsListAdapter extends RecyclerView.Adapter<MakingLabelsLi
     public void onBindViewHolder(LabelViewHolder holder, final int position) {
         holder.mAssetNum.setText(mAssetInfoList.get(position).getAssetsNum());
         holder.mCheckBox.setVisibility(View.VISIBLE);
-        holder.mAssetLocation.setText(mAssetInfoList.get(position).getLocation().getLocationName());
-        holder.serial_number.setText((position+1)+"");
+        if (mAssetInfoList.get(position).getLocation() != null) {
+            holder.mAssetLocation.setText(mAssetInfoList.get(position).getLocation().getLocationName());
+        }
+        holder.serial_number.setText((position + 1) + "");
         holder.mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                map.put(position,isChecked);
+                map.put(position, isChecked);
                 if (isChecked) {
                     listener.selectAsset(mAssetInfoList.get(position));
                 } else {
@@ -71,7 +76,7 @@ public class MakingLabelsListAdapter extends RecyclerView.Adapter<MakingLabelsLi
             }
         });
         if (map.get(position) == null) {
-            map.put(position,false);
+            map.put(position, false);
         }
         holder.mCheckBox.setChecked(map.get(position));
     }

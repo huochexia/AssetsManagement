@@ -23,6 +23,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -81,7 +83,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
     @BindView(R.id.iv_register_picture)
     ImageView mIvRegisterPicture;
-    @BindView(R.id.tv_assets_item_quantity)
+    @BindView(R.id.tv_assets_item)
     TextView mTvAssetsItemQuantity;
     @BindView(R.id.et_register_assets_quantity)
     EditText mEtRegisterAssetsQuantity;
@@ -108,13 +110,18 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     TextView mTvAssetsPrice;
     @BindView(R.id.et_register_asset_price)
     LineEditText mEtRegisterAssetPrice;
+    @BindView(R.id.rg_is_fixed_assets)
+    RadioGroup mRgIsFixedAssets;
+
+    @BindView(R.id.is_fixed_assets)
+    RadioButton mIsFixedAssets;
 
     private AssetCategory mCategory;//临时节点
     private AssetInfo asset;
     private File Imagefile;
     private Uri imageUri;
     private String assetNumber;
-    private List<AssetInfo> mAssetInfos = new ArrayList<>();
+    private List<AssetInfo> mAssetInfos = new ArrayList<>();//用于存放登记的资产
     private boolean hasPhoto = false;//判断是否添加图片
 
     @Override
@@ -157,6 +164,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         setTextFonts();
         asset = new AssetInfo();
         asset.setStatus(9);//初始状态，9新登记
+        asset.setFixedAsset(true);//默认为固定资产
         asset.setOldManager(BmobUser.getCurrentUser(Person.class));//初始管理者，为空或登记人即当前用户
         initEvent();
         mEtRegisterAssetsQuantity.setText("");
@@ -165,6 +173,20 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
 
     public void initEvent() {
+        //确定是不是固定资产
+        mRgIsFixedAssets.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.is_fixed_assets:
+                        asset.setFixedAsset(true);
+                        break;
+                    case R.id.not_fixed_assets:
+                        asset.setFixedAsset(false);
+                        break;
+                }
+            }
+        });
         //赋值资产名称
         mEtRegisterAssetsName.addTextChangedListener(new TextWatcher() {
             @Override
@@ -275,6 +297,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             case R.id.btn_register_add_next:
                 setAllWidget(false);
                 mAssetInfos.clear();
+                mIsFixedAssets.setChecked(true);
                 break;
             case R.id.tv_assets_item_picture_lib:
                 if (asset.getCategory() != null) {
@@ -327,54 +350,54 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-            switch (requestCode) {
+        switch (requestCode) {
 
-                case REGISTER_CATEGORY:
-                    if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                        mCategory = (AssetCategory) data.getSerializableExtra("node");
-                        mTvRegisterCategory.setText(getNodeAllPathName(mCategory));
-                        AssetCategory ac = new AssetCategory();
-                        ac.setObjectId(mCategory.getObjectId());
-                        asset.setCategory(ac);
-                    }
-                    break;
+            case REGISTER_CATEGORY:
+                if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
+                    mCategory = (AssetCategory) data.getSerializableExtra("node");
+                    mTvRegisterCategory.setText(getNodeAllPathName(mCategory));
+                    AssetCategory ac = new AssetCategory();
+                    ac.setObjectId(mCategory.getObjectId());
+                    asset.setCategory(ac);
+                }
+                break;
 
-                case CHOOSET_PHOTO:
-                    if (data != null) {
-                        Bundle bundle = data.getBundleExtra("assetpicture");
-                        AssetPicture image1 = (AssetPicture) bundle.getSerializable("imageFile");
-                        asset.setPicture(image1);
-                        hasPhoto = true;
-                        Glide.with(this).load(image1.getImageUrl()).into(mIvRegisterPicture);
-                    }
-                    break;
-                case TAKE_PHOTO:
-                    if (resultCode == RESULT_OK) {
-                        try {
-                            //第一步：将拍照得到原始图片存入文件
-                            BitmapFactory.decodeStream(getContentResolver().
-                                    openInputStream(imageUri));
-                            //第二步：将文件进行压缩处理后得到新的Bitmap
-                            Bitmap bm = ImageFactory.getSmallBitmap(Imagefile.getPath());
-                            //第三步：创建文件输入流
-                            FileOutputStream baos = new FileOutputStream(Imagefile);
-                            //第四步：将位图以JPG格式，按100比例，再次压缩形成新文件
-                            bm.compress(Bitmap.CompressFormat.JPEG, 90, baos);
-                            baos.flush();
-                            baos.close();
-                            mIvRegisterPicture.setImageBitmap(bm);
-                            uploadPhotoFile(Imagefile);
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
+            case CHOOSET_PHOTO:
+                if (data != null) {
+                    Bundle bundle = data.getBundleExtra("assetpicture");
+                    AssetPicture image1 = (AssetPicture) bundle.getSerializable("imageFile");
+                    asset.setPicture(image1);
+                    hasPhoto = true;
+                    Glide.with(this).load(image1.getImageUrl()).into(mIvRegisterPicture);
+                }
+                break;
+            case TAKE_PHOTO:
+                if (resultCode == RESULT_OK) {
+                    try {
+                        //第一步：将拍照得到原始图片存入文件
+                        BitmapFactory.decodeStream(getContentResolver().
+                                openInputStream(imageUri));
+                        //第二步：将文件进行压缩处理后得到新的Bitmap
+                        Bitmap bm = ImageFactory.getSmallBitmap(Imagefile.getPath());
+                        //第三步：创建文件输入流
+                        FileOutputStream baos = new FileOutputStream(Imagefile);
+                        //第四步：将位图以JPG格式，按100比例，再次压缩形成新文件
+                        bm.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+                        baos.flush();
+                        baos.close();
+                        mIvRegisterPicture.setImageBitmap(bm);
+                        uploadPhotoFile(Imagefile);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
 
-                    break;
+                }
 
-            }
+                break;
+
+        }
 
     }
 
@@ -509,7 +532,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
         if (!TextUtils.isEmpty(mEtRegisterAssetsQuantity.getText())) {
             int quantity = Integer.parseInt(mEtRegisterAssetsQuantity.getText().toString());
-            if (quantity == 0 ||quantity>50) {
+            if (quantity == 0 || quantity > 50) {
                 toast("请填写小于等于50的数量！");
                 return false;
             }

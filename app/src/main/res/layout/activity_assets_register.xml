@@ -19,16 +19,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_10">
-        <LinearLayout
+
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
+
             <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/btn_register_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginBottom="@dimen/margin_5"
+                android:layout_marginLeft="10dp"
                 android:padding="8dp"
                 fancy:fb_borderColor="#7ed862"
                 fancy:fb_borderWidth="2dp"
@@ -46,11 +48,47 @@
             <TextView
                 android:id="@+id/tv_register_category"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:layout_toEndOf="@+id/btn_register_category"
                 android:hint="必选"
-                android:textSize="16sp"
-                android:gravity="center_vertical"/>
-        </LinearLayout>
+                android:textSize="16sp"/>
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/tv_register_category"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="15dp"
+                android:orientation="horizontal"
+                android:id="@+id/rg_is_fixed_assets">
+
+                <RadioButton
+                    android:id="@+id/is_fixed_assets"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="是"
+                    android:checked="true"/>
+
+                <RadioButton
+                    android:id="@+id/not_fixed_assets"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="否"/>
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_marginBottom="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/btn_register_category"
+                android:layout_toStartOf="@+id/rg_is_fixed_assets"
+                android:text="固定资产:"
+                android:textSize="16sp"/>
+        </RelativeLayout>
 
 
     </LinearLayout>
@@ -140,7 +178,7 @@
             android:layout_weight="4">
 
             <TextView
-                android:id="@+id/tv_assets_item_quantity"
+                android:id="@+id/tv_assets_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"

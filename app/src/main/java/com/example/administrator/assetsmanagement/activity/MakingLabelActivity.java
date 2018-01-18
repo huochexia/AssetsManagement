@@ -316,6 +316,9 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
         api.drawText(AssetManagerApplication.COMPANY, 15, 1, 0, 0, 3);
         api.drawText(asset.getRegisterDate(), 19, 6, 0, 0, 3);
         api.drawText(asset.getAssetsNum(), 15, 11, 0, 0, 3);
+        if (asset.getFixedAsset()) {
+            api.drawText("固",40,6,0,0,3);
+        }
         // 结束绘图任务提交打印
         return api.commitJob();
     }
@@ -418,6 +421,7 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
         flag = bundle.getInt("flag");//标志，为1则是新登记尚未保存的。否则需要从数据库中查询得到
         if (flag == 1) {
             mInfoList = (List<AssetInfo>) bundle.getSerializable("newasset");
+            loadingProgress.setVisibility(View.GONE);
             setListAdapter();
 
         } else {
