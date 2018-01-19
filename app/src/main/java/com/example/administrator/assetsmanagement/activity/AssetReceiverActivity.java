@@ -6,10 +6,12 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import com.example.administrator.assetsmanagement.Interface.AssetItemClickListener;
 import com.example.administrator.assetsmanagement.Interface.AssetSelectedListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
@@ -43,6 +45,7 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
     Button mBtnReceiverOk;
     @BindView(R.id.loading_receiver_progress)
     ProgressBar loadingReceiverProgress;
+    private AssetInfo assetInfo;
 
     @Override
     public String title() {
@@ -139,6 +142,38 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
             @Override
             public void cancelAsset(AssetInfo assetInfo) {
                 selectedList.remove(assetInfo);
+            }
+        });
+        //设置长按事件
+        adapter.setAssetItemClickListener(new AssetItemClickListener() {
+            @Override
+            public void onClick(AssetInfo asset) {
+                assetInfo = asset;
+            }
+        });
+        //设置上下文菜单事件
+        adapter.setMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case 0:
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("picture", assetInfo.getPicture());
+                        bundle.putString("title", assetInfo.getAssetName());
+                        startActivity(AssetPictureActivity.class, bundle, false);
+                        return true;
+                    case 1:
+                        Bundle bundle1 = new Bundle();
+                        bundle1.putInt("flag", 0);
+                        bundle1.putSerializable("picture", assetInfo.getPicture());
+                        bundle1.putString("para","mStatus");
+                        bundle1.putSerializable("value",assetInfo.getStatus());
+                        bundle1.putSerializable("value1",BmobUser.getCurrentUser(Person.class));
+                        bundle1.putString("para1","mNewManager");
+                        startActivity(MakingLabelActivity.class, bundle1, false);
+                    default:
+                        return true;
+                }
             }
         });
         loadingReceiverProgress.setVisibility(View.GONE);

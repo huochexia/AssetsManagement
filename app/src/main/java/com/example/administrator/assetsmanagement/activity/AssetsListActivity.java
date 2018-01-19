@@ -44,6 +44,7 @@ public class AssetsListActivity extends ParentWithNaviActivity {
     private String title;
     int condition;//查询条件
     Serializable value;//查询内容
+    String para1;//参数名
     List<AssetInfo> mResultList;
     AssetRecyclerViewAdapter mAdapter;
     private AssetInfo assetInfo;
@@ -92,26 +93,31 @@ public class AssetsListActivity extends ParentWithNaviActivity {
                 title = ((Location) value).getLocationName();
                 AssetsUtil.AndQueryAssets(AssetsListActivity.this,
                         "mLocation", value, handler, allList);
+                para1 = "mLocation";
                 break;
             case QueryAssetsActivity.ASSET_DEPARTMENT:
                 AssetsUtil.AndQueryAssets(AssetsListActivity.this,
                         "mDepartment", value, handler, allList);
                 title = ((Department) value).getDepartmentName();
+                para1 = "mDepartment";
                 break;
             case QueryAssetsActivity.ASSET_CATEGORY:
                 AssetsUtil.AndQueryAssets(AssetsListActivity.this,
                         "mCategory", value, handler, allList);
                 title = ((AssetCategory) value).getCategoryName();
+                para1 = "mCategory";
                 break;
             case QueryAssetsActivity.ASSET_MANAGER:
                 AssetsUtil.AndQueryAssets(AssetsListActivity.this,
                         "mOldManager", value, handler, allList);
                 title = ((Person) value).getUsername();
+                para1 = "mOldManager";
                 break;
             case QueryAssetsActivity.ASSET_PICTURE:
                 AssetsUtil.AndQueryAssets(AssetsListActivity.this,
                         "mPicture", value, handler, allList);
                 title = ((AssetPicture) value).getImageNum();
+                para1 = "mPicture";
                 break;
         }
         initNaviView();
@@ -153,6 +159,10 @@ public class AssetsListActivity extends ParentWithNaviActivity {
                                     Bundle bundle1 = new Bundle();
                                     bundle1.putInt("flag", 0);
                                     bundle1.putSerializable("picture", assetInfo.getPicture());
+                                    bundle1.putSerializable("value",value);
+                                    bundle1.putString("para",para1);
+                                    bundle1.putSerializable("value1",assetInfo.getStatus());
+                                    bundle1.putString("para1","mStatus");
                                     startActivity(MakingLabelActivity.class, bundle1, false);
                                 default:
                                     return true;

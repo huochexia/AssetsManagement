@@ -208,6 +208,11 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                         Bundle bundle1 = new Bundle();
                         bundle1.putInt("flag", 0);
                         bundle1.putSerializable("picture", assetInfo.getPicture());
+                        bundle1.putString("para","mStatus");
+                        bundle1.putSerializable("value",assetInfo.getStatus());
+                        bundle1.putString("para1", "mOldManager");
+                        Person person = BmobUser.getCurrentUser(Person.class);
+                        bundle1.putSerializable("value1",person);
                         startActivity(MakingLabelActivity.class, bundle1, false);
                     default:
                         return true;

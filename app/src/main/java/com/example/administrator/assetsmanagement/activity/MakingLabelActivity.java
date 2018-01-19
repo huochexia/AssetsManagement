@@ -427,9 +427,13 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
         } else {
             mBtnPrintLabelAndMoveAsset.setEnabled(false);//旧资产在这里只打印，不做移交。
             mAssetPicture = (AssetPicture) bundle.getSerializable("picture");
+            String para = bundle.getString("para");
+            Object value = bundle.getSerializable("value");
+            String para1 = bundle.getString("para1");
+            Object value1 = bundle.getSerializable("value1");
             List<AssetInfo> allList = new ArrayList<>();
             AssetsUtil.count = 0;
-            AssetsUtil.AndQueryAssets(this, "mPicture", mAssetPicture, handler, allList);
+            AssetsUtil.AndQueryAssets(this, "mPicture", mAssetPicture, para,value,para1,value1,handler, allList);
         }
 
 
