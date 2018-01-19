@@ -85,9 +85,15 @@ public class MyAssetListActivity extends ParentWithNaviActivity {
             switch (msg.what) {
                 case AssetsUtil.SEARCH_ONE_ASSET:
                     myAssetsList = (List<AssetInfo>) msg.getData().getSerializable("assets");
+                    if (myAssetsList == null || myAssetsList.size() < 0) {
+                        downloadProgress.setVisibility(View.GONE);
+                        toast("查询结束，没有符合条件的数据！");
+                        return;
+                    }
                     List<AssetInfo> list = AssetsUtil.GroupAfterMerge(myAssetsList);
                     adapter = new AssetRecyclerViewAdapter(MyAssetListActivity.this, list, true);
                     mRcMyAssetsList.setAdapter(adapter);
+                    downloadProgress.setVisibility(View.GONE);
                     adapter.setAssetItemClickListener(new AssetItemClickListener() {
                         @Override
                         public void onClick(AssetInfo asset) {
@@ -106,7 +112,7 @@ public class MyAssetListActivity extends ParentWithNaviActivity {
                                     return true;
                                 case 1:
                                     Bundle bundle1 = new Bundle();
-                                    bundle1.putInt("flay", 0);
+                                    bundle1.putInt("flag", 0);
                                     bundle1.putSerializable("picture", assetInfo.getPicture());
                                     startActivity(MakingLabelActivity.class, bundle1, false);
                                 default:
@@ -114,7 +120,7 @@ public class MyAssetListActivity extends ParentWithNaviActivity {
                             }
                         }
                     });
-                    downloadProgress.setVisibility(View.GONE);
+
                     break;
             }
         }

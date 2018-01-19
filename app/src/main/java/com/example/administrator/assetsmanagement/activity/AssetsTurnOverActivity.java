@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -58,6 +59,8 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     public static final int SEARCH_LOCATION = 1;
     public static final int SEARCH_NAME = 2;
     public static final int SEARCH_ALL = 3;
+    @BindView(R.id.loading_asset_progress)
+    ProgressBar loadingAssetProgress;
 
 
     private Location oldLocation;//接收传入位置信息的节点
@@ -182,6 +185,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
             }
         });
         mRcTurnOverList.setAdapter(adapter);
+        loadingAssetProgress.setVisibility(View.GONE);
         //设置长按事件
         adapter.setAssetItemClickListener(new AssetItemClickListener() {
             @Override
@@ -196,9 +200,9 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 switch (item.getItemId()) {
                     case 0:
                         Bundle bundle = new Bundle();
-                        bundle.putSerializable("picture",assetInfo.getPicture());
+                        bundle.putSerializable("picture", assetInfo.getPicture());
                         bundle.putString("title", assetInfo.getAssetName());
-                        startActivity(AssetPictureActivity.class,bundle,false);
+                        startActivity(AssetPictureActivity.class, bundle, false);
                         return true;
                     case 1:
                         Bundle bundle1 = new Bundle();
@@ -280,6 +284,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
             case R.id.btn_search_start:
                 clearLists();
                 getSearchResultList();
+                loadingAssetProgress.setVisibility(View.VISIBLE);
                 break;
             case R.id.btn_receive_location:
                 getSelectedInfo(SelectedTreeNodeActivity.SEARCH_LOCATION, false, REQUEST_RECEIVE_LOCATION);
@@ -329,6 +334,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
 
     /**
      * 接收返回结果
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -405,9 +411,14 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                     assetsList = (List<AssetInfo>) msg.getData().getSerializable("assets");
                     if (assetsList.size() > 0) {
                         mBtnTurnOverOk.setEnabled(true);
+                    }else {
+                        toast("查询结束，没有符合条件的数据！");
+                        loadingAssetProgress.setVisibility(View.GONE);
+                        return;
                     }
                     temp_list.addAll(AssetsUtil.GroupAfterMerge(AssetsUtil.deepCopy(assetsList)));
                     setListAdapter();
+                    loadingAssetProgress.setVisibility(View.GONE);
                     break;
             }
         }
@@ -431,21 +442,21 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     private void getSearchResultList() {
         Person current = BmobUser.getCurrentUser(Person.class);
         List<AssetInfo> allList = new ArrayList<>();
-        AssetsUtil.count=0;
+        AssetsUtil.count = 0;
         switch (select_type) {
             case SEARCH_LOCATION:
                 if (oldLocation != null) {
-                    AssetsUtil.AndQueryAssets(this, "mLocation", oldLocation.getId(),
-                            "mOldManager", current, handler,allList);
+                    AssetsUtil.AndQueryAssets(this, "mLocation", oldLocation,
+                            "mOldManager", current, handler, allList);
                 }
                 break;
             case SEARCH_NAME:
                 AssetsUtil.AndQueryAssets(this, "mPicture", mPicture,
-                        "mOldManager", current, handler,allList);
+                        "mOldManager", current, handler, allList);
                 break;
             case SEARCH_ALL:
 
-                AssetsUtil.AndQueryAssets(this, "mOldManager", current, handler,allList);
+                AssetsUtil.AndQueryAssets(this, "mOldManager", current, handler, allList);
                 break;
         }
 
@@ -467,7 +478,6 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     /**
      * 修改资产信息,因为位置和部门有节点属性，即父节点。在Bmob存储中造成自循环，最终导致内存溢出。
      * 所以在保存资产信息的位置和部门属性值时，新构造一个对象，传入其唯一objectId，
-     *
      */
     private void updateAssetInfo(AssetInfo asset) {
         if (mNewLocation != null) {
@@ -495,9 +505,10 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
 
     /**
      * 遍历资产列表，修改所有图片编号等于传入编号的资产，且状态也相同的资产，并返回对象列表
-     * @param list 为所有列表项
+     *
+     * @param list     为所有列表项
      * @param imageNum 为选择的列表项的图片编号
-     * @param status  为选择的列表项的状态
+     * @param status   为选择的列表项的状态
      * @return
      */
     private List<BmobObject> updateAllSameImangeNumAssets(List<AssetInfo> list, String imageNum,
@@ -518,15 +529,16 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     /**
      * 遍历所有资产，修改已选择的资产信息。通过选择资产的数量属性判断是一个资产还是合并数量后的资产
      * 如果是一个资产直接处理，如果是合并数量的资产，还需要分别处理
-     * @param assetsList 为所有列表项
+     *
+     * @param assetsList     为所有列表项
      * @param selectedAssets 为已被选择的列表项
      */
     private List<BmobObject> updateAllSelectedAssetInfo(List<AssetInfo> assetsList, List<AssetInfo> selectedAssets) {
         List<BmobObject> objects = new ArrayList<>();
         for (AssetInfo asset : selectedAssets) {
-                List<BmobObject> selectObject = updateAllSameImangeNumAssets(assetsList,
-                        asset.getPicture().getImageNum(), asset.getStatus());
-                objects.addAll(selectObject);
+            List<BmobObject> selectObject = updateAllSameImangeNumAssets(assetsList,
+                    asset.getPicture().getImageNum(), asset.getStatus());
+            objects.addAll(selectObject);
 
         }
         return objects;

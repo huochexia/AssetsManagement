@@ -16,6 +16,7 @@ import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.adapter.AssetRecyclerViewAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
+import com.example.administrator.assetsmanagement.bean.AssetPicture;
 import com.example.administrator.assetsmanagement.bean.CategoryTree.AssetCategory;
 import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department;
 import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
@@ -107,6 +108,11 @@ public class AssetsListActivity extends ParentWithNaviActivity {
                         "mOldManager", value, handler, allList);
                 title = ((Person) value).getUsername();
                 break;
+            case QueryAssetsActivity.ASSET_PICTURE:
+                AssetsUtil.AndQueryAssets(AssetsListActivity.this,
+                        "mPicture", value, handler, allList);
+                title = ((AssetPicture) value).getImageNum();
+                break;
         }
         initNaviView();
 
@@ -120,6 +126,9 @@ public class AssetsListActivity extends ParentWithNaviActivity {
             switch (msg.what) {
                 case AssetsUtil.SEARCH_ONE_ASSET:
                     mResultList = (List<AssetInfo>) msg.getData().getSerializable("assets");
+                    if (mResultList.size() == 0) {
+                        toast("查询结束，没有符合条件的数据！");
+                    }
                     mAdapter = new AssetRecyclerViewAdapter(AssetsListActivity.this,
                             AssetsUtil.GroupAfterMerge(mResultList), true);
                     mRcQueryResultList.setAdapter(mAdapter);
@@ -142,7 +151,7 @@ public class AssetsListActivity extends ParentWithNaviActivity {
                                     return true;
                                 case 1:
                                     Bundle bundle1 = new Bundle();
-                                    bundle1.putInt("flay", 0);
+                                    bundle1.putInt("flag", 0);
                                     bundle1.putSerializable("picture", assetInfo.getPicture());
                                     startActivity(MakingLabelActivity.class, bundle1, false);
                                 default:

@@ -74,6 +74,8 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
     TextView mTvScanAssetPrice;
     @BindView(R.id.tv_scan_asset_comment)
     TextView mTvScanAssetComment;
+    @BindView(R.id.tv_scan_asset_property)
+    TextView tvScanAssetProperty;
 
 
     @Override
@@ -109,8 +111,8 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
         Bundle bundle = getBundle();
         assetNum = bundle.getString("assetNum");
         List<AssetInfo> allList = new ArrayList<>();
-        AssetsUtil.count=0;
-        AssetsUtil.AndQueryAssets(this, "mAssetsNum", assetNum, handler,allList);
+        AssetsUtil.count = 0;
+        AssetsUtil.AndQueryAssets(this, "mAssetsNum", assetNum, handler, allList);
 
     }
 
@@ -152,7 +154,7 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
                 break;
             case R.id.btn_single_asset_receive:
                 mAssetInfo.setOldManager(BmobUser.getCurrentUser(Person.class));
-                mAssetInfo.setNewManager( null);
+                mAssetInfo.setNewManager(null);
                 //如果是维修送交，接收后状态改为1损坏
                 if (mAssetInfo.getStatus() == 6) {
                     mAssetInfo.setStatus(1);
@@ -189,6 +191,11 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
                         mTvScanAssetRegisterDate.setText(mAssetInfo.getRegisterDate());
                         mTvScanAssetPrice.setText(mAssetInfo.getPrice() + "");
                         mTvScanAssetComment.setText(mAssetInfo.getComment());
+                        if (mAssetInfo.getFixedAsset()) {
+                            tvScanAssetProperty.setText("固定资产");
+                        } else {
+                            tvScanAssetProperty.setText("一般资产");
+                        }
                         setButtonStatus();
                         String id = mAssetInfo.getOldManager().getObjectId();
                         // 自V3.4.5版本开始，SDK新增了getObjectByKey(key)方法从本地缓存中获取

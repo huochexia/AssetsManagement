@@ -23,7 +23,7 @@ public class AssetPicture extends BmobObject implements Serializable, Cloneable 
      */
     private String imageNum;
     /*
-    资产类别编号
+    资产类别
      */
     private AssetCategory category;
     /*

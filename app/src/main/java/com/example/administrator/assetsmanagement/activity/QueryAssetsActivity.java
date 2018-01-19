@@ -3,6 +3,7 @@ package com.example.administrator.assetsmanagement.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
+import com.example.administrator.assetsmanagement.bean.AssetPicture;
 import com.example.administrator.assetsmanagement.bean.CategoryTree.AssetCategory;
 import com.example.administrator.assetsmanagement.bean.CategoryTree.CategoryNodeHelper;
 import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department;
@@ -19,13 +21,16 @@ import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
 import com.example.administrator.assetsmanagement.bean.LocationTree.LocationNodeHelper;
 import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.utils.FlowRadioGroup;
+import com.example.administrator.assetsmanagement.utils.PictureReceiveEvent;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.bmob.v3.BmobObject;
 
 /**
  * 查询资产：用户通过指定查询条件，如位置，属性，类别，管理人员，图片等属性对资产进行查询
@@ -47,11 +52,11 @@ public class QueryAssetsActivity extends ParentWithNaviActivity {
     TextView mTvQueryContent;
 
     private int mCondition = 0;
-    private BmobObject mBmobObject;
     private Location mLocation;
     private AssetCategory mCategory;
     private Department mDepartment;
     private Person person;
+    private AssetPicture picture;
 
 
     @Override
@@ -84,6 +89,8 @@ public class QueryAssetsActivity extends ParentWithNaviActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_query_assets);
         ButterKnife.bind(this);
+        //注册EventBus
+        EventBus.getDefault().register(this);
         initNaviView();
         initRGEvent();
     }
@@ -160,7 +167,10 @@ public class QueryAssetsActivity extends ParentWithNaviActivity {
                 }
               break;
             case R.id.btn_query_assets:
-
+                if (TextUtils.isEmpty(mTvQueryContent.getText())) {
+                    toast("请选择查询具体内容！");
+                    return;
+                }
                 Bundle bundle = new Bundle();
                 bundle.putInt("condition",mCondition);
                 switch (mCondition) {
@@ -175,6 +185,9 @@ public class QueryAssetsActivity extends ParentWithNaviActivity {
                         break;
                     case ASSET_MANAGER:
                         bundle.putSerializable("content",person);
+                        break;
+                    case ASSET_PICTURE:
+                        bundle.putSerializable("content",picture);
                         break;
                 }
                 startActivity(AssetsListActivity.class,bundle,false);
@@ -241,5 +254,22 @@ public class QueryAssetsActivity extends ParentWithNaviActivity {
             }
         }
 
+    }
+
+    /**
+     * 接收EventBus事件
+     *
+     * @param event
+     */
+    @Subscribe
+    public void onEventMainThread(PictureReceiveEvent event) {
+        picture = event.getAssetPicture();
+        mTvQueryContent.setText(picture.getImageNum());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);//反注册EventBus
     }
 }

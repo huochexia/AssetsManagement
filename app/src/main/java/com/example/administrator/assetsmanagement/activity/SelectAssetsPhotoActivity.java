@@ -7,7 +7,8 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.administrator.assetsmanagement.Interface.PhotoSelectedListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
@@ -19,6 +20,9 @@ import com.example.administrator.assetsmanagement.bean.AssetPicture;
 import com.example.administrator.assetsmanagement.bean.CategoryTree.AssetCategory;
 import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
+import com.example.administrator.assetsmanagement.utils.PictureReceiveEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,6 +45,8 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
     public static final int RESULT_OK = 0;
     @BindView(R.id.rc_pictures_list)
     RecyclerView mRcPicturesList;
+    @BindView(R.id.loading_picture_progress)
+    ProgressBar loadingPictureProgress;
 
     private String title;
     private AssetCategory category;
@@ -90,6 +96,8 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("imageFile", imageFile);
                     returnPhoto.putExtra("assetpicture", bundle);
+                    //发送EventBus事件
+                    EventBus.getDefault().post(new PictureReceiveEvent(imageFile));
                     setResult(RESULT_OK, returnPhoto);
                     finish();
                 } else {
@@ -223,7 +231,7 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
                         photoLists.addAll(pictureList);
                         //图片定位，将刚下载的图片定位到屏幕定部。（原理：刚下载下来的第一个图片位于全部图片
                         // 的页数乘15减1的位置。
-                        mRcPicturesList.scrollToPosition(page*15-1);
+                        mRcPicturesList.scrollToPosition(page * 15 - 1);
                         page++;
                     }
 
@@ -239,7 +247,7 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
             }
             mAdapter = new PhotoRecyclerViewAdapter(SelectAssetsPhotoActivity.this, photoLists);
             mRcPicturesList.setAdapter(mAdapter);
-
+            loadingPictureProgress.setVisibility(View.GONE);
             mAdapter.getSelectedListener(new PhotoSelectedListener() {
                 @Override
                 public void selectPhoto(AssetPicture picture) {

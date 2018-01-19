@@ -168,10 +168,10 @@ public class AssetsUtil {
             @Override
             public void done(final List<AssetInfo> list, BmobException e) {
                 if (e == null) {
-                    if (list == null || list.size() == 0) {//当查询条数为500的整数倍时，会出现这个
-                        Toast.makeText(context, "查询结束!", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+//                    if (list == null || list.size() == 0) {//当查询条数为500的整数倍时，会出现这个
+//                        Toast.makeText(context, "查询结束!", Toast.LENGTH_SHORT).show();
+//                        return;
+//                    }
                     allList.addAll(list); //暂存入临时列表中，只有前500条
                     if (list.size() >= 500) {//因为可以查询出全部数据，但是一次只能上传500条
                         count++;//计数器加1，
@@ -198,45 +198,7 @@ public class AssetsUtil {
             }
         });
     }
-//    /**
-//     * 依据某一个参数，查询资产
-//     * 一次只能查询500条记录
-//     * @param
-//     */
-//    public static void AndQueryAssets(final Context context, String para, Object value, final Handler handler) {
-//        BmobQuery<AssetInfo> query = new BmobQuery<>();
-//        query.addWhereEqualTo(para, value);
-//        query.order("mAssetsNum");
-//        query.setLimit(500);
-//        query.include("mPicture,mOldManager,mLocation,mDepartment");
-//        query.findObjects(new FindListener<AssetInfo>() {
-//            @Override
-//            public void done(final List<AssetInfo> list, BmobException e) {
-//                if (e == null) {
-//                    if (list != null && list.size() > 0) {
-//                        new Thread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                Message msg = new Message();
-//                                msg.what = AssetsUtil.SEARCH_ONE_ASSET;
-//                                Bundle bundle = new Bundle();
-//                                bundle.putSerializable("assets", (Serializable) list);
-//                                msg.setData(bundle);
-//                                handler.sendMessage(msg);
-//                            }
-//                        }).start();
-//                    } else {
-//                        Toast.makeText(context, "没有符合条件的资产!", Toast.LENGTH_SHORT).show();
-//
-//                    }
-//                } else {
-//                    {
-//                        Toast.makeText(context, "查询失败，请稍后再查！", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//            }
-//        });
-//    }
+
     /**
      * 依据某两个参数组合，查询资产
      *
@@ -262,10 +224,10 @@ public class AssetsUtil {
             @Override
             public void done(final List<AssetInfo> list, BmobException e) {
                 if (e == null) {
-                    if (list == null || list.size() == 0) {//当查询条数为500的整数倍时，会出现这个
-                        Toast.makeText(context, "查询结束!", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+//                    if (list == null || list.size() == 0) {//当查询条数为500的整数倍时，会出现这个
+//                        Toast.makeText(context, "查询结束,没有更多结果!", Toast.LENGTH_SHORT).show();
+//                        return;
+//                    }
                     allList.addAll(list); //暂存入临时列表中，只有前500条
                     if (list.size() >= 500) {//当数据条数超过
                         count++;//计数器加1，
@@ -321,10 +283,10 @@ public class AssetsUtil {
             @Override
             public void done(final List<AssetInfo> list, BmobException e) {
                 if (e == null) {
-                    if (list == null || list.size() == 0) {//当查询条数为500的整数倍时，会出现这个
-                        Toast.makeText(context, "查询结束!", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+//                    if (list == null || list.size() == 0) {//当查询条数为500的整数倍时，会出现这个
+//                        Toast.makeText(context, "查询结束!", Toast.LENGTH_SHORT).show();
+//                        return;
+//                    }
                     allList.addAll(list); //暂存入临时列表中，只有前500条
                     if (list.size() >= 500) {//当数据条数超过
                         count++;//计数器加1，
@@ -390,10 +352,10 @@ public class AssetsUtil {
             @Override
             public void done(final List<AssetInfo> list, BmobException e) {
                 if (e == null) {
-                    if (list == null || list.size() == 0) {//当查询条数为500的整数倍时，会出现这个
-                        Toast.makeText(context, "查询结束!", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+//                    if (list == null || list.size() == 0) {//当查询条数为500的整数倍时，会出现这个
+//                        Toast.makeText(context, "查询结束!", Toast.LENGTH_SHORT).show();
+//                        return;
+//                    }
                     allList.addAll(list); //暂存入临时列表中，只有前500条
                     if (list.size() >= 500) {//当数据条数超过
                         count++;//计数器加1，

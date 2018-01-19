@@ -524,7 +524,13 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case AssetsUtil.SEARCH_ONE_ASSET:
+
                     mInfoList = (List<AssetInfo>) msg.getData().getSerializable("assets");
+                    if (mInfoList == null || mInfoList.size() == 0) {
+                        toast("查询结束，没有符合条件的数据！");
+                        loadingProgress.setVisibility(View.GONE);
+                        return;
+                    }
                     setListAdapter();
                     loadingProgress.setVisibility(View.GONE);
                     break;
