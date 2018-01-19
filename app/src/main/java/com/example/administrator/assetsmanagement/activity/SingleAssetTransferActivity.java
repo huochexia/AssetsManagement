@@ -109,7 +109,7 @@ public class SingleAssetTransferActivity extends ParentWithNaviActivity {
                 if (mNewManager != null) {
                     mSingleasset.setNewManager(mNewManager);
                     //如果是正常资产移交，则改变为4待移交状态；如果是维送状态，则不变
-                    if (mSingleasset.getStatus() == 0) {
+                    if (mSingleasset.getStatus() == 0 || mSingleasset.getStatus()==9) {
                         mSingleasset.setStatus(4);
                     }
 

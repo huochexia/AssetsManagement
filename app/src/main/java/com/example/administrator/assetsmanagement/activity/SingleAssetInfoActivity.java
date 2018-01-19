@@ -186,8 +186,12 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
                         Glide.with(SingleAssetInfoActivity.this)
                                 .load(mAssetInfo.getPicture().getImageUrl()).into(mIvSingleAssetImage);
                         mTvScanAssetManager.setText(mAssetInfo.getOldManager().getUsername());
-                        mTvScanAssetLocation.setText(mAssetInfo.getLocation().getLocationName());
-                        mTvScanAssetDepartment.setText(mAssetInfo.getDepartment().getDepartmentName());
+                        if (mAssetInfo.getLocation() != null) {
+                            mTvScanAssetLocation.setText(mAssetInfo.getLocation().getLocationName());
+                        }
+                        if (mAssetInfo.getDepartment() != null) {
+                            mTvScanAssetDepartment.setText(mAssetInfo.getDepartment().getDepartmentName());
+                        }
                         mTvScanAssetRegisterDate.setText(mAssetInfo.getRegisterDate());
                         mTvScanAssetPrice.setText(mAssetInfo.getPrice() + "");
                         mTvScanAssetComment.setText(mAssetInfo.getComment());
@@ -260,6 +264,7 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
                 break;
             case 9:
                 mTvScanAssetState.setText("新登记未移交");
+                mBtnSingleAssetChange.setVisibility(View.VISIBLE);
         }
     }
 
