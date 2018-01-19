@@ -29,8 +29,6 @@ public class MainActivity extends ParentWithNaviActivity {
     @BindView(R.id.tv_toolbar_title)
     TextView mTvToolbarTitle;
 
-
-
     private MenuItem mMenuItem;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {

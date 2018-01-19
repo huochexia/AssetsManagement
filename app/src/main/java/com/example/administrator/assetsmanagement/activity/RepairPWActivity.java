@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
@@ -98,44 +99,9 @@ public class RepairPWActivity extends ParentWithNaviActivity {
             toast("两次输入的新密码不一致，请重新输入！");
             return;
         }
-//        checkPassword(OldPw,NewPw);
         updateCurrentUserPwd(OldPw, NewPw);
     }
-    /**
-     * 验证旧密码是否正确
-     *
-     * @param
-     * @return void
-     */
-    private void checkPassword(final String oldPw, final String newPw) {
-        List<BmobQuery<BmobUser>> and = new ArrayList<>();
-        final BmobUser bmobUser = BmobUser.getCurrentUser();
-        // 如果你传的密码是正确的，那么arg0.size()的大小是1，这个就代表你输入的旧密码是正确的，否则是失败的
-        BmobQuery<BmobUser> query1 = new BmobQuery<>();
-        query1.addWhereEqualTo("password", oldPw);
-        and.add(query1);
-        BmobQuery<BmobUser> query2 = new BmobQuery<>();
-        query2.addWhereEqualTo("objectId", bmobUser.getObjectId());
-        BmobQuery<BmobUser> query = new BmobQuery<>();
-        query.and(and);
-        query.findObjects(new FindListener<BmobUser>() {
 
-            @Override
-            public void done(List<BmobUser> object, BmobException e) {
-                if (e == null) {
-                    if (object.size() == 1) {
-                        updateCurrentUserPwd(oldPw, newPw);
-                    } else {
-                        toast("旧密码不对！");
-                    }
-
-                } else {
-                    toast("错误码：" + e.getErrorCode() + ",错误原因：" + e.getLocalizedMessage());
-                }
-            }
-
-        });
-    }
 
     /**
      * 修改当前用户密码
@@ -152,8 +118,15 @@ public class RepairPWActivity extends ParentWithNaviActivity {
                     //密码修改成功后，注销当前用户
                     toast("密码修改成功，可以用新密码进行登录");
                     BmobUser.logOut();
+                    finish();
+
                 } else {
-                    toast(e.getErrorCode()+e.getMessage());
+                    if (e.getErrorCode() == 206) {
+                        Toast.makeText(RepairPWActivity.this,"请退出重新登录后，" +
+                                "再修改密码",Toast.LENGTH_LONG).show();
+                    }else {
+                        toast("错误信息:"+e.getMessage());
+                    }
                 }
             }
         });

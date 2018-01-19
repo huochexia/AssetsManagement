@@ -97,7 +97,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     @BindView(R.id.btn_register_add_next)
     Button btnRegisterAddNext;
     @BindView(R.id.btn_register_category)
-    FancyButton btnRegisterCategory;
+    Button btnRegisterCategory;
     @BindView(R.id.et_register_assets_date)
     LineEditText mEtRegisterAssetsDate;
     @BindView(R.id.tv_assets_register_date)
@@ -116,11 +116,9 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     @BindView(R.id.is_fixed_assets)
     RadioButton mIsFixedAssets;
 
-    private AssetCategory mCategory;//临时节点
     private AssetInfo asset;
     private File Imagefile;
     private Uri imageUri;
-    private String assetNumber;
     private List<AssetInfo> mAssetInfos = new ArrayList<>();//用于存放登记的资产
     private boolean hasPhoto = false;//判断是否添加图片
 
@@ -354,7 +352,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
             case REGISTER_CATEGORY:
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    mCategory = (AssetCategory) data.getSerializableExtra("node");
+                    AssetCategory mCategory = (AssetCategory) data.getSerializableExtra("node");
                     mTvRegisterCategory.setText(getNodeAllPathName(mCategory));
                     AssetCategory ac = new AssetCategory();
                     ac.setObjectId(mCategory.getObjectId());
@@ -484,7 +482,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
      * 生成资产编号并保存资产列表，一种资产可能有许多个，每一个都有自己的编号。
      */
     private void createAssetNumber(int quantity, AssetInfo asset) {
-        assetNumber = String.valueOf(System.currentTimeMillis());
+        String assetNumber = String.valueOf(System.currentTimeMillis());
         int m = quantity / 50; //求模
         int s = quantity % 50;//求余数
         int n = 0;

@@ -25,24 +25,17 @@
             android:layout_height="match_parent"
             android:layout_weight="1">
 
-            <mehdi.sakout.fancybuttons.FancyButton
+            <Button
                 android:id="@+id/btn_register_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_5"
                 android:layout_marginLeft="10dp"
-                android:padding="8dp"
-                fancy:fb_borderColor="#7ed862"
-                fancy:fb_borderWidth="2dp"
-                fancy:fb_focusColor="#ffa8f192"
-                fancy:fb_ghost="true"
-                fancy:fb_iconResource="@drawable/ic_assets_category"
-                fancy:fb_radiusBottomRight="10dp"
-                fancy:fb_radiusTopLeft="10dp"
-                fancy:fb_text="@string/btn_category_text"
-                fancy:fb_textColor="#000000"
-                fancy:fb_textFont="隶书.ttf"
-                fancy:fb_textSize="16sp"
+                android:background="@drawable/btn_login_selector"
+                android:textColor="@color/base_color_text_white"
+                android:textSize="16sp"
+                android:text="@string/btn_category_text"
+                android:padding="10dp"
                 />
 
             <TextView
@@ -81,7 +74,7 @@
 
             <TextView
                 android:id="@+id/textView"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/btn_register_category"

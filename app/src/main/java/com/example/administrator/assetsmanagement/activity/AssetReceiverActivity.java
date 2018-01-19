@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.example.administrator.assetsmanagement.Interface.AssetSelectedListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
@@ -15,7 +16,6 @@ import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.adapter.AssetRecyclerViewAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
-import com.example.administrator.assetsmanagement.bean.AssetPicture;
 import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 
@@ -41,6 +41,8 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
     AssetRecyclerViewAdapter adapter;
     @BindView(R.id.btn_receive_ok)
     Button mBtnReceiverOk;
+    @BindView(R.id.loading_receiver_progress)
+    ProgressBar loadingReceiverProgress;
 
     @Override
     public String title() {
@@ -79,9 +81,9 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
         mRcReceiverAssets.setLayoutManager(ll);
         Person person = BmobUser.getCurrentUser(Person.class);
         List<AssetInfo> allList = new ArrayList<>();
-        AssetsUtil.count=0;
-        AssetsUtil.OrAndQueryAssets(this, "mStatus", 4,"mStatus",
-                6,"mNewManager", person,  handler,allList);
+        AssetsUtil.count = 0;
+        AssetsUtil.OrAndQueryAssets(this, "mStatus", 4, "mStatus",
+                6, "mNewManager", person, handler, allList);
     }
 
     @OnClick(R.id.btn_receive_ok)
@@ -113,6 +115,8 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
                     mAssetInfoList = (List<AssetInfo>) msg.getData().getSerializable("assets");
                     if (mAssetInfoList.size() > 0) {
                         mBtnReceiverOk.setEnabled(true);
+                    }else{
+                        toast("没有要接收的资产！");
                     }
                     temp_list.addAll(AssetsUtil.GroupAfterMerge(AssetsUtil.deepCopy(mAssetInfoList)));
                     setListAdapter();
@@ -137,6 +141,7 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
                 selectedList.remove(assetInfo);
             }
         });
+        loadingReceiverProgress.setVisibility(View.GONE);
         mRcReceiverAssets.setAdapter(adapter);
     }
 
@@ -149,7 +154,7 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
         asset.setNewManager(person);
         //如果资产为移交状态，接收后改为0,否则改为1，维修状态。因为只有正常和维修的可以移交。
         // 丢失的不能移交，报废的暂时也不考虑移交。
-        if (asset.getStatus() == 4) {
+        if (asset.getStatus() == 4 || asset.getStatus() == 9) {
             asset.setStatus(0);
         } else if (asset.getStatus() == 6) {
             asset.setStatus(1);
@@ -165,7 +170,7 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
         List<BmobObject> objects = new ArrayList<>();
         List<AssetInfo> updated = new ArrayList<>();
         String imageNum = asset1.getPicture().getImageNum();
-        Integer  state = asset1.getStatus();
+        Integer state = asset1.getStatus();
         for (AssetInfo asset : list) {
             if (imageNum.equals(asset.getPicture().getImageNum()) && asset.getStatus().equals(state)) {
                 updateAssetInfo(asset);

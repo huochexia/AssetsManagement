@@ -3,6 +3,8 @@ package com.example.administrator.assetsmanagement.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
@@ -185,7 +187,7 @@ public class ManageAssetsActivity extends ParentWithNaviActivity {
                         badgeView.setTextSize(19);// 设置文本大小
                         badgeView.setTextColor(Color.GREEN);
                         badgeView.setBadgePosition(BadgeView.POSITION_TOP_LEFT);// 设置在右上角
-                        badgeView.setText(integer + ""); // 设置要显示的文本
+                        badgeView.setText(integer+ ""); // 设置要显示的文本
                         badgeView.show();// 将角标显示出来
                     }
                 });

@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
+import com.example.administrator.assetsmanagement.bean.Person;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,6 +25,7 @@ import java.util.Map;
 import cn.bmob.v3.BmobBatch;
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BatchResult;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
@@ -328,21 +330,24 @@ public class AssetsUtil {
     public static void OrAndQueryAssets(final Context context, final String para1, final Object value1,
                                         final String para2, final Object value2, final String para3, final Object value3,
                                         final Handler handler, final List<AssetInfo> allList) {
-        List<BmobQuery<AssetInfo>> or = new ArrayList<>();
-        BmobQuery<AssetInfo> query1= new BmobQuery<>();
+        List<BmobQuery<AssetInfo>> or  = new ArrayList<>();
+        //第一组or关系,状态为4 or 6
+        BmobQuery<AssetInfo> query1 = new BmobQuery<>();
         query1.addWhereEqualTo(para1, value1);
+        BmobQuery<AssetInfo> query2 = new BmobQuery<>();
+        query2.addWhereEqualTo(para2, value2);
         or.add(query1);
-        BmobQuery<AssetInfo> query2= new BmobQuery<>();
-        query1.addWhereEqualTo(para2, value2);
         or.add(query2);
-        BmobQuery<AssetInfo> query3= new BmobQuery<>();
-        query3.or(or);
+        BmobQuery<AssetInfo> first = new BmobQuery<>();
+        first.or(or);
+        //第二组 and关系，新管理 和第一组结果
         List<BmobQuery<AssetInfo>> and = new ArrayList<>();
+        BmobQuery<AssetInfo> query3 = new BmobQuery<>();
+        query3.addWhereEqualTo(para3, value3);
         and.add(query3);
-        BmobQuery<AssetInfo> query4 = new BmobQuery<>();
-        query4.addWhereEqualTo(para3, value3);
-        and.add(query4);
-        BmobQuery<AssetInfo> query= new BmobQuery<>();
+        and.add(first);
+        //最后结果
+        BmobQuery<AssetInfo> query = new BmobQuery<>();
         query.and(and);
         query.order("mAssetsNum");
         query.setSkip(count * 500);

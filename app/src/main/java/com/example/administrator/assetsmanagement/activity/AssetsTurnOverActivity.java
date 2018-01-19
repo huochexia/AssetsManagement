@@ -185,7 +185,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
             }
         });
         mRcTurnOverList.setAdapter(adapter);
-        loadingAssetProgress.setVisibility(View.GONE);
+
         //设置长按事件
         adapter.setAssetItemClickListener(new AssetItemClickListener() {
             @Override
@@ -491,10 +491,10 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
             asset.setDepartment(d);
         }
         asset.setNewManager(mNewManager);
-        //如果资产状态为0或4时，移交确认后状态改为4；如果资产状态为1时，移交确认后改为6。
+        //如果资产状态为0或4,9时，移交确认后状态改为4；如果资产状态为1时，移交确认后改为6。
         // 目前暂定为丢失、已报废、待报废（审批中）的资产不能进行移交，如果要移交的话，先
         //变更为正常0，再进行移交，移交后，再调整为原状态。
-        if (asset.getStatus() == 0 || asset.getStatus() == 4) {
+        if (asset.getStatus() == 0 || asset.getStatus() == 4 || asset.getStatus()==9) {
             asset.setStatus(4);
         }
         if (asset.getStatus() == 1) {
