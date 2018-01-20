@@ -9,6 +9,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -31,7 +32,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobUser;
-import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
  * 资产报修处理：查找资产确定报修，只能对管理员（当前用户）名下的资产进行报修。然后选择是否移送。
@@ -55,7 +55,8 @@ public class AssetRepairActivity extends ParentWithNaviActivity {
     private String ScanResult;
     private AssetInfo asset;
 
-    private boolean willRepair ;//用于判断这个资产是将要维修移送。
+    private boolean willRepair;//用于判断这个资产是将要维修移送。
+
     @Override
     public String title() {
         return "资产报修";
@@ -104,9 +105,14 @@ public class AssetRepairActivity extends ParentWithNaviActivity {
                 break;
             case R.id.btn_single_asset_search:
                 String number = etSearchAssetNum.getText().toString();
-                List<AssetInfo> allList = new ArrayList<>();
-                AssetsUtil.count=0;
-                AssetsUtil.AndQueryAssets(this, "mAssetsNum", number, handler,allList);
+                if (!TextUtils.isEmpty(number)) {
+                    List<AssetInfo> allList = new ArrayList<>();
+                    AssetsUtil.count = 0;
+                    AssetsUtil.AndQueryAssets(this, "mAssetsNum", number, handler, allList);
+                } else {
+                    toast("请输入资产号！");
+                }
+
                 break;
             case R.id.btn_single_asset_manage_ok:
                 AssetsUtil.changeAssetStatus(this, list.get(0), 1);
@@ -117,7 +123,7 @@ public class AssetRepairActivity extends ParentWithNaviActivity {
                 break;
             case R.id.btn_single_asset_manage_cancel:
                 AssetsUtil.changeAssetStatus(this, list.get(0), 0);
-                String m1=list.get(0).getOldManager().getObjectId();
+                String m1 = list.get(0).getOldManager().getObjectId();
                 String currentUser = BmobUser.getCurrentUser().getObjectId();
                 if (m1.equals(currentUser)) {
                     willRepair = false;
@@ -146,7 +152,7 @@ public class AssetRepairActivity extends ParentWithNaviActivity {
                 List<AssetInfo> list = new ArrayList<>();
                 list.add(asset);
                 bundle.putSerializable("assets", (Serializable) list);
-                startActivity(SingleAssetTransferActivity.class,bundle,false);
+                startActivity(SingleAssetTransferActivity.class, bundle, false);
             }
         });
         builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
@@ -165,35 +171,38 @@ public class AssetRepairActivity extends ParentWithNaviActivity {
             switch (msg.what) {
                 case AssetsUtil.SEARCH_ONE_ASSET:
                     list = (List<AssetInfo>) msg.getData().getSerializable("assets");
-                    asset = list.get(0);
-                    //如果有资产且其状态为损坏时，修好按钮可用；只有正常状态下的资产可以报修，待移交、
-                    //待报废等非正常状态下的资产不能报修
-                    adapter = new AssetRecyclerViewAdapter(AssetRepairActivity.this,
-                            list, true);
-                    rvSingleAssetManage.setAdapter(adapter);
-                    if (asset.getStatus() == 1) {
-                        btnSingleAssetManageCancel.setEnabled(true);
-                    } else if (asset.getStatus() == 0) {
+                    if (list.size() > 0 && list != null) {
+                        asset = list.get(0);
+                        //如果有资产且其状态为损坏时，修好按钮可用；只有正常状态下的资产可以报修，待移交、
+                        //待报废等非正常状态下的资产不能报修
+                        adapter = new AssetRecyclerViewAdapter(AssetRepairActivity.this,
+                                list, true);
+                        rvSingleAssetManage.setAdapter(adapter);
                         String manager = asset.getOldManager().getObjectId();
                         if (!manager.equals(BmobUser.getCurrentUser().getObjectId())) {
                             toast("对不起，您不是该资产管理员！");
                             return;
+                        }
+                        if (asset.getStatus() == 1) {
+                            btnSingleAssetManageCancel.setEnabled(true);
+                        } else if (asset.getStatus() == 0 || asset.getStatus()==9 || asset.getStatus()==4) {
+                                btnSingleAssetManageOk.setEnabled(true);
                         } else {
-                            btnSingleAssetManageOk.setEnabled(true);
+                            btnSingleAssetManageOk.setEnabled(false);
+                            btnSingleAssetManageCancel.setEnabled(false);
                         }
                     } else {
-                        btnSingleAssetManageOk.setEnabled(false);
-                        btnSingleAssetManageCancel.setEnabled(false);
+                        toast("该资产不存在！");
                     }
-
                     break;
             }
         }
     }
+
     /**
      * 扫描二维码点击事件
      */
-    public  void customScan() {
+    public void customScan() {
         new IntentIntegrator(this)
                 .setOrientationLocked(false)
                 .setCaptureActivity(CustomScanActivity.class) // 设置自定义的activity是CustomActivity

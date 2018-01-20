@@ -14,7 +14,7 @@
     <string name="register">注册</string>
     <string name="login_telephone_hint">请输入手机号</string>
     <string name="register_txt1">还没有注册？</string>
-    <string name="register_txt2">立即注册</string>
+    <string name="register_txt2">注册</string>
     <string name="forget_password">忘记密码</string>
     <string name="department">所属部门</string>
     <string name="query_my_assets">我管理的资产</string>
@@ -57,7 +57,7 @@
     <string name="pleaseconnectprinter">打印机未连接，请先连接打印机！</string>
     <string name="waitconnectingprinter">正在连接打印机，请稍候！</string>
     <string name="btn_add">增加</string>
-    <string name="btn_edit">编辑</string>
+    <string name="btn_edit">修改</string>
     <string name="btn_delete">删除</string>
     <string name="dialog_title_add">请输入增加内容</string>
     <string name="dialog_title_edit">请修改内容</string>

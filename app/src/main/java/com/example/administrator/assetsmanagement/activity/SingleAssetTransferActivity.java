@@ -50,7 +50,7 @@ public class SingleAssetTransferActivity extends ParentWithNaviActivity {
 
     @Override
     public String title() {
-        return "资产移交";
+        return "选择移交";
     }
 
     @Override

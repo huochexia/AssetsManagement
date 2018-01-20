@@ -220,6 +220,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                         Person person = BmobUser.getCurrentUser(Person.class);
                         bundle1.putSerializable("value1", person);
                         startActivity(MakingLabelActivity.class, bundle1, false);
+                        return true;
                     default:
                         return true;
                 }
@@ -312,7 +313,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 if (selectedAssets.size() > 0) {
                     //轮查状态是否可以进行移交
                     for (AssetInfo ass : selectedAssets) {
-                        if (ass.getStatus() == 2 || ass.getStatus() == 3) {
+                        if (ass.getStatus() == 2 || ass.getStatus() == 3 ) {
                             toast("丢失、待报废资产不能进行移交！");
                             return;
                         }

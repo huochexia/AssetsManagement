@@ -162,7 +162,7 @@ public class AssetsUtil {
             , final List<AssetInfo> allList) {
         BmobQuery<AssetInfo> query = new BmobQuery<>();
         query.addWhereEqualTo(para, value);
-        query.order("mAssetsNum"); //排序
+        query.order("mLocation,mAssetsNum"); //排序
         query.setSkip(count*500);//跳过count次500条记录
         query.setLimit(500);
         query.include("mPicture,mOldManager,mLocation,mDepartment");
@@ -218,7 +218,7 @@ public class AssetsUtil {
         and.add(query2);
         BmobQuery<AssetInfo> query= new BmobQuery<>();
         query.and(and);
-        query.order("mAssetsNum");
+        query.order("mLocation,mAssetsNum");
         query.setSkip(count*500);//跳过count次500条记录
         query.setLimit(500);
         query.include("mPicture,mOldManager,mLocation,mDepartment");
@@ -277,7 +277,7 @@ public class AssetsUtil {
 
         BmobQuery<AssetInfo> query= new BmobQuery<>();
         query.and(and);
-        query.order("mAssetsNum");
+        query.order("mLocation,mAssetsNum");
         query.setSkip(count * 500);
         query.setLimit(500);
         query.include("mPicture,mOldManager,mLocation,mDepartment");
@@ -349,7 +349,7 @@ public class AssetsUtil {
         //最后结果
         BmobQuery<AssetInfo> query = new BmobQuery<>();
         query.and(and);
-        query.order("mAssetsNum");
+        query.order("mLocation,mAssetsNum");
         query.setSkip(count * 500);
         query.setLimit(500);
         query.include("mPicture,mOldManager,mLocation,mDepartment");

@@ -96,7 +96,7 @@
             android:layout_marginStart="@dimen/margin_10"
             android:background="@drawable/btn_login_selector"
             android:padding="10dp"
-            android:text="选择内容"
+            android:text="选择条件值"
             android:textColor="@color/base_color_text_white"
             android:textSize="16sp"/>
 
@@ -108,7 +108,7 @@
             android:layout_alignBottom="@+id/btn_select_content"
             android:layout_alignStart="@+id/btn_select_content"
             android:layout_marginStart="118dp"
-            android:hint="请选择要查询的具体内容"
+            android:hint="请选择查询条件的值"
             android:textSize="16sp"/>
     </RelativeLayout>
 

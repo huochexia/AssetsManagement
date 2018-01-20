@@ -38,7 +38,7 @@ public class LoginActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.btn_login, R.id.tv_register,R.id.tv_forget_password})
+    @OnClick({R.id.btn_login, R.id.btn_register,R.id.tv_forget_password})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_login:
@@ -61,8 +61,8 @@ public class LoginActivity extends BaseActivity {
                     }
                 });
                 break;
-            case R.id.tv_register:
-                startActivity(RegisterManagerActivity.class, null, true);
+            case R.id.btn_register:
+                startActivity(RegisterManagerActivity.class, null, false);
                 break;
             case R.id.tv_forget_password:
                 toast("近期推出，敬请期待");

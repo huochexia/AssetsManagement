@@ -210,6 +210,9 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (TextUtils.isEmpty(s)) {
+                    s="0.0";
+                }
                 asset.setPrice(Float.valueOf(s.toString().trim()));
             }
 

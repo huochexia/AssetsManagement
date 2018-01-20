@@ -215,6 +215,9 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
                         title = mAssetInfo.getAssetName();
                         initNaviView();
 
+                    } else {
+                        toast("该资产不存在！");
+                        initAllButton();
                     }
                     break;
             }

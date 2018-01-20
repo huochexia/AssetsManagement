@@ -163,14 +163,8 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
                         startActivity(AssetPictureActivity.class, bundle, false);
                         return true;
                     case 1:
-                        Bundle bundle1 = new Bundle();
-                        bundle1.putInt("flag", 0);
-                        bundle1.putSerializable("picture", assetInfo.getPicture());
-                        bundle1.putString("para","mStatus");
-                        bundle1.putSerializable("value",assetInfo.getStatus());
-                        bundle1.putSerializable("value1",BmobUser.getCurrentUser(Person.class));
-                        bundle1.putString("para1","mNewManager");
-                        startActivity(MakingLabelActivity.class, bundle1, false);
+                        toast("此处暂不开放明细显示！");
+                        return true;
                     default:
                         return true;
                 }

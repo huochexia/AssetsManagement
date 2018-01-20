@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -28,7 +29,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobUser;
-import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
  * Created by Administrator on 2017/12/13.
@@ -95,9 +95,14 @@ public class AssetBaofeiActivity extends ParentWithNaviActivity {
                 break;
             case R.id.btn_single_asset_search:
                 String number = etSearchAssetNum.getText().toString();
-                List<AssetInfo> allList = new ArrayList<>();
-                AssetsUtil.count =0;
-                AssetsUtil.AndQueryAssets(this, "mAssetsNum", number, handler,allList);
+                if (!TextUtils.isEmpty(number)) {
+                    List<AssetInfo> allList = new ArrayList<>();
+                    AssetsUtil.count = 0;
+                    AssetsUtil.AndQueryAssets(this, "mAssetsNum", number, handler, allList);
+                } else {
+                    toast("请输入资产编号！");
+                }
+
                 break;
             case R.id.btn_single_asset_manage_ok:
                 AssetsUtil.changeAssetStatus(this, list.get(0), 3);
@@ -125,22 +130,26 @@ public class AssetBaofeiActivity extends ParentWithNaviActivity {
             switch (msg.what) {
                 case 1:
                     list = (List<AssetInfo>) msg.getData().getSerializable("assets");
-                    AssetInfo asset = list.get(0);
-                    //如果有资产且其状态为待报废时，“重用”按钮可用；丢失状态和待移交状态下的资产均
-                    // 不能进行待报废处理。
-                    adapter = new AssetRecyclerViewAdapter(AssetBaofeiActivity.this,
-                            list, true);
-                    rvSingleAssetManage.setAdapter(adapter);
-                    String manager = asset.getOldManager().getObjectId();
-                    if (!manager.equals(BmobUser.getCurrentUser().getObjectId())) {
-                        toast("对不起，您不是该资产管理员！");
-                        return;
-                    } else {
+                    if (list.size() > 0 && list != null) {
+                        AssetInfo asset = list.get(0);
+                        //如果有资产且其状态为待报废时，“重用”按钮可用；丢失状态和待移交状态下的资产均
+                        // 不能进行待报废处理。
+                        adapter = new AssetRecyclerViewAdapter(AssetBaofeiActivity.this,
+                                list, true);
+                        rvSingleAssetManage.setAdapter(adapter);
+                        String manager = asset.getOldManager().getObjectId();
+                        if (!manager.equals(BmobUser.getCurrentUser().getObjectId())) {
+                            toast("对不起，您不是该资产管理员！");
+                            return;
+                        }
                         if (asset.getStatus() == 3) {
                             btnSingleAssetManageCancel.setEnabled(true);
                         } else if (asset.getStatus() != 2 && asset.getStatus() != 4) {
                             btnSingleAssetManageOk.setEnabled(true);
                         }
+
+                    } else {
+                        toast("该资产不存在！");
                     }
                     break;
             }
