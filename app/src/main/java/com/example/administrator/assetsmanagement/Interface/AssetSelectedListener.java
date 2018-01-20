@@ -8,7 +8,7 @@ import com.example.administrator.assetsmanagement.bean.AssetInfo;
  */
 
 public interface AssetSelectedListener {
-    void selectAsset(AssetInfo assetInfo);
+    void selectAsset(AssetInfo assetInfo,int position);
 
     void cancelAsset(AssetInfo assetInfo);
 }

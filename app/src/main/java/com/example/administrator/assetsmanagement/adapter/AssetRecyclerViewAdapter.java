@@ -91,7 +91,7 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
                 boolean ischeck = holder.selected.isChecked();
                 map.put(position, ischeck);
                 if (ischeck) {
-                    listener.selectAsset(assetInfoList.get(position));
+                    listener.selectAsset(assetInfoList.get(position),position);
                 } else {
                     listener.cancelAsset(assetInfoList.get(position));
                 }

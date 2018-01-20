@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
@@ -39,7 +38,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobUser;
-import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
  * 资产移交，整批（位置、名称或全部）获得资产进行移交。只有正常状态下的资产才可以移交，非正常资产只
@@ -61,6 +59,8 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     public static final int SEARCH_ALL = 3;
     @BindView(R.id.loading_asset_progress)
     ProgressBar loadingAssetProgress;
+    @BindView(R.id.ll_query_condition)
+    LinearLayout mLlQueryCondition;
 
 
     private Location oldLocation;//接收传入位置信息的节点
@@ -77,20 +77,12 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     TextView mTvReceiveNewDept;
     @BindView(R.id.tv_receive_new_manager)
     TextView mTvNewManager;
-    @BindView(R.id.iv_left_navi)
-    ImageView ivLeftNavi;
     @BindView(R.id.btn_search_name)
-    FancyButton mBtnSearchName;
+    Button mBtnSearchName;
     @BindView(R.id.btn_search_location)
-    FancyButton mBtnSearchLocation;
+    Button mBtnSearchLocation;
     @BindView(R.id.tv_search_content)
     TextView mTvSearchContent;
-    @BindView(R.id.btn_search_start)
-    Button mBtnSearchStart;
-
-
-    @BindView(R.id.btn_receive_manager)
-    FancyButton mBtnTurnOverReceiver;
     @BindView(R.id.btn_turn_over_ok)
     Button mBtnTurnOverOk;
 
@@ -169,13 +161,27 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     }
 
     /**
+     * 重新进入时，刷新
+     */
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        //新登记的，在这里还没有存入数据库中，所以不用从重新加载查询。
+        if (flag != 1) {
+            clearLists();
+            getSearchResultList();
+            loadingAssetProgress.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
      * 创建适配器
      */
     private void setListAdapter() {
         adapter = new AssetRecyclerViewAdapter(this, temp_list, false);
         adapter.getAssetSelectListener(new AssetSelectedListener() {
             @Override
-            public void selectAsset(AssetInfo assetInfo) {
+            public void selectAsset(AssetInfo assetInfo,int position) {
                 selectedAssets.add(assetInfo);
             }
 
@@ -208,11 +214,11 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                         Bundle bundle1 = new Bundle();
                         bundle1.putInt("flag", 0);
                         bundle1.putSerializable("picture", assetInfo.getPicture());
-                        bundle1.putString("para","mStatus");
-                        bundle1.putSerializable("value",assetInfo.getStatus());
+                        bundle1.putString("para", "mStatus");
+                        bundle1.putSerializable("value", assetInfo.getStatus());
                         bundle1.putString("para1", "mOldManager");
                         Person person = BmobUser.getCurrentUser(Person.class);
-                        bundle1.putSerializable("value1",person);
+                        bundle1.putSerializable("value1", person);
                         startActivity(MakingLabelActivity.class, bundle1, false);
                     default:
                         return true;
@@ -234,7 +240,9 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                         clearLists();
                         select_type = SEARCH_LOCATION;
                         mTvSearchContent.setText("");
+                        mLlQueryCondition.setVisibility(View.VISIBLE);
                         mBtnSearchLocation.setVisibility(View.VISIBLE);
+                        mBtnSearchName.setVisibility(View.GONE);
                         break;
 
                     case R.id.rb_turn_over_picture:
@@ -242,13 +250,17 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                         clearLists();
                         select_type = SEARCH_NAME;
                         mTvSearchContent.setText("");
+                        mLlQueryCondition.setVisibility(View.VISIBLE);
                         mBtnSearchName.setVisibility(View.VISIBLE);
+                        mBtnSearchLocation.setVisibility(View.GONE);
                         break;
                     case R.id.rb_turn_over_all:
                         changeBtnStatus();
                         clearLists();
                         select_type = SEARCH_ALL;
-                        mTvSearchContent.setText("全部正常资产");
+                        mTvSearchContent.setText("管理的全部资产");
+                        getSearchResultList();
+                        loadingAssetProgress.setVisibility(View.VISIBLE);
                         break;
 
                 }
@@ -260,8 +272,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
      * 改变按钮状态
      */
     private void changeBtnStatus() {
-        mBtnSearchLocation.setVisibility(View.GONE);
-        mBtnSearchName.setVisibility(View.GONE);
+        mLlQueryCondition.setVisibility(View.INVISIBLE);
         mBtnTurnOverOk.setEnabled(false);
     }
 
@@ -271,7 +282,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
      * @param view
      */
 
-    @OnClick({R.id.btn_search_location, R.id.btn_search_name, R.id.btn_search_start,
+    @OnClick({R.id.btn_search_location, R.id.btn_search_name,
             R.id.btn_receive_manager, R.id.btn_turn_over_ok, R.id.btn_receive_location,
             R.id.btn_receive_dept})
     public void onViewClicked(View view) {
@@ -285,11 +296,6 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 Intent intentPhoto = new Intent(this, SelectAssetsPhotoActivity.class);
                 intentPhoto.putExtra("isRegister", false);
                 startActivityForResult(intentPhoto, REQUEST_NAME);
-                break;
-            case R.id.btn_search_start:
-                clearLists();
-                getSearchResultList();
-                loadingAssetProgress.setVisibility(View.VISIBLE);
                 break;
             case R.id.btn_receive_location:
                 getSelectedInfo(SelectedTreeNodeActivity.SEARCH_LOCATION, false, REQUEST_RECEIVE_LOCATION);
@@ -307,7 +313,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                     //轮查状态是否可以进行移交
                     for (AssetInfo ass : selectedAssets) {
                         if (ass.getStatus() == 2 || ass.getStatus() == 3) {
-                            toast("丢失、报废资产不能进行移交！");
+                            toast("丢失、待报废资产不能进行移交！");
                             return;
                         }
                     }
@@ -416,7 +422,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                     assetsList = (List<AssetInfo>) msg.getData().getSerializable("assets");
                     if (assetsList.size() > 0) {
                         mBtnTurnOverOk.setEnabled(true);
-                    }else {
+                    } else {
                         toast("查询结束，没有符合条件的数据！");
                         loadingAssetProgress.setVisibility(View.GONE);
                         return;
@@ -460,7 +466,6 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                         "mOldManager", current, handler, allList);
                 break;
             case SEARCH_ALL:
-
                 AssetsUtil.AndQueryAssets(this, "mOldManager", current, handler, allList);
                 break;
         }
@@ -499,7 +504,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         //如果资产状态为0或4,9时，移交确认后状态改为4；如果资产状态为1时，移交确认后改为6。
         // 目前暂定为丢失、已报废、待报废（审批中）的资产不能进行移交，如果要移交的话，先
         //变更为正常0，再进行移交，移交后，再调整为原状态。
-        if (asset.getStatus() == 0 || asset.getStatus() == 4 || asset.getStatus()==9) {
+        if (asset.getStatus() == 0 || asset.getStatus() == 4 || asset.getStatus() == 9) {
             asset.setStatus(4);
         }
         if (asset.getStatus() == 1) {
@@ -532,8 +537,8 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
     }
 
     /**
-     * 遍历所有资产，修改已选择的资产信息。通过选择资产的数量属性判断是一个资产还是合并数量后的资产
-     * 如果是一个资产直接处理，如果是合并数量的资产，还需要分别处理
+     * 遍历所有资产，修改已选择的资产信息。考虑可能是合并数量后的资产
+     * 如果是合并数量的资产，还需要分别处理
      *
      * @param assetsList     为所有列表项
      * @param selectedAssets 为已被选择的列表项

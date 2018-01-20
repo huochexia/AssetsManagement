@@ -45,6 +45,15 @@ public class MakingLabelsListAdapter extends RecyclerView.Adapter<MakingLabelsLi
         }
     }
 
+    /**
+     * 当选择数量超过范围时调用
+     * @param position
+     */
+    public void setMap(int position) {
+        map.put(position, false);
+
+    }
+
     public void setSelectedListener(AssetSelectedListener listener) {
         this.listener = listener;
     }
@@ -69,7 +78,7 @@ public class MakingLabelsListAdapter extends RecyclerView.Adapter<MakingLabelsLi
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 map.put(position, isChecked);
                 if (isChecked) {
-                    listener.selectAsset(mAssetInfoList.get(position));
+                    listener.selectAsset(mAssetInfoList.get(position),position);
                 } else {
                     listener.cancelAsset(mAssetInfoList.get(position));
                 }

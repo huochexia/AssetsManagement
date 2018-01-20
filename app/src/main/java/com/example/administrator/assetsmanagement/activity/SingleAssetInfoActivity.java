@@ -18,6 +18,7 @@ import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -125,7 +126,9 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
         switch (view.getId()) {
             case R.id.btn_single_asset_change:
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("asset", mAssetInfo);
+                List<AssetInfo> list = new ArrayList<>();
+                list.add(mAssetInfo);
+                bundle.putSerializable("assets", (Serializable) list);
                 startActivity(SingleAssetTransferActivity.class, bundle, true);
                 break;
             case R.id.btn_single_asset_maintain:

@@ -317,7 +317,7 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
         api.drawText(asset.getRegisterDate(), 19, 6, 0, 0, 3);
         api.drawText(asset.getAssetsNum(), 15, 11, 0, 0, 3);
         if (asset.getFixedAsset()) {
-            api.drawText("固",40,6,0,0,3);
+            api.drawText("固", 40, 6, 0, 0, 3);
         }
         // 结束绘图任务提交打印
         return api.commitJob();
@@ -425,7 +425,7 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
             setListAdapter();
 
         } else {
-            mBtnPrintLabelAndMoveAsset.setEnabled(false);//旧资产在这里只打印，不做移交。
+//            mBtnPrintLabelAndMoveAsset.setEnabled(false);//旧资产在这里只打印，不做移交。
             mAssetPicture = (AssetPicture) bundle.getSerializable("picture");
             String para = bundle.getString("para");
             Object value = bundle.getSerializable("value");
@@ -433,7 +433,7 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
             Object value1 = bundle.getSerializable("value1");
             List<AssetInfo> allList = new ArrayList<>();
             AssetsUtil.count = 0;
-            AssetsUtil.AndQueryAssets(this, "mPicture", mAssetPicture, para,value,para1,value1,handler, allList);
+            AssetsUtil.AndQueryAssets(this, "mPicture", mAssetPicture, para, value, para1, value1, handler, allList);
         }
 
 
@@ -454,8 +454,13 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
         mRvMakingLabel.setAdapter(madapter);
         madapter.setSelectedListener(new AssetSelectedListener() {
             @Override
-            public void selectAsset(AssetInfo assetInfo) {
+            public void selectAsset(AssetInfo assetInfo,int position) {
                 mSelectedList.add(assetInfo);
+                if (mSelectedList.size() > 50) {
+                    toast("选择资产数量不能超过50！");
+                    madapter.setMap(position);
+                    mSelectedList.remove(assetInfo);
+                }
             }
 
             @Override
@@ -469,28 +474,41 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_print_asset_label:
+                if (mSelectedList.size() == 0) {
+                    toast("请选择要打印的资产！");
+                    return;
+                }
                 if (isPrinterConnected()) {
                     if (flag == 1) {//打印完后，保存资产信息
-                        //TODO:打印功能
-                        for (AssetInfo asset : mSelectedList) {
-                            printAssetLabel(asset);
+                        for (final AssetInfo asset : mSelectedList) {
                             asset.save(new SaveListener<String>() {
                                 @Override
                                 public void done(String s, BmobException e) {
-
+                                    if (e == null) {
+                                        toast("资产保存成功！");
+                                        printAssetLabel(asset);
+                                        refreshList(asset);
+                                    } else {
+                                        toast("资产保存失败，请重新登记！");
+                                    }
                                 }
                             });
                         }
                     } else {//否则只打印
                         for (AssetInfo asset : mSelectedList) {
                             printAssetLabel(asset);
+                            refreshList(asset);
                         }
-
                     }
-                    refreshList();
                 }
                 break;
             case R.id.btn_print_label_and_move_asset:
+                if (mSelectedList.size() == 0) {
+                    toast("请选择要打印或移交的资产！");
+                    return;
+                }
+                //打印并移交，先判断是否连接打印机，如果没有，则提示是否继续。是，则直接进入移交界面。
+                //因为此处也做为单个资产移交界面。否，则关闭对话框，等待连接打印机。
                 if (isPrinterConnected()) {
                     //如果是新登记的资产打印后要做移交时，要直接传递资产信息，移交后再保存。因为如果先保存
                     //再从数据库中取出进行移交，因为网络时差的原因，会产生取出的数据不全的现象。所以要移交
@@ -498,20 +516,54 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
                     for (AssetInfo asset : mSelectedList) {
                         printAssetLabel(asset);
                     }
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("flag", 1);
-                    bundle.putSerializable("newasset", (Serializable) mSelectedList);
-                    startActivity(AssetsTurnOverActivity.class, bundle, false);
-                    refreshList();
+                    turnOverAsset();
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("是否只进行移交！");
+                    builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            turnOverAsset();
+                        }
+                    });
+                    builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.show();
                 }
                 break;
         }
-
-
     }
 
     /**
-     * 打印后刷新列表
+     * 对选择的资产进行移交处理
+     */
+    private void turnOverAsset() {
+        Bundle bundle = new Bundle();
+        if (flag == 1) {
+            bundle.putInt("flag", 1);
+        }
+        bundle.putSerializable("assets", (Serializable) mSelectedList);
+        startActivity(SingleAssetTransferActivity.class, bundle, false);
+        refreshList();
+    }
+
+    /**
+     * 打印后刷新列表。一个一个的处理
+     */
+    private void refreshList(AssetInfo asset) {
+        //刷新列表
+        mInfoList.remove(asset);
+        mSelectedList.remove(asset);
+        madapter.initMap();
+        madapter.notifyDataSetChanged();
+    }
+
+    /**
+     * 整体处理
      */
     private void refreshList() {
         //刷新列表
@@ -520,7 +572,6 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
         madapter.initMap();
         madapter.notifyDataSetChanged();
     }
-
     MakingHander handler = new MakingHander();
 
     class MakingHander extends Handler {

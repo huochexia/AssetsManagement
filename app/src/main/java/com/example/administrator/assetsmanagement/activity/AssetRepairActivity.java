@@ -23,6 +23,7 @@ import com.example.administrator.assetsmanagement.utils.LineEditText;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -142,7 +143,9 @@ public class AssetRepairActivity extends ParentWithNaviActivity {
                     asset.setStatus(6);
                 }
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("asset",asset);
+                List<AssetInfo> list = new ArrayList<>();
+                list.add(asset);
+                bundle.putSerializable("assets", (Serializable) list);
                 startActivity(SingleAssetTransferActivity.class,bundle,false);
             }
         });

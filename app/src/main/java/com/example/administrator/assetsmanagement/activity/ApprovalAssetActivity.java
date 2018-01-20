@@ -115,7 +115,7 @@ public class ApprovalAssetActivity extends ParentWithNaviActivity {
                             baofeiAssets,false);
                     adapter.getAssetSelectListener(new AssetSelectedListener() {
                         @Override
-                        public void selectAsset(AssetInfo assetInfo) {
+                        public void selectAsset(AssetInfo assetInfo,int position) {
                             mSelectedAssets.add(assetInfo);
                         }
 

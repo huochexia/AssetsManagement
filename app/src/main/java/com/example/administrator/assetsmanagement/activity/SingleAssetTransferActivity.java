@@ -15,15 +15,18 @@ import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department
 import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
 import com.example.administrator.assetsmanagement.bean.LocationTree.LocationNodeHelper;
 import com.example.administrator.assetsmanagement.bean.Person;
+import com.example.administrator.assetsmanagement.utils.AssetsUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.UpdateListener;
+import cn.bmob.v3.BmobObject;
 
 /**
- * 单个资产通过扫描直接获得，或者维修移送时
+ * 单个资产通过扫描直接获得后移交，或者维修移送;通过选择明细后，进行打印并移交时启动
  * Created by Administrator on 2017/12/26.
  */
 
@@ -39,10 +42,11 @@ public class SingleAssetTransferActivity extends ParentWithNaviActivity {
     @BindView(R.id.tv_single_asset_new_manager)
     TextView tvSingleAssetNewManager;
 
-    Location newLoction;//节点对象，用于接收返回节点值
+    Location newLocation;//节点对象，用于接收返回节点值
     Department newDepartment;
     Person mNewManager;
-    AssetInfo mSingleasset;
+    List<AssetInfo> mAssetInfoList;
+    int flag;//是否新登记资产的标志，1为新登记。
 
     @Override
     public String title() {
@@ -76,9 +80,8 @@ public class SingleAssetTransferActivity extends ParentWithNaviActivity {
         ButterKnife.bind(this);
         initNaviView();
         Bundle bundle = getBundle();
-        mSingleasset = (AssetInfo) bundle.getSerializable("asset");
-
-
+        flag = bundle.getInt("flag", 0);
+        mAssetInfoList = (List<AssetInfo>) bundle.getSerializable("assets");
     }
 
     @OnClick({R.id.btn_single_asset_new_location, R.id.btn_single_asset_new_department,
@@ -96,37 +99,34 @@ public class SingleAssetTransferActivity extends ParentWithNaviActivity {
                 startActivityForResult(intent1, REQUEST_RECEIVE_MANAGER);
                 break;
             case R.id.btn_single_asset_transfer_ok:
-                Location l = new Location();
-                if (newLoction != null) {
-                    l.setObjectId(newLoction.getObjectId());//因为节点属性，防止死循环
-                    mSingleasset.setLocation(l);
-                }
-                Department d = new Department();
-                if (newDepartment != null) {
-                    d.setObjectId(newDepartment.getObjectId());//因为节点属性，防止死循环}
-                    mSingleasset.setDepartment(d);
-                }
-                if (mNewManager != null) {
-                    mSingleasset.setNewManager(mNewManager);
-                    //如果是正常资产移交，则改变为4待移交状态；如果是维送状态，则不变
-                    if (mSingleasset.getStatus() == 0 || mSingleasset.getStatus()==9) {
-                        mSingleasset.setStatus(4);
-                    }
-
-                } else {
-                    toast("接收人不能为空！");
-                    return;
-                }
-                mSingleasset.update(mSingleasset.getObjectId(), new UpdateListener() {
-                    @Override
-                    public void done(BmobException e) {
-                        if (e == null) {
-                            finish();
-                        } else {
-                            toast("变更失败！");
+                //如果是新登记的，位置和部门不能为空。
+                if (mAssetInfoList.size() > 0) {
+                    //轮查状态是否可以进行移交
+                    for (AssetInfo ass : mAssetInfoList) {
+                        if (ass.getStatus() == 2 || ass.getStatus() == 3) {
+                            toast("丢失、待报废资产不能进行移交！");
+                            return;
                         }
                     }
-                });
+                    if (mNewManager != null) {
+                        if (flag == 1 && (newLocation == null || newDepartment == null)) {
+                            toast("新登记资产必须分配位置和部门！");
+                        } else {
+                            if (flag == 1) {//新登记资产为添加
+                                AssetsUtil.insertBmobLibrary(this, updateAllAssets(mAssetInfoList));
+                                clearView();
+                            } else {//原有资产移交为变更
+                                AssetsUtil.updateBmobLibrary(this, updateAllAssets(mAssetInfoList));
+                                clearView();
+                            }
+                        }
+
+                    } else {
+                        toast("请选择接受人！");
+                    }
+                } else {
+                    toast("没有选择资产！");
+                }
                 break;
         }
     }
@@ -153,8 +153,8 @@ public class SingleAssetTransferActivity extends ParentWithNaviActivity {
 
             case REQUEST_RECEIVE_LOCATION:
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    newLoction = (Location) data.getSerializableExtra("node");
-                    tvSingleAssetNewLocation.setText(LocationNodeHelper.getSearchContentName(newLoction));
+                    newLocation = (Location) data.getSerializableExtra("node");
+                    tvSingleAssetNewLocation.setText(LocationNodeHelper.getSearchContentName(newLocation));
                 }
                 break;
             case REQUEST_RECEIVE_DEPT:
@@ -172,4 +172,60 @@ public class SingleAssetTransferActivity extends ParentWithNaviActivity {
 
         }
     }
+
+    /**
+     * 修改资产信息,因为位置和部门有节点属性，即父节点。在Bmob存储中造成自循环，最终导致内存溢出。
+     * 所以在保存资产信息的位置和部门属性值时，新构造一个对象，传入其唯一objectId，
+     */
+    private void updateAssetInfo(AssetInfo asset) {
+        if (newLocation != null) {
+            Location l = new Location();
+            l.setObjectId(newLocation.getObjectId());
+            asset.setLocation(l);
+        }
+        if (newDepartment != null) {
+            Department d = new Department();
+            d.setObjectId(newDepartment.getObjectId());
+            asset.setDepartment(d);
+        }
+        asset.setNewManager(mNewManager);
+        //如果资产状态为0或4,9时，移交确认后状态改为4；如果资产状态为1时，移交确认后改为6。
+        // 目前暂定为丢失、已报废、待报废（审批中）的资产不能进行移交，如果要移交的话，先
+        //变更为正常0，再进行移交，移交后，再调整为原状态。
+        if (asset.getStatus() == 0 || asset.getStatus() == 4 || asset.getStatus() == 9) {
+            asset.setStatus(4);
+        }
+        if (asset.getStatus() == 1) {
+            asset.setStatus(6);
+        }
+
+    }
+
+    /**
+     * 遍历资产列表，修改资产
+     *
+     * @param list 为所有列表项
+     * @return
+     */
+    private List<BmobObject> updateAllAssets(List<AssetInfo> list) {
+        List<BmobObject> objects = new ArrayList<>();
+        for (AssetInfo asset : list) {
+            updateAssetInfo(asset);
+            objects.add(asset);
+        }
+        return objects;
+    }
+
+    /**
+     * 初始化界面
+     */
+    private void clearView() {
+        newDepartment=null;
+        newLocation=null;
+        mNewManager=null;
+        tvSingleAssetNewLocation.setText("");
+        tvSingleAssetNewDepartment.setText("");
+        tvSingleAssetNewManager.setText("");
+    }
+
 }

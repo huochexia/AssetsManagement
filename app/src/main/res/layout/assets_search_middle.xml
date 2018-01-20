@@ -1,155 +1,54 @@
 <?xml version="1" encoding ="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              xmlns:fancy="http://schemas.android.com/apk/res-auto">
-
+    >
     <LinearLayout
-        android:layout_marginTop="5dp"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="3">
-
-        <mehdi.sakout.fancybuttons.FancyButton
-            android:id="@+id/btn_search_location"
+        >
+        <LinearLayout
+            android:id="@+id/ll_query_condition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="@dimen/margin_5"
-            android:padding="8dp"
-            fancy:fb_borderColor="#7ed862"
-            fancy:fb_borderWidth="2dp"
-            fancy:fb_focusColor="#ffa8f192"
-            fancy:fb_iconResource="@drawable/ic_room_black_24dp"
-            fancy:fb_radiusBottomRight="10dp"
-            fancy:fb_radiusTopLeft="10dp"
-            fancy:fb_text="@string/location"
-            fancy:fb_ghost="true"
-            fancy:fb_textColor="#000000"
-            fancy:fb_textFont="隶书.ttf"
-            fancy:fb_textSize="18sp"
-            />
-        <mehdi.sakout.fancybuttons.FancyButton
-            android:id="@+id/btn_register_category"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="@dimen/margin_5"
-            android:visibility="gone"
-            android:padding="8dp"
-            fancy:fb_borderColor="#7ed862"
-            fancy:fb_borderWidth="2dp"
-            fancy:fb_focusColor="#ffa8f192"
-            fancy:fb_iconResource="@drawable/ic_assets_category"
-            fancy:fb_radiusBottomRight="10dp"
-            fancy:fb_radiusTopLeft="10dp"
-            fancy:fb_text="@string/btn_category_text"
-            fancy:fb_ghost="true"
-            fancy:fb_textColor="#000000"
-            fancy:fb_textFont="隶书.ttf"
-            fancy:fb_textSize="18sp"
-            />
-        <mehdi.sakout.fancybuttons.FancyButton
-            android:id="@+id/btn_search_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:visibility="gone"
-            android:layout_marginBottom="@dimen/margin_5"
-            android:padding="8dp"
-            fancy:fb_borderColor="#7ed862"
-            fancy:fb_borderWidth="2dp"
-            fancy:fb_focusColor="#ffa8f192"
-            fancy:fb_radiusBottomRight="10dp"
-            fancy:fb_radiusTopLeft="10dp"
-            fancy:fb_iconResource="@drawable/ic_assets_search_name"
-            fancy:fb_text="名称(图）"
-            fancy:fb_ghost="true"
-            fancy:fb_textColor="#000000"
-            fancy:fb_textFont="隶书.ttf"
-            fancy:fb_textSize="18sp"
-            />
-        <mehdi.sakout.fancybuttons.FancyButton
-            android:id="@+id/btn_search_manager"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:visibility="gone"
-            android:layout_marginBottom="@dimen/margin_5"
-            android:padding="8dp"
-            fancy:fb_borderColor="#7ed862"
-            fancy:fb_borderWidth="2dp"
-            fancy:fb_focusColor="#ffa8f192"
-            fancy:fb_iconResource="@drawable/ic_perm_identity_black_24dp"
-            fancy:fb_radiusBottomRight="10dp"
-            fancy:fb_radiusTopLeft="10dp"
-            fancy:fb_text="@string/manager"
-            fancy:fb_ghost="true"
-            fancy:fb_textColor="#000000"
-            fancy:fb_textFont="隶书.ttf"
-            fancy:fb_textSize="18sp"
-            />
-        <mehdi.sakout.fancybuttons.FancyButton
-            android:id="@+id/btn_search_dept"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:visibility="gone"
-            android:layout_marginBottom="@dimen/margin_5"
-            android:padding="8dp"
-            fancy:fb_borderColor="#7ed862"
-            fancy:fb_borderWidth="2dp"
-            fancy:fb_focusColor="#ffa8f192"
-            fancy:fb_iconResource="@drawable/ic_dept_black_24dp"
-            fancy:fb_radiusBottomRight="10dp"
-            fancy:fb_radiusTopLeft="10dp"
-            fancy:fb_text="@string/department"
-            fancy:fb_ghost="true"
-            fancy:fb_textColor="#000000"
-            fancy:fb_textFont="隶书.ttf"
-            fancy:fb_textSize="18sp"
-            />
-
+            android:layout_marginTop="5dp"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/btn_search_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_5"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/btn_login_selector"
+                android:text="@string/location"
+                android:textColor="@color/base_color_text_white"
+                android:textSize="18sp"
+                />
+            <Button
+                android:id="@+id/btn_search_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_5"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/btn_login_selector"
+                android:text="名称(图）"
+                android:textColor="@color/base_color_text_white"
+                android:textSize="18sp"
+                android:visibility="gone"
+                />
+        </LinearLayout>
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
         <TextView
             android:id="@+id/tv_search_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+           android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:textSize="18sp"
-            android:layout_gravity="center_vertical"
-            tools:text="A" />
-    </LinearLayout>
-
-    <RelativeLayout
-        android:layout_marginTop="2dp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
-        <Button
-            android:id="@+id/btn_search_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/btn_login_selector"
-            android:textColor="@color/base_color_text_white"
-            android:text="@string/btn_search_text"
-            android:textSize="18sp"/>
-        <!--<mehdi.sakout.fancybuttons.FancyButton-->
-            <!--android:id="@+id/btn_search_start"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginEnd="10dp"-->
-            <!--android:layout_alignParentEnd="true"-->
-            <!--android:padding="10dp"-->
-            <!--fancy:fb_borderColor="#FFFFFF"-->
-            <!--fancy:fb_borderWidth="0dp"-->
-            <!--fancy:fb_defaultColor="#3f51b4"-->
-            <!--fancy:fb_focusColor="#7182e2"-->
-            <!--fancy:fb_radius="15dp"-->
-            <!--fancy:fb_text="@string/btn_search_text"-->
-            <!--fancy:fb_textFont="隶书.ttf"-->
-            <!--fancy:fb_textSize="20sp"-->
-            <!--fancy:fb_textColor="#FFFFFF">-->
-        <!--</mehdi.sakout.fancybuttons.FancyButton>-->
+            android:textSize="16sp"
+            android:hint="查询条件"/>
     </RelativeLayout>
+
 </LinearLayout>

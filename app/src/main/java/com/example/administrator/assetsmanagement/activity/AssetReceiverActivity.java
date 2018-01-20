@@ -135,7 +135,7 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
         adapter = new AssetRecyclerViewAdapter(this, temp_list, false);
         adapter.getAssetSelectListener(new AssetSelectedListener() {
             @Override
-            public void selectAsset(AssetInfo assetInfo) {
+            public void selectAsset(AssetInfo assetInfo,int position) {
                 selectedList.add(assetInfo);
             }
 
