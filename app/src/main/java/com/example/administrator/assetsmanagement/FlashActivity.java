@@ -1,9 +1,7 @@
 package com.example.administrator.assetsmanagement;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
@@ -12,18 +10,12 @@ import com.example.administrator.assetsmanagement.base.BaseActivity;
 import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.bean.Role;
 
-import java.io.IOException;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 
 /**
@@ -41,8 +33,8 @@ public class FlashActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flash);
         mImageView = (ImageView) findViewById(R.id.bing_pic_img);
+        Glide.with(this).load(R.drawable.flashimage).into(mImageView);
         handler = new Handler();
-        loadBingPic();
         queryRole();
         runnable = new Runnable() {
             @Override
@@ -73,39 +65,6 @@ public class FlashActivity extends BaseActivity {
         }
     }
 
-    /**
-     * 加载必应每日一图
-     */
-    private void loadBingPic() {
-        String requestBingPic = "http://guolin.tech/api/bing_pic";
-        sendOkHttpRequest(requestBingPic, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final String bingPic = response.body().string();
-                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(FlashActivity.this).edit();
-                editor.putString("bing_pic", bingPic);
-                editor.apply();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Glide.with(getApplicationContext()).load(bingPic).into(mImageView);
-                    }
-                });
-            }
-        });
-
-    }
-
-    public void sendOkHttpRequest(String address, okhttp3.Callback callback) {
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder().url(address).build();
-        client.newCall(request).enqueue(callback);
-    }
 
     /**
      * 获取当前用户的权限
