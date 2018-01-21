@@ -22,7 +22,7 @@ import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department
 import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
 import com.example.administrator.assetsmanagement.bean.LocationTree.LocationCheckboxNodeAdapter;
 import com.example.administrator.assetsmanagement.bean.LocationTree.LocationNodeSelected;
-import com.example.administrator.assetsmanagement.bean.Person;
+import com.example.administrator.assetsmanagement.bean.Manager.Person;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -2,8 +2,6 @@ package com.example.administrator.assetsmanagement;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,9 +11,9 @@ import android.widget.TextView;
 import com.example.administrator.assetsmanagement.activity.SelectedTreeNodeActivity;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department;
-import com.example.administrator.assetsmanagement.bean.Person;
-import com.example.administrator.assetsmanagement.bean.Role;
-import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
+import com.example.administrator.assetsmanagement.bean.Manager.Person;
+import com.example.administrator.assetsmanagement.bean.Manager.Role;
+import com.github.promeg.pinyinhelper.Pinyin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +21,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.LogInListener;
 import cn.bmob.v3.listener.SaveListener;
 
@@ -90,6 +86,8 @@ public class RegisterManagerActivity extends ParentWithNaviActivity {
         }
         final Person user = new Person();
         user.setUsername(username);
+        String pinyin = Pinyin.toPinyin(username.charAt(0)).toUpperCase();
+        user.setAcronym(pinyin.charAt(0)+"");
         user.setMobilePhoneNumber(telephone);
         user.setPassword(password);
         Department department = new Department();

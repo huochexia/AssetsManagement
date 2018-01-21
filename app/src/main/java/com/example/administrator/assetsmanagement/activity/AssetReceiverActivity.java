@@ -18,7 +18,7 @@ import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.adapter.AssetRecyclerViewAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
-import com.example.administrator.assetsmanagement.bean.Person;
+import com.example.administrator.assetsmanagement.bean.Manager.Person;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.example.administrator.assetsmanagement.adapter;
+package com.example.administrator.assetsmanagement.bean.Manager;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.example.administrator.assetsmanagement.Interface.SelectManagerClickListener;
 import com.example.administrator.assetsmanagement.R;
-import com.example.administrator.assetsmanagement.bean.Person;
 
 import java.util.List;
 

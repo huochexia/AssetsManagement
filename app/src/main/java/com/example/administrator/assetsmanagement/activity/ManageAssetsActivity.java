@@ -3,8 +3,6 @@ package com.example.administrator.assetsmanagement.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,7 +15,7 @@ import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
-import com.example.administrator.assetsmanagement.bean.Person;
+import com.example.administrator.assetsmanagement.bean.Manager.Person;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.readystatesoftware.viewbadger.BadgeView;

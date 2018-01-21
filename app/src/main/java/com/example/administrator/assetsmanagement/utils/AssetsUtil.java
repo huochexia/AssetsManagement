@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
-import com.example.administrator.assetsmanagement.bean.Person;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,7 +24,6 @@ import java.util.Map;
 import cn.bmob.v3.BmobBatch;
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BatchResult;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;

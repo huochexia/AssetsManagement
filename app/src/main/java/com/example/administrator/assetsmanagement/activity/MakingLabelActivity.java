@@ -458,8 +458,9 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
                 mSelectedList.add(assetInfo);
                 if (mSelectedList.size() > 50) {
                     toast("选择资产数量不能超过50！");
-                    madapter.setMap(position);
                     mSelectedList.remove(assetInfo);
+                    ((MakingLabelsListAdapter.LabelViewHolder) mRvMakingLabel.
+                            findViewHolderForLayoutPosition(position)).mCheckBox.setChecked(false);
                 }
             }
 

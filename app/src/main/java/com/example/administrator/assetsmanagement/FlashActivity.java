@@ -7,8 +7,8 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.assetsmanagement.base.BaseActivity;
-import com.example.administrator.assetsmanagement.bean.Person;
-import com.example.administrator.assetsmanagement.bean.Role;
+import com.example.administrator.assetsmanagement.bean.Manager.Person;
+import com.example.administrator.assetsmanagement.bean.Manager.Role;
 
 import java.util.List;
 

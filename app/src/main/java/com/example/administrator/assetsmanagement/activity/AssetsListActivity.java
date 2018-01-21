@@ -20,7 +20,7 @@ import com.example.administrator.assetsmanagement.bean.AssetPicture;
 import com.example.administrator.assetsmanagement.bean.CategoryTree.AssetCategory;
 import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department;
 import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
-import com.example.administrator.assetsmanagement.bean.Person;
+import com.example.administrator.assetsmanagement.bean.Manager.Person;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 
 import java.io.Serializable;

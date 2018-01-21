@@ -3,4 +3,8 @@
     <declare-styleable name="LineEditText">
         <attr name="lineColorEt" format="color"/>
     </declare-styleable>
+    <declare-styleable name="CharIndexBar">
+        <attr name="textSize" />
+        <attr name="PressedtextColor" format="color"/>
+    </declare-styleable>
 </resources>

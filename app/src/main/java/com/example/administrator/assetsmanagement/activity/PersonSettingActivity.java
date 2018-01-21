@@ -6,18 +6,22 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.administrator.assetsmanagement.Interface.SelectManagerClickListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
-import com.example.administrator.assetsmanagement.adapter.SetManagerRightAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
-import com.example.administrator.assetsmanagement.bean.Person;
-import com.example.administrator.assetsmanagement.bean.Role;
+import com.example.administrator.assetsmanagement.bean.Manager.AcronymItem;
+import com.example.administrator.assetsmanagement.bean.Manager.CharIndexBar;
+import com.example.administrator.assetsmanagement.bean.Manager.Person;
+import com.example.administrator.assetsmanagement.bean.Manager.Role;
+import com.example.administrator.assetsmanagement.bean.Manager.SetManagerRightAdapter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -40,6 +44,7 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
 
     @BindView(R.id.lv_tree_structure)
     RecyclerView mLvTreeStructure;
+    AcronymItem mItemDecoration;
 
     protected List<Person> userlist = new ArrayList<>();
     Person person;
@@ -48,6 +53,10 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
     int count = 0;//计数器，每500条加1
     @BindView(R.id.loading_person_progress)
     ProgressBar mLoadingPersonProgress;
+    @BindView(R.id.char_index_bar)
+    CharIndexBar mCharIndexBar;
+    @BindView(R.id.tv_show_hint)
+    TextView mTvShowHint;
 
     @Override
     public String title() {
@@ -87,7 +96,8 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
         List<Person> allPerson = new ArrayList<>();
         count = 0;
         queryPerson(allPerson);
-
+        mCharIndexBar.setShowHintText(mTvShowHint);
+        mCharIndexBar.setmLayoutManager(ll);
     }
 
     /**
@@ -160,7 +170,7 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
 
     private void queryPerson(final List<Person> allPerson) {
         final BmobQuery<Person> query = new BmobQuery<>();
-        query.order("username");
+        query.order("acronym");
         query.setSkip(count * 500);
         query.setLimit(500);
         //执行查询方法
@@ -207,6 +217,9 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
                     userlist = (List<Person>) msg.getData().getSerializable("person");
                     adapter = new SetManagerRightAdapter(PersonSettingActivity.this, userlist);
                     mLvTreeStructure.setAdapter(adapter);
+                    mLvTreeStructure.addItemDecoration(new AcronymItem(PersonSettingActivity.this, userlist));
+                    mLvTreeStructure.addItemDecoration(new DividerItemDecoration(
+                            PersonSettingActivity.this, DividerItemDecoration.HORIZONTAL));
                     mLoadingPersonProgress.setVisibility(View.GONE);
                     adapter.setOnClickListener(new SelectManagerClickListener() {
                         @Override

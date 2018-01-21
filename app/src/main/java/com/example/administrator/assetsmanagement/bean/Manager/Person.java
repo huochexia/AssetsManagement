@@ -1,4 +1,4 @@
-package com.example.administrator.assetsmanagement.bean;
+package com.example.administrator.assetsmanagement.bean.Manager;
 
 import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department;
 import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeId;
@@ -26,8 +26,15 @@ public class Person extends BmobUser implements Serializable{
 
     private Department department;
 
+    private String acronym;//首字母
 
+    public String getAcronym() {
+        return acronym;
+    }
 
+    public void setAcronym(String acronym) {
+        this.acronym = acronym;
+    }
 
     public String getNodename() {
         return nodename;

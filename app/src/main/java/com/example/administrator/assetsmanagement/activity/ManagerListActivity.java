@@ -11,9 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import com.example.administrator.assetsmanagement.Interface.SelectManagerClickListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
-import com.example.administrator.assetsmanagement.adapter.ManagerRecyclerViewAdapter;
+import com.example.administrator.assetsmanagement.bean.Manager.ManagerRecyclerViewAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
-import com.example.administrator.assetsmanagement.bean.Person;
+import com.example.administrator.assetsmanagement.bean.Manager.Person;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -36,7 +36,7 @@ import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
 import com.example.administrator.assetsmanagement.bean.CategoryTree.AssetCategory;
 import com.example.administrator.assetsmanagement.bean.CategoryTree.CategoryNodeHelper;
-import com.example.administrator.assetsmanagement.bean.Person;
+import com.example.administrator.assetsmanagement.bean.Manager.Person;
 import com.example.administrator.assetsmanagement.utils.ImageFactory;
 import com.example.administrator.assetsmanagement.utils.LineEditText;
 import com.example.administrator.assetsmanagement.utils.TimeUtils;
@@ -58,7 +58,6 @@ import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UploadFileListener;
-import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
  * 登记资产：对原有资产和新购资产进行基本信息登记，资产图片的分两种方式，一是从现有图库中进行选择，

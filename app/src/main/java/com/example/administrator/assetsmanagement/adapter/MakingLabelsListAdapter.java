@@ -45,14 +45,6 @@ public class MakingLabelsListAdapter extends RecyclerView.Adapter<MakingLabelsLi
         }
     }
 
-    /**
-     * 当选择数量超过范围时调用
-     * @param position
-     */
-    public void setMap(int position) {
-        map.put(position, false);
-
-    }
 
     public void setSelectedListener(AssetSelectedListener listener) {
         this.listener = listener;
@@ -95,13 +87,13 @@ public class MakingLabelsListAdapter extends RecyclerView.Adapter<MakingLabelsLi
         return mAssetInfoList.size();
     }
 
-    class LabelViewHolder extends RecyclerView.ViewHolder {
+    public class LabelViewHolder extends RecyclerView.ViewHolder {
         LinearLayout item;
         TextView serial_number;
         TextView mAssetNum;
         TextView mAssetLocation;
         LinearLayout mLayoutStatus;
-        CheckBox mCheckBox;
+        public CheckBox mCheckBox;
 
         public LabelViewHolder(View itemView) {
             super(itemView);

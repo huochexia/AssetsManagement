@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.example.administrator.assetsmanagement.base.BaseActivity;
-import com.example.administrator.assetsmanagement.bean.Person;
+import com.example.administrator.assetsmanagement.bean.Manager.Person;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

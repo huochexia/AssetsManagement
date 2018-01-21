@@ -27,23 +27,18 @@
                 android:layout_margin="@dimen/margin_5"
                 android:layout_weight="1">
 
-                <mehdi.sakout.fancybuttons.FancyButton
+                <Button
                     android:id="@+id/btn_single_asset_new_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="10dp"
                     android:padding="10dp"
-                    fancy:fb_borderColor="#FFFFFF"
-                    fancy:fb_borderWidth="0dp"
-                    fancy:fb_defaultColor="#3fb2b4"
-                    fancy:fb_focusColor="#3f51b4"
-                    fancy:fb_radius="15dp"
-                    fancy:fb_text="@string/btn_new_location_text"
-                    fancy:fb_textColor="#FFFFFF"
-                    fancy:fb_textFont="隶书.ttf"
-                    fancy:fb_textSize="16sp">
-                </mehdi.sakout.fancybuttons.FancyButton>
+                    android:background="#3fb2b4"
+                    android:text="@string/btn_new_location_text"
+                    android:textColor="@color/base_color_text_white"
+                    android:textSize="16sp">
+                </Button>
 
                 <TextView
                     android:id="@+id/tv_single_asset_new_location"
@@ -59,23 +54,18 @@
                 android:layout_margin="@dimen/margin_5"
                 android:layout_weight="1">
 
-                <mehdi.sakout.fancybuttons.FancyButton
+                <Button
                     android:id="@+id/btn_single_asset_new_department"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="10dp"
+                    android:background="#3fb2b4"
                     android:padding="10dp"
-                    fancy:fb_borderColor="#FFFFFF"
-                    fancy:fb_borderWidth="0dp"
-                    fancy:fb_defaultColor="#3fb2b4"
-                    fancy:fb_focusColor="#3f51b4"
-                    fancy:fb_radius="15dp"
-                    fancy:fb_text="@string/btn_new_department_text"
-                    fancy:fb_textColor="#FFFFFF"
-                    fancy:fb_textFont="隶书.ttf"
-                    fancy:fb_textSize="16sp">
-                </mehdi.sakout.fancybuttons.FancyButton>
+                    android:text="@string/btn_new_department_text"
+                    android:textColor="@color/base_color_text_white"
+                    android:textSize="16sp">
+                </Button>
 
                 <TextView
                     android:id="@+id/tv_single_asset_new_department"
@@ -96,23 +86,17 @@
             android:layout_margin="@dimen/margin_5"
             >
 
-            <mehdi.sakout.fancybuttons.FancyButton
+            <Button
                 android:id="@+id/btn_single_asset_new_manager"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="10dp"
+                android:background="#3fb2b4"
                 android:padding="10dp"
-                fancy:fb_borderColor="#FFFFFF"
-                fancy:fb_borderWidth="0dp"
-                fancy:fb_defaultColor="#3fb2b4"
-                fancy:fb_focusColor="#3f51b4"
-                fancy:fb_radius="15dp"
-                fancy:fb_text="@string/btn_new_receiver_text"
-                fancy:fb_textColor="#FFFFFF"
-                fancy:fb_textFont="隶书.ttf"
-                fancy:fb_textSize="16sp">
-            </mehdi.sakout.fancybuttons.FancyButton>
+                android:text="@string/btn_new_receiver_text"
+                android:textColor="@color/base_color_text_white">
+            </Button>
 
             <TextView
                 android:id="@+id/tv_single_asset_new_manager"

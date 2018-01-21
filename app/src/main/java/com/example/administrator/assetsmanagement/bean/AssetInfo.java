@@ -3,6 +3,7 @@ package com.example.administrator.assetsmanagement.bean;
 import com.example.administrator.assetsmanagement.bean.CategoryTree.AssetCategory;
 import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department;
 import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
+import com.example.administrator.assetsmanagement.bean.Manager.Person;
 
 import cn.bmob.v3.BmobObject;
 

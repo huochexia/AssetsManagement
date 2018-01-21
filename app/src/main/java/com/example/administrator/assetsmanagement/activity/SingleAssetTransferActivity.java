@@ -14,7 +14,7 @@ import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department
 import com.example.administrator.assetsmanagement.bean.DepartmentTree.DepartmentNodeHelper;
 import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
 import com.example.administrator.assetsmanagement.bean.LocationTree.LocationNodeHelper;
-import com.example.administrator.assetsmanagement.bean.Person;
+import com.example.administrator.assetsmanagement.bean.Manager.Person;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 
 import java.util.ArrayList;

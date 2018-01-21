@@ -18,7 +18,7 @@ import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
 import com.example.administrator.assetsmanagement.bean.CategoryTree.AssetCategory;
-import com.example.administrator.assetsmanagement.bean.Person;
+import com.example.administrator.assetsmanagement.bean.Manager.Person;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 import com.example.administrator.assetsmanagement.utils.PictureReceiveEvent;
 

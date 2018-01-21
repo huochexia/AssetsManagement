@@ -1,4 +1,6 @@
-package com.example.administrator.assetsmanagement.bean;
+package com.example.administrator.assetsmanagement.bean.Manager;
+
+import com.example.administrator.assetsmanagement.bean.Manager.Person;
 
 import java.util.List;
 

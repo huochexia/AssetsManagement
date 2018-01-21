@@ -19,7 +19,7 @@ import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department
 import com.example.administrator.assetsmanagement.bean.DepartmentTree.DepartmentNodeHelper;
 import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
 import com.example.administrator.assetsmanagement.bean.LocationTree.LocationNodeHelper;
-import com.example.administrator.assetsmanagement.bean.Person;
+import com.example.administrator.assetsmanagement.bean.Manager.Person;
 import com.example.administrator.assetsmanagement.utils.FlowRadioGroup;
 import com.example.administrator.assetsmanagement.utils.PictureReceiveEvent;
 import com.google.zxing.integration.android.IntentIntegrator;

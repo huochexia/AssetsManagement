@@ -14,7 +14,6 @@ import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.adapter.AssetRecyclerViewAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
-import com.example.administrator.assetsmanagement.bean.Person;
 import com.example.administrator.assetsmanagement.utils.AssetsUtil;
 
 import java.util.ArrayList;
@@ -24,10 +23,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobObject;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
 
 /**
  * Created by Administrator on 2017/12/31 0031.

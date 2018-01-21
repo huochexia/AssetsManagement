@@ -1,4 +1,4 @@
-package com.example.administrator.assetsmanagement.adapter;
+package com.example.administrator.assetsmanagement.bean.Manager;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -6,18 +6,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.example.administrator.assetsmanagement.Interface.SelectManagerClickListener;
 import com.example.administrator.assetsmanagement.R;
-import com.example.administrator.assetsmanagement.bean.Person;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
+ * 用于选择接收人或管理员时，列表适配器
  * Created by Administrator on 2017/12/14 0014.
  */
 

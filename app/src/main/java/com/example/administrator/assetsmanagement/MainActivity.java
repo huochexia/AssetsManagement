@@ -12,7 +12,6 @@ import com.ToxicBakery.viewpager.transforms.RotateDownTransformer;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.adapter.ViewPagerAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
-import com.example.administrator.assetsmanagement.bean.Role;
 import com.example.administrator.assetsmanagement.fragment.AssetsManagementFragment;
 import com.example.administrator.assetsmanagement.fragment.BaseSettingFragment;
 import com.example.administrator.assetsmanagement.fragment.MySettingFragment;
