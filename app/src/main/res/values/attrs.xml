@@ -5,6 +5,6 @@
     </declare-styleable>
     <declare-styleable name="CharIndexBar">
         <attr name="textSize" />
-        <attr name="PressedtextColor" format="color"/>
+
     </declare-styleable>
 </resources>

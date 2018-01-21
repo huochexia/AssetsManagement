@@ -7,10 +7,16 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.administrator.assetsmanagement.Interface.SelectManagerClickListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
+import com.example.administrator.assetsmanagement.bean.Manager.AcronymItem;
+import com.example.administrator.assetsmanagement.bean.Manager.CharIndexBar;
 import com.example.administrator.assetsmanagement.bean.Manager.ManagerRecyclerViewAdapter;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
 import com.example.administrator.assetsmanagement.bean.Manager.Person;
@@ -19,6 +25,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobQuery;
@@ -39,6 +46,12 @@ public class ManagerListActivity extends ParentWithNaviActivity {
     RecyclerView mRecyclerView;
     private Person manager;
     private int count;
+    @BindView(R.id.tv_show_hint)
+    TextView mTvShowHint;
+    @BindView(R.id.char_index_bar)
+    CharIndexBar mCharIndexBar;
+    @BindView(R.id.loading_person_progress)
+    ProgressBar mLoadingPersonProgress;
 
     @Override
     public String title() {
@@ -49,7 +62,10 @@ public class ManagerListActivity extends ParentWithNaviActivity {
     public Object left() {
         return R.drawable.ic_left_navi;
     }
-
+    @Override
+    public Object right() {
+        return R.drawable.ic_right_check;
+    }
     @Override
     public ToolbarClickListener getToolbarListener() {
         return new ToolbarClickListener() {
@@ -60,7 +76,14 @@ public class ManagerListActivity extends ParentWithNaviActivity {
 
             @Override
             public void clickRight() {
-
+                if (manager != null) {
+                    Intent intent = new Intent();
+                    intent.putExtra("manager", manager);
+                    setResult(SEARCH_OK, intent);
+                    finish();
+                }else{
+                    toast("请选择管理员！");
+                }
             }
         };
     }
@@ -68,17 +91,18 @@ public class ManagerListActivity extends ParentWithNaviActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manager_list);
+        setContentView(R.layout.activity_person_setting);
         ButterKnife.bind(this);
         initNaviView();
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_manager_list_view);
+        mRecyclerView = (RecyclerView) findViewById(R.id.lv_tree_structure);
         LinearLayoutManager ll = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(ll);
         List<Person> allManager = new ArrayList<>();
         count = 0;
         getManager(allManager);
-
+        mCharIndexBar.setShowHintText(mTvShowHint);
+        mCharIndexBar.setmLayoutManager(ll);
     }
 
     /**
@@ -121,18 +145,18 @@ public class ManagerListActivity extends ParentWithNaviActivity {
 
     ManagerHandler handler = new ManagerHandler();
 
-    @OnClick(R.id.btn_manager_select_ok)
-    public void onViewClicked() {
-        if (manager != null) {
-            Intent intent = new Intent();
-            intent.putExtra("manager", manager);
-            setResult(SEARCH_OK, intent);
-            finish();
-        }else{
-            toast("请选择管理员！");
-        }
-
-    }
+//    @OnClick(R.id.btn_manager_select_ok)
+//    public void onViewClicked() {
+//        if (manager != null) {
+//            Intent intent = new Intent();
+//            intent.putExtra("manager", manager);
+//            setResult(SEARCH_OK, intent);
+//            finish();
+//        }else{
+//            toast("请选择管理员！");
+//        }
+//
+//    }
 
 
     class ManagerHandler extends Handler {
@@ -143,6 +167,8 @@ public class ManagerListActivity extends ParentWithNaviActivity {
                     mPersonList = (List<Person>) msg.getData().getSerializable("manager");
                     adapter = new ManagerRecyclerViewAdapter(ManagerListActivity.this, mPersonList);
                     mRecyclerView.setAdapter(adapter);
+                    mRecyclerView.addItemDecoration(new AcronymItem(ManagerListActivity.this, mPersonList));
+                    mLoadingPersonProgress.setVisibility(View.GONE);
                     adapter.setOnClickListener(new SelectManagerClickListener() {
                         @Override
                         public void select(Person person) {

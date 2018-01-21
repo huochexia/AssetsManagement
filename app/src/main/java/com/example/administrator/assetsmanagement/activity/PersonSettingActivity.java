@@ -10,6 +10,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -58,6 +59,7 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
     @BindView(R.id.tv_show_hint)
     TextView mTvShowHint;
 
+
     @Override
     public String title() {
         return "权限设置";
@@ -90,7 +92,6 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
         setContentView(R.layout.activity_person_setting);
         ButterKnife.bind(this);
         initNaviView();
-
         LinearLayoutManager ll = new LinearLayoutManager(this);
         mLvTreeStructure.setLayoutManager(ll);
         List<Person> allPerson = new ArrayList<>();
