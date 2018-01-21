@@ -103,8 +103,8 @@ public class SingleAssetTransferActivity extends ParentWithNaviActivity {
                 if (mAssetInfoList.size() > 0) {
                     //轮查状态是否可以进行移交
                     for (AssetInfo ass : mAssetInfoList) {
-                        if (ass.getStatus() == 2 || ass.getStatus() == 3) {
-                            toast("丢失、待报废资产不能进行移交！");
+                        if (ass.getStatus() == 2 || ass.getStatus() == 3|| ass.getStatus()==5) {
+                            toast("丢失、待报废、已报废资产不能进行移交！");
                             return;
                         }
                     }
