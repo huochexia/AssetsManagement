@@ -87,6 +87,11 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
     }
 
     @Override
+    public Object right() {
+        return R.drawable.ic_right_check;
+    }
+
+    @Override
     public ToolbarClickListener getToolbarListener() {
         return new ToolbarClickListener() {
             @Override
@@ -96,7 +101,25 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
 
             @Override
             public void clickRight() {
-
+                if (mBaseNode != null) {
+                    switch (flag) {
+                        case 0://返回选择的结果
+                            sendNodeInfo(mBaseNode);
+                            finish();
+                            break;
+                        case 1://利用选择结果，继续查询
+                            Intent intent = new Intent(SelectedTreeNodeActivity.this,
+                                    SelectAssetsPhotoActivity.class);
+                            intent.putExtra("isRegister", true);
+                            intent.putExtra("category", mBaseNode);
+                            intent.putExtra("category_name", ((AssetCategory) mBaseNode).getCategoryName());
+                            startActivity(intent);
+                            finish();
+                            break;
+                    }
+                } else {
+                    toast("请选择要查询的内容！");
+                }
             }
         };
     }
@@ -313,28 +336,7 @@ public class SelectedTreeNodeActivity extends ParentWithNaviActivity {
         }
     }
 
-    @OnClick(R.id.btn_tree_search_node_ok)
-    public void onViewClicked() {
-        if (mBaseNode != null) {
-            switch (flag) {
-                case 0://返回选择的结果
-                    sendNodeInfo(mBaseNode);
-                    finish();
-                    break;
-                case 1://利用选择结果，继续查询
-                    Intent intent = new Intent(this,SelectAssetsPhotoActivity.class);
-                    intent.putExtra("isRegister", true);
-                    intent.putExtra("category", mBaseNode);
-                    intent.putExtra("category_name", ((AssetCategory) mBaseNode).getCategoryName());
-                    startActivity(intent);
-                    finish();
-                    break;
-            }
-        } else {
-            toast("请选择要查询的内容！");
-        }
 
-    }
 
     /**
      * 返回选择节点

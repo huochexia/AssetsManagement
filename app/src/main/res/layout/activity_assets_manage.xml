@@ -156,10 +156,23 @@
             </android.support.v7.widget.CardView>
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/ll_manage_asset_edit"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/margin_10"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="10dp">
 
+            <ImageView
+                android:id="@+id/iv_assets_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+            </android.support.v7.widget.CardView>
         </LinearLayout>
     </LinearLayout>
 

@@ -41,8 +41,7 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
     List<AssetInfo> temp_list = new ArrayList<>();
     List<AssetInfo> selectedList = new ArrayList<>();
     AssetRecyclerViewAdapter adapter;
-    @BindView(R.id.btn_receive_ok)
-    Button mBtnReceiverOk;
+
     @BindView(R.id.loading_receiver_progress)
     ProgressBar loadingReceiverProgress;
     private AssetInfo assetInfo;
@@ -58,6 +57,11 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
     }
 
     @Override
+    public Object right() {
+        return R.drawable.ic_right_check;
+    }
+
+    @Override
     public ToolbarClickListener getToolbarListener() {
         return new ToolbarClickListener() {
             @Override
@@ -67,7 +71,16 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
 
             @Override
             public void clickRight() {
-
+                if (selectedList.size() > 0) {
+                    AssetsUtil.updateBmobLibrary(AssetReceiverActivity.this,
+                            updateAllSelectedAssetInfo(mAssetInfoList, selectedList));
+                    temp_list.clear();
+                    temp_list.addAll(AssetsUtil.GroupAfterMerge(AssetsUtil.deepCopy(mAssetInfoList)));
+                    adapter.initMap();
+                    adapter.notifyDataSetChanged();
+                } else {
+                    toast("请选择要接收的资产！");
+                }
             }
         };
     }
@@ -78,7 +91,6 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
         setContentView(R.layout.activity_assets_receiver);
         ButterKnife.bind(this);
         initNaviView();
-        mBtnReceiverOk.setEnabled(false);
 
         LinearLayoutManager ll = new LinearLayoutManager(this);
         mRcReceiverAssets.setLayoutManager(ll);
@@ -89,19 +101,6 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
                 6, "mNewManager", person, handler, allList);
     }
 
-    @OnClick(R.id.btn_receive_ok)
-    public void onViewClicked(View view) {
-        if (selectedList.size() > 0) {
-            AssetsUtil.updateBmobLibrary(this, updateAllSelectedAssetInfo(mAssetInfoList, selectedList));
-            temp_list.clear();
-            temp_list.addAll(AssetsUtil.GroupAfterMerge(AssetsUtil.deepCopy(mAssetInfoList)));
-            adapter.initMap();
-            adapter.notifyDataSetChanged();
-        } else {
-            toast("请选择要接收的资产！");
-        }
-
-    }
 
     /**
      * 用于处理查询结果的异步处理器
@@ -117,7 +116,7 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
                     //就必须复制一份临时列表用于处理显示。
                     mAssetInfoList = (List<AssetInfo>) msg.getData().getSerializable("assets");
                     if (mAssetInfoList.size() > 0) {
-                        mBtnReceiverOk.setEnabled(true);
+//                        mBtnReceiverOk.setEnabled(true);
                     }else{
                         toast("没有要接收的资产！");
                     }

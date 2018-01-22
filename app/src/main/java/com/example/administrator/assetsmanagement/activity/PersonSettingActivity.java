@@ -107,7 +107,7 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
     private void startSelectDialog(final Role role, final Person person) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("选择人员权限");
-        final boolean[] items = new boolean[]{false, false, false, false, false};
+        final boolean[] items = new boolean[]{false, false, false, false, false,false};
         //确定权限初始值
         if (role.getRights() != null) {
             if (role.getRights().contains("登记")) {
@@ -120,15 +120,18 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
             if (role.getRights().contains("设置")) {
                 items[2] = true;
             }
-            if (role.getRights().contains("审批")) {
+            if (role.getRights().contains("审批报废")) {
                 items[3] = true;
             }
-            if (role.getRights().contains("处置")) {
+            if (role.getRights().contains("处置资产")) {
                 items[4] = true;
+            }
+            if (role.getRights().contains("修改数据")) {
+                items[5] = true;
             }
 
         }
-        final String[] rights = new String[]{"登记", "查询", "设置", "审批", "处置"};
+        final String[] rights = new String[]{"登记", "查询", "设置", "审批报废", "处置资产","修改数据"};
         builder.setMultiChoiceItems(rights, items, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
@@ -216,40 +219,41 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
             switch (msg.what) {
                 case REQUEST_USER:
                     userlist = (List<Person>) msg.getData().getSerializable("person");
-                    adapter = new SetManagerRightAdapter(PersonSettingActivity.this, userlist);
-                    mLvTreeStructure.setAdapter(adapter);
-                    mLvTreeStructure.addItemDecoration(new AcronymItem(PersonSettingActivity.this, userlist));
-                    mLvTreeStructure.addItemDecoration(new DividerItemDecoration(
-                            PersonSettingActivity.this, DividerItemDecoration.HORIZONTAL));
-                    mLoadingPersonProgress.setVisibility(View.GONE);
-                    adapter.setOnClickListener(new SelectManagerClickListener() {
-                        @Override
-                        public void select(final Person person) {
-                            runOnMain(new Runnable() {
-                                @Override
-                                public void run() {
-                                    BmobQuery<Role> query = new BmobQuery<>();
-                                    query.addWhereEqualTo("user", person);
-                                    query.findObjects(new FindListener<Role>() {
-                                        @Override
-                                        public void done(List<Role> list, BmobException e) {
-                                            if (list != null) {
-                                                role = list.get(0);
-                                            } else {
-                                                role = new Role();
+                    if (userlist != null) {
+                        adapter = new SetManagerRightAdapter(PersonSettingActivity.this, userlist);
+                        mLvTreeStructure.setAdapter(adapter);
+                        mLvTreeStructure.addItemDecoration(new AcronymItem(PersonSettingActivity.this, userlist));
+                        mCharIndexBar.setPersonList(userlist);
+                        mLoadingPersonProgress.setVisibility(View.GONE);
+                        adapter.setOnClickListener(new SelectManagerClickListener() {
+                            @Override
+                            public void select(final Person person) {
+                                runOnMain(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        BmobQuery<Role> query = new BmobQuery<>();
+                                        query.addWhereEqualTo("user", person);
+                                        query.findObjects(new FindListener<Role>() {
+                                            @Override
+                                            public void done(List<Role> list, BmobException e) {
+                                                if (list != null) {
+                                                    role = list.get(0);
+                                                } else {
+                                                    role = new Role();
+                                                }
+                                                startSelectDialog(role, person);
                                             }
-                                            startSelectDialog(role, person);
-                                        }
-                                    });
-                                }
-                            });
-                        }
+                                        });
+                                    }
+                                });
+                            }
 
-                        @Override
-                        public void cancelSelect() {
+                            @Override
+                            public void cancelSelect() {
 
-                        }
-                    });
+                            }
+                        });
+                    }
                     break;
 
             }

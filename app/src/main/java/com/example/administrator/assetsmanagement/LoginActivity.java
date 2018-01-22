@@ -49,7 +49,6 @@ public class LoginActivity extends BaseActivity {
                         if (e == null) {
                             //登录成功
                             startActivity(FlashActivity.class, null, true);
-//                            startActivity(MainActivity.class, null, true);
                         } else {
                             toast(e.getMessage() + "(" + e.getErrorCode() + ")");
                         }
@@ -62,7 +61,7 @@ public class LoginActivity extends BaseActivity {
                 });
                 break;
             case R.id.btn_register:
-                startActivity(RegisterManagerActivity.class, null, false);
+                startActivity(RegisterManagerActivity.class, null, true);
                 break;
             case R.id.tv_forget_password:
                 toast("近期推出，敬请期待");

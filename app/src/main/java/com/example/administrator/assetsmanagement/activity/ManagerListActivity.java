@@ -111,7 +111,7 @@ public class ManagerListActivity extends ParentWithNaviActivity {
      */
     private void getManager(final List<Person> allManager) {
         BmobQuery<Person> query = new BmobQuery<>();
-        query.order("username");
+        query.order("acronym");
         query.setSkip(count * 500);
         query.setLimit(500);
         query.include("department");
@@ -145,43 +145,32 @@ public class ManagerListActivity extends ParentWithNaviActivity {
 
     ManagerHandler handler = new ManagerHandler();
 
-//    @OnClick(R.id.btn_manager_select_ok)
-//    public void onViewClicked() {
-//        if (manager != null) {
-//            Intent intent = new Intent();
-//            intent.putExtra("manager", manager);
-//            setResult(SEARCH_OK, intent);
-//            finish();
-//        }else{
-//            toast("请选择管理员！");
-//        }
-//
-//    }
-
-
     class ManagerHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
                     mPersonList = (List<Person>) msg.getData().getSerializable("manager");
-                    adapter = new ManagerRecyclerViewAdapter(ManagerListActivity.this, mPersonList);
-                    mRecyclerView.setAdapter(adapter);
-                    mRecyclerView.addItemDecoration(new AcronymItem(ManagerListActivity.this, mPersonList));
-                    mLoadingPersonProgress.setVisibility(View.GONE);
-                    adapter.setOnClickListener(new SelectManagerClickListener() {
-                        @Override
-                        public void select(Person person) {
-                            manager = person;
-                        }
+                    if (mPersonList != null) {
+                        adapter = new ManagerRecyclerViewAdapter(ManagerListActivity.this, mPersonList);
+                        mRecyclerView.setAdapter(adapter);
+                        mRecyclerView.addItemDecoration(new AcronymItem(ManagerListActivity.this, mPersonList));
+                        mLoadingPersonProgress.setVisibility(View.GONE);
+                        mCharIndexBar.setPersonList(mPersonList);
+                        adapter.setOnClickListener(new SelectManagerClickListener() {
+                            @Override
+                            public void select(Person person) {
+                                manager = person;
+                            }
 
-                        @Override
-                        public void cancelSelect() {
-                            manager = null;
-                        }
+                            @Override
+                            public void cancelSelect() {
+                                manager = null;
+                            }
 
 
-                    });
+                        });
+                    }
                     break;
             }
         }

@@ -168,9 +168,12 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         super.onRestart();
         //新登记的，在这里还没有存入数据库中，所以不用从重新加载查询。
         if (flag != 1) {
-            clearLists();
-            getSearchResultList();
-            loadingAssetProgress.setVisibility(View.VISIBLE);
+            if (oldLocation != null || mPicture != null) {
+                clearLists();
+                getSearchResultList();
+                loadingAssetProgress.setVisibility(View.VISIBLE);
+            }
+
         }
     }
 
@@ -181,7 +184,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         adapter = new AssetRecyclerViewAdapter(this, temp_list, false);
         adapter.getAssetSelectListener(new AssetSelectedListener() {
             @Override
-            public void selectAsset(AssetInfo assetInfo,int position) {
+            public void selectAsset(AssetInfo assetInfo, int position) {
                 selectedAssets.add(assetInfo);
             }
 
@@ -258,10 +261,12 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                     case R.id.rb_turn_over_all:
                         changeBtnStatus();
                         clearLists();
+                        initSearchContent();
                         select_type = SEARCH_ALL;
                         mTvSearchContent.setText("管理的全部资产");
                         getSearchResultList();
                         loadingAssetProgress.setVisibility(View.VISIBLE);
+
                         break;
 
                 }
@@ -291,12 +296,14 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
             case R.id.btn_search_location:
                 clearLists();
                 getSelectedInfo(SelectedTreeNodeActivity.SEARCH_LOCATION, false, REQUEST_SELECTED);
+                initSearchContent();
                 break;
             case R.id.btn_search_name:
                 clearLists();
                 Intent intentPhoto = new Intent(this, SelectAssetsPhotoActivity.class);
                 intentPhoto.putExtra("isRegister", false);
                 startActivityForResult(intentPhoto, REQUEST_NAME);
+                initSearchContent();
                 break;
             case R.id.btn_receive_location:
                 getSelectedInfo(SelectedTreeNodeActivity.SEARCH_LOCATION, false, REQUEST_RECEIVE_LOCATION);
@@ -313,7 +320,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 if (selectedAssets.size() > 0) {
                     //轮查状态是否可以进行移交
                     for (AssetInfo ass : selectedAssets) {
-                        if (ass.getStatus() == 2 || ass.getStatus() == 3 ||ass.getStatus()==5) {
+                        if (ass.getStatus() == 2 || ass.getStatus() == 3 || ass.getStatus() == 5) {
                             toast("丢失、待报废、已报废资产不能进行移交！");
                             return;
                         }
@@ -342,6 +349,15 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 break;
 
         }
+    }
+
+    /**
+     * 初始化查询条件
+     */
+    private void initSearchContent() {
+        mTvSearchContent.setText("");
+        oldLocation=null;
+        mPicture =null;
     }
 
     /**
@@ -463,8 +479,10 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                 }
                 break;
             case SEARCH_NAME:
-                AssetsUtil.AndQueryAssets(this, "mPicture", mPicture,
-                        "mOldManager", current, handler, allList);
+                if (mPicture != null) {
+                    AssetsUtil.AndQueryAssets(this, "mPicture", mPicture,
+                            "mOldManager", current, handler, allList);
+                }
                 break;
             case SEARCH_ALL:
                 AssetsUtil.AndQueryAssets(this, "mOldManager", current, handler, allList);

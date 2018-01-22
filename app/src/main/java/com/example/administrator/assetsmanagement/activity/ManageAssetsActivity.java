@@ -57,6 +57,10 @@ public class ManageAssetsActivity extends ParentWithNaviActivity {
     LinearLayout llManageAssetApproval;
     @BindView(R.id.ll_manage_asset_recycle)
     LinearLayout llManageAssetRecycle;
+    @BindView(R.id.iv_assets_edit)
+    ImageView mIvAssetsEdit;
+    @BindView(R.id.ll_manage_asset_edit)
+    LinearLayout mLlManageAssetEdit;
 
     @Override
     public String title() {
@@ -101,11 +105,14 @@ public class ManageAssetsActivity extends ParentWithNaviActivity {
         ButterKnife.bind(this);
         initNaviView();
         glideImage();
-        if (!FlashActivity.mROLE.getRights().contains("审批")) {
+        if (!FlashActivity.mROLE.getRights().contains("审批报废")) {
             llManageAssetApproval.setVisibility(View.INVISIBLE);
         }
-        if (!FlashActivity.mROLE.getRights().contains("处置")) {
+        if (!FlashActivity.mROLE.getRights().contains("处置资产")) {
             llManageAssetRecycle.setVisibility(View.INVISIBLE);
+        }
+        if (!FlashActivity.mROLE.getRights().contains("修改数据")) {
+            mLlManageAssetEdit.setVisibility(View.INVISIBLE);
         }
         badgeView = new BadgeView(this, ivAssetsReceive);// 将需要设置角标的View 传递进去
     }
@@ -121,12 +128,14 @@ public class ManageAssetsActivity extends ParentWithNaviActivity {
         Glide.with(this).load(R.drawable.assets_baofei).into(ivAssetsScrapped);
         Glide.with(this).load(R.drawable.approval).into(ivAssetsApproval);
         Glide.with(this).load(R.drawable.assets_recycle).into(ivAssetsRecycle);
+        Glide.with(this).load(R.drawable.edit_asset).into(mIvAssetsEdit);
+
     }
 
 
     @OnClick({R.id.iv_assets_turn_over, R.id.iv_assets_receive, R.id.iv_assets_repaired,
             R.id.iv_assets_lose, R.id.iv_assets_scrapped, R.id.iv_assets_approval,
-            R.id.iv_assets_recycle})
+            R.id.iv_assets_recycle, R.id.iv_assets_edit})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_assets_turn_over:
@@ -145,9 +154,11 @@ public class ManageAssetsActivity extends ParentWithNaviActivity {
                 startActivity(AssetBaofeiActivity.class, null, false);
                 break;
             case R.id.iv_assets_approval:
-                startActivity(ApprovalAssetActivity.class,null,false);
+                startActivity(ApprovalAssetActivity.class, null, false);
                 break;
             case R.id.iv_assets_recycle:
+                break;
+            case R.id.iv_assets_edit:
                 break;
         }
     }
@@ -156,7 +167,7 @@ public class ManageAssetsActivity extends ParentWithNaviActivity {
      * 获取将要接收的资产数量，做为角标显示出来。查找状态为4待移交或者为6维送移交的
      */
     private void queryCountOfReceiver() {
-        List<BmobQuery<AssetInfo>> or  = new ArrayList<>();
+        List<BmobQuery<AssetInfo>> or = new ArrayList<>();
         //第一组or关系,状态为4 or 6
         BmobQuery<AssetInfo> query1 = new BmobQuery<>();
         query1.addWhereEqualTo("mStatus", 4);
@@ -185,7 +196,7 @@ public class ManageAssetsActivity extends ParentWithNaviActivity {
                         badgeView.setTextSize(19);// 设置文本大小
                         badgeView.setTextColor(Color.GREEN);
                         badgeView.setBadgePosition(BadgeView.POSITION_TOP_LEFT);// 设置在右上角
-                        badgeView.setText(integer+ ""); // 设置要显示的文本
+                        badgeView.setText(integer + ""); // 设置要显示的文本
                         badgeView.show();// 将角标显示出来
                     }
                 });

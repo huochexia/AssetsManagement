@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -20,12 +21,11 @@ import com.example.administrator.assetsmanagement.R;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
+ *
  * Created by Administrator on 2018/1/21 0021.
  */
 
@@ -42,6 +42,7 @@ public class CharIndexBar extends View {
     private onIndexPressedListener mOnIndexPressedListener;
     private TextView mShowHintText;
     private LinearLayoutManager mLayoutManager;
+    private List<Person> mPersonList;
     /**
      * 得到按下事件监听器
      * @return
@@ -109,10 +110,10 @@ public class CharIndexBar extends View {
                     mShowHintText.setText(text);
                 }
                 if (mLayoutManager != null) {
-//                    int position = getPosByTag(text);
-//                    if (position != -1) {
-//                        mLayoutManager.scrollToPositionWithOffset(position, 0);
-//                    }
+                    int position = getPersonIndex(text);
+                    if (position != -1) {
+                        mLayoutManager.scrollToPositionWithOffset(position, 0);
+                    }
                 }
                 initMap();
                 textColorMap.put(text, Color.BLUE);
@@ -221,33 +222,46 @@ public class CharIndexBar extends View {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-//                setBackgroundColor(mPressedBackground);//手指按下时背景变色
-                //注意这里没有break，因为down时，也要计算落点 回调监听器
             case MotionEvent.ACTION_MOVE:
                 float y = event.getY();
                 //通过计算判断落点在哪个区域：
-                int pressI = (int) ((y - getPaddingTop()) / mCharHeight);
+                int pressChar = (int) ((y - getPaddingTop()) / mCharHeight);
                 //边界处理（在手指move时，有可能已经移出边界，防止越界）
-                if (pressI < 0) {
-                    pressI = 0;
-                } else if (pressI >= mCharList.size()) {
-                    pressI = mCharList.size() - 1;
+                if (pressChar < 0) {
+                    pressChar = 0;
+                } else if (pressChar >= mCharList.size()) {
+                    pressChar = mCharList.size() - 1;
                 }
                 //回调监听器
                 if (null != mOnIndexPressedListener) {
-                    mOnIndexPressedListener.onIndexPressed(pressI, mCharList.get(pressI));
+                    mOnIndexPressedListener.onIndexPressed(pressChar, mCharList.get(pressChar));
                 }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
             default:
-//                setBackgroundResource(android.R.color.transparent);//手指抬起时背景恢复透明
-                //回调监听器
+
                 if ( mOnIndexPressedListener!= null) {
                     mOnIndexPressedListener.onMotionEventEnd();
                 }
                 break;
         }
         return true;
+    }
+
+    public void setPersonList(List<Person> list) {
+        mPersonList = list;
+    }
+
+    public int getPersonIndex(String text) {
+        if (TextUtils.isEmpty(text)) {
+            return -1;
+        }
+        for(int i=0;i<mPersonList.size();i++) {
+            if (text.equals(mPersonList.get(i).getAcronym())) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
