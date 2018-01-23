@@ -93,9 +93,9 @@ public class AcronymItem extends RecyclerView.ItemDecoration {
     @Override
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
         super.onDrawOver(c, parent, state);
-        int pos = ((LinearLayoutManager)(parent.getLayoutManager())).findFirstVisibleItemPosition();
-        String acronym = mManagers.get(pos).getAcronym();
-        View child = parent.getChildAt(pos);
+        int position = ((LinearLayoutManager)(parent.getLayoutManager())).findFirstVisibleItemPosition();
+        String acronym = mManagers.get(position).getAcronym();
+        View child = parent.findViewHolderForLayoutPosition(position).itemView;;
         mPaint.setColor(COLOR_TITLE_BG);
         c.drawRect(parent.getPaddingLeft(), parent.getPaddingTop(), parent.getRight() - parent.getPaddingRight(), parent.getPaddingTop() + mTitleHeight, mPaint);
         mPaint.setColor(COLOR_TITLE_FONT);
