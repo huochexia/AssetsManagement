@@ -114,6 +114,8 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
     @BindView(R.id.is_fixed_assets)
     RadioButton mIsFixedAssets;
+    @BindView(R.id.tv_assets_attr)
+    TextView tvAssetsAttr;
 
     private AssetInfo asset;
     private File Imagefile;
@@ -210,7 +212,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (TextUtils.isEmpty(s)) {
-                    s="0.0";
+                    s = "0.0";
                 }
                 asset.setPrice(Float.valueOf(s.toString().trim()));
             }
@@ -261,6 +263,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
      */
     private void setTextFonts() {
         Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/隶书.ttf");
+        tvAssetsAttr.setTypeface(typeface);
         mTvAssetsItemQuantity.setTypeface(typeface);
         mTvAssetsRegisterName.setTypeface(typeface);
         mTvRegisterCategory.setTypeface(typeface);
@@ -312,21 +315,24 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
                 break;
             case R.id.tv_assets_item_camera:
-                if (asset.getCategory() != null) {
-                    if (Build.VERSION.SDK_INT >= 23) {
-                        int checkCallPhonePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-                        if (checkCallPhonePermission != PackageManager.PERMISSION_GRANTED) {
-                            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 222);
-                            return;
-                        } else {
-                            Imagefile = startCamera();
-                        }
+                if (asset.getCategory() == null) {
+                    toast("请先选择资产类别！");
+                    return;
+                }
+                if (TextUtils.isEmpty(mEtRegisterAssetsName.getText())) {
+                    toast("请填入资产名称！");
+                    return;
+                }
+                if (Build.VERSION.SDK_INT >= 23) {
+                    int checkCallPhonePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+                    if (checkCallPhonePermission != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 222);
+                        return;
                     } else {
                         Imagefile = startCamera();
                     }
-
                 } else {
-                    toast("请先选择资产类别！");
+                        Imagefile = startCamera();
                 }
                 break;
         }
@@ -366,6 +372,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 if (data != null) {
                     Bundle bundle = data.getBundleExtra("assetpicture");
                     AssetPicture image1 = (AssetPicture) bundle.getSerializable("imageFile");
+                    mEtRegisterAssetsName.setText(image1.getAssetName());
                     asset.setPicture(image1);
                     hasPhoto = true;
                     Glide.with(this).load(image1.getImageUrl()).into(mIvRegisterPicture);
@@ -645,6 +652,8 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                     picture.setCategory(asset.getCategory());
                     String imangNum = System.currentTimeMillis() + "";
                     picture.setImageNum(imangNum);
+                    String assetName = mEtRegisterAssetsName.getText().toString();
+                    picture.setAssetName(assetName);
                     picture.setImageUrl(bmobFile.getFileUrl());
                     asset.setPicture(picture);
                     hasPhoto = true;

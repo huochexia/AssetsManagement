@@ -8,7 +8,7 @@ import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.datatype.BmobFile;
 
 /**
- * 资产图片信息类：包括资产的图片、图片的编号和所属类别编号，每种资产都应有其对应的图片
+ * 资产图片信息类：包括资产的图片、图片的编号,资产名称和所属类别编号，每种资产都应有其对应的图片
  * Created by Administrator on 2017/11/8.
  */
 
@@ -22,6 +22,10 @@ public class AssetPicture extends BmobObject implements Serializable, Cloneable 
     图片编号
      */
     private String imageNum;
+    /*
+    资产名称
+     */
+    private String assetName;
     /*
     资产类别
      */
@@ -63,6 +67,14 @@ public class AssetPicture extends BmobObject implements Serializable, Cloneable 
 
     public void setImageNum(String imageNum) {
         this.imageNum = imageNum;
+    }
+
+    public String getAssetName() {
+        return assetName;
+    }
+
+    public void setAssetName(String assetName) {
+        this.assetName = assetName;
     }
 
     public AssetCategory getCategory() {

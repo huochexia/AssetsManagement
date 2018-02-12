@@ -110,7 +110,7 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
                 newholder.assetPhoto.setColorFilter(null);
             } else {
                 newholder.selected.setImageResource(R.drawable.picture_unselected);
-                newholder.assetPhoto.setColorFilter(Color.parseColor("#77000000"));
+//                newholder.assetPhoto.setColorFilter(Color.parseColor("#77000000"));
             }
             newholder.assetPhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
