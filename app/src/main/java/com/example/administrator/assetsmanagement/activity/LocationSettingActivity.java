@@ -233,7 +233,6 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
                     newNode.setParentId(mBaseNode.getId());
                     addToBmob(newNode);
                     addNode(newNode, mBaseNode.getLevel() + 1);
-//                        mBaseNode = null;
                     dialog.dismiss();
                 } else {
                     toast("请输入新位置！");
@@ -305,7 +304,6 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
      * @param newNode
      */
     private void addNode(Location newNode, int level) {
-
         adapter.addData(mPosition, newNode, level);
         adapter.notifyDataSetChanged();
 

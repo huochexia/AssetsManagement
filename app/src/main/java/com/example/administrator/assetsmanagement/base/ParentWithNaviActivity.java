@@ -127,4 +127,11 @@ public abstract class ParentWithNaviActivity extends BaseActivity {
         }
     }
 
+    /**
+     * 设置标题
+     */
+    public void setTitle(String t) {
+       title.setText(t);
+    }
+
 }

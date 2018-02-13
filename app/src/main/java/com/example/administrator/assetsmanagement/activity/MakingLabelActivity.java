@@ -349,6 +349,9 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
      */
     @Override
     public String title() {
+        if (mAssetPicture != null) {
+            return mAssetPicture.getAssetName();
+        }
         return "制作标签";
     }
 
@@ -427,6 +430,7 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
         } else {
 //            mBtnPrintLabelAndMoveAsset.setEnabled(false);//旧资产在这里只打印，不做移交。
             mAssetPicture = (AssetPicture) bundle.getSerializable("picture");
+            refreshTop();
             String para = bundle.getString("para");
             Object value = bundle.getSerializable("value");
             String para1 = bundle.getString("para1");
@@ -435,7 +439,6 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
             AssetsUtil.count = 0;
             AssetsUtil.AndQueryAssets(this, "mPicture", mAssetPicture, para, value, para1, value1, handler, allList);
         }
-
 
     }
 
@@ -486,9 +489,9 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
                                 @Override
                                 public void done(String s, BmobException e) {
                                     if (e == null) {
-                                        toast("资产保存成功！");
+//                                        toast("资产保存成功！");
                                         printAssetLabel(asset);
-                                        refreshList(asset);
+//                                        refreshList(asset);
                                     } else {
                                         toast("资产保存失败，请重新登记！");
                                     }
@@ -498,9 +501,10 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
                     } else {//否则只打印
                         for (AssetInfo asset : mSelectedList) {
                             printAssetLabel(asset);
-                            refreshList(asset);
+//                            refreshList(asset);
                         }
                     }
+                    refreshList();
                 }
                 break;
             case R.id.btn_print_label_and_move_asset:
