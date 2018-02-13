@@ -116,7 +116,7 @@ public class AssetsListActivity extends ParentWithNaviActivity {
             case QueryAssetsActivity.ASSET_PICTURE:
                 AssetsUtil.AndQueryAssets(AssetsListActivity.this,
                         "mPicture", value, handler, allList);
-                title = ((AssetPicture) value).getImageNum();
+                title = ((AssetPicture) value).getAssetName();
                 para1 = "mPicture";
                 break;
         }

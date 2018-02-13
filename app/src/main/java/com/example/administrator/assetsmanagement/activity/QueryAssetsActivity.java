@@ -264,7 +264,7 @@ public class QueryAssetsActivity extends ParentWithNaviActivity {
     @Subscribe
     public void onEventMainThread(PictureReceiveEvent event) {
         picture = event.getAssetPicture();
-        mTvQueryContent.setText(picture.getImageNum());
+        mTvQueryContent.setText(picture.getAssetName());
     }
 
     @Override

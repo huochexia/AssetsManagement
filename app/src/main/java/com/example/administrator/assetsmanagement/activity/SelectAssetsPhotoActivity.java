@@ -185,7 +185,7 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
     private void getPictureList(final String para, final Object value, final Handler handler) {
         BmobQuery<AssetPicture> query = new BmobQuery<>();
         query.addWhereEqualTo(para, value);
-        query.order("-createdAt");
+        query.order("assetName");
 
         query.setSkip(page * 15);
         query.setLimit(15);
