@@ -30,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:textColor="@color/colorAccent"
+        android:textColor="#2c03f9"
         android:textSize="14sp"
         tools:text="资产名称" />
 </RelativeLayout>

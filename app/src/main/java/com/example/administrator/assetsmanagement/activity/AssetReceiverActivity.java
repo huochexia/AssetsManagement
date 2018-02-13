@@ -157,8 +157,9 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
                 switch (item.getItemId()) {
                     case 0:
                         Bundle bundle = new Bundle();
-                        bundle.putSerializable("picture", assetInfo.getPicture());
-                        bundle.putString("title", assetInfo.getPicture().getAssetName());
+                        bundle.putSerializable("asset",assetInfo);
+//                        bundle.putSerializable("picture", assetInfo.getPicture());
+//                        bundle.putString("title", assetInfo.getPicture().getAssetName());
                         startActivity(AssetPictureActivity.class, bundle, false);
                         return true;
                     case 1:

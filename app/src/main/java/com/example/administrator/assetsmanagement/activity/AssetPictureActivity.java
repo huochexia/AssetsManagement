@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
+import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
 
 import java.io.File;
@@ -60,9 +61,11 @@ public class AssetPictureActivity extends ParentWithNaviActivity {
         setContentView(R.layout.activity_asset_picture);
         ButterKnife.bind(this);
         Bundle bundle = getBundle();
-        title = bundle.getString("title");
+        AssetInfo assetInfo = (AssetInfo) bundle.getSerializable("asset");
+        title = assetInfo.getPicture().getAssetName();
+//        title = bundle.getString("title");
         initNaviView();
-        AssetPicture photo = (AssetPicture) bundle.getSerializable("picture");
+        AssetPicture photo = assetInfo.getPicture();
         Glide.with(this).load(photo.getImageUrl()).placeholder(R.drawable.pictures_no).into(ivAssetPicture);
     }
 

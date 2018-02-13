@@ -40,6 +40,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 
@@ -428,7 +429,8 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
             setListAdapter();
 
         } else {
-//            mBtnPrintLabelAndMoveAsset.setEnabled(false);//旧资产在这里只打印，不做移交。
+            //TODO:这里需要判断，查询人是否有移交权。
+            //            mBtnPrintLabelAndMoveAsset.setEnabled(false);
             mAssetPicture = (AssetPicture) bundle.getSerializable("picture");
             refreshTop();
             String para = bundle.getString("para");
