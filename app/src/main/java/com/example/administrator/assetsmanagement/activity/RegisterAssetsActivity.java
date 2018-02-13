@@ -195,7 +195,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                asset.setAssetName(s.toString());
+//                asset.setAssetName(s.toString());
             }
 
             @Override

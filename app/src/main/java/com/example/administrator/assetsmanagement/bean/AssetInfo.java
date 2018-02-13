@@ -14,10 +14,7 @@ import cn.bmob.v3.BmobObject;
  */
 
 public class AssetInfo extends BmobObject implements Cloneable {
-    /*
-    资产名称
-     */
-    private String mAssetName;
+
     /*
     资产位置
      */
@@ -84,13 +81,7 @@ public class AssetInfo extends BmobObject implements Cloneable {
         isFixedAsset = fixedAsset;
     }
 
-    public String getAssetName() {
-        return mAssetName;
-    }
-
-    public void setAssetName(String assetName) {
-        mAssetName = assetName;
-    }
+   
 
     public Location getLocation() {
         return mLocation;

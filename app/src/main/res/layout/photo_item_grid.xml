@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent" >
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <ImageView
         android:id="@+id/iv_item_photo"
@@ -23,5 +24,6 @@
         android:layout_marginTop="3dp"
         android:background="@null"
         android:src="@drawable/pictures_selected" />
+
 
 </RelativeLayout>

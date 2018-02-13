@@ -112,6 +112,7 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
                 newholder.selected.setImageResource(R.drawable.picture_unselected);
 //                newholder.assetPhoto.setColorFilter(Color.parseColor("#77000000"));
             }
+            newholder.photoName.setText(mPictureList.get(position).getAssetName());
             newholder.assetPhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -161,11 +162,13 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
         ImageView assetPhoto;
         ImageButton selected;
+        TextView photoName;
 
         public PhotoViewHolder(View itemView) {
             super(itemView);
             selected = (ImageButton) itemView.findViewById(R.id.rb_selected_photo);
             assetPhoto = (ImageView) itemView.findViewById(R.id.iv_selected_image);
+            photoName = (TextView) itemView.findViewById(R.id.tv_picture_name);
 
         }
 

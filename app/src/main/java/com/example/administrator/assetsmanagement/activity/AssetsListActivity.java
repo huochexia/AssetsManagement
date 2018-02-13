@@ -152,7 +152,7 @@ public class AssetsListActivity extends ParentWithNaviActivity {
                                 case 0:
                                     Bundle bundle = new Bundle();
                                     bundle.putSerializable("picture", assetInfo.getPicture());
-                                    bundle.putString("title", assetInfo.getAssetName());
+                                    bundle.putString("title", assetInfo.getPicture().getAssetName());
                                     startActivity(AssetPictureActivity.class, bundle, false);
                                     return true;
                                 case 1:

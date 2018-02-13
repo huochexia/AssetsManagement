@@ -212,7 +212,7 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
                         } else {
                             mLlAssetSingleManagement.setVisibility(View.VISIBLE);
                         }
-                        title = mAssetInfo.getAssetName();
+                        title = mAssetInfo.getPicture().getAssetName();
                         initNaviView();
 
                     } else {

@@ -105,7 +105,7 @@ public class AssetRecyclerViewAdapter extends RecyclerView.Adapter<AssetRecycler
         holder.selected.setChecked(map.get(position));
 
         holder.serial_number.setText((position + 1) + "");
-        holder.assetName.setText(assetInfoList.get(position).getAssetName());
+        holder.assetName.setText(assetInfoList.get(position).getPicture().getAssetName());
         holder.assetQuantity.setText(assetInfoList.get(position).getQuantity() + "");
         switch (assetInfoList.get(position).getStatus()) {
             case 0:
