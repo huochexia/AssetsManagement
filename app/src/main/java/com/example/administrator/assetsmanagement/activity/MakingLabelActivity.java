@@ -496,7 +496,6 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
                                     if (e == null) {
 //                                        toast("资产保存成功！");
                                         printAssetLabel(asset);
-//                                        refreshList(asset);
                                     } else {
                                         toast("资产保存失败，请重新登记！");
                                     }
@@ -506,7 +505,6 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
                     } else {//否则只打印
                         for (AssetInfo asset : mSelectedList) {
                             printAssetLabel(asset);
-//                            refreshList(asset);
                         }
                     }
                     refreshList();
@@ -562,18 +560,7 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
     }
 
     /**
-     * 打印后刷新列表。一个一个的处理
-     */
-    private void refreshList(AssetInfo asset) {
-        //刷新列表
-        mInfoList.remove(asset);
-        mSelectedList.remove(asset);
-        madapter.initMap();
-        madapter.notifyDataSetChanged();
-    }
-
-    /**
-     * 整体处理
+     * 刷新列表
      */
     private void refreshList() {
         //刷新列表
