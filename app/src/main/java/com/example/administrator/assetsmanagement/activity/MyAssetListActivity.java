@@ -113,7 +113,7 @@ public class MyAssetListActivity extends ParentWithNaviActivity {
                                     return true;
                                 case 1:
                                     Bundle bundle1 = new Bundle();
-                                    bundle1.putInt("flag", 0);
+                                    bundle1.putInt("flag", 2);
                                     bundle1.putSerializable("picture", assetInfo.getPicture());
                                     bundle1.putSerializable("value",assetInfo.getStatus());
                                     bundle1.putString("para","mStatus");

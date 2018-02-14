@@ -419,10 +419,11 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
         mLlItemHeaderStatus.setVisibility(View.INVISIBLE);
         mTvItemHeaderName.setText("资产编号");
         mTvItemHeaderQuantity.setText("地点");
-
+        mBtnPrintLabelAndMoveAsset.setEnabled(false);
         //初始化列表内容
         Bundle bundle = getBundle();
-        flag = bundle.getInt("flag");//标志，为1则是新登记尚未保存的。否则需要从数据库中查询得到
+        flag = bundle.getInt("flag");//标志，为1则是新登记尚未保存的。否则需要从数据库中查询得
+                                          // 到.如果是2，则是管理员可能需要进行移交。
         if (flag == 1) {
             mInfoList = (List<AssetInfo>) bundle.getSerializable("newasset");
             loadingProgress.setVisibility(View.GONE);
@@ -430,7 +431,9 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
 
         } else {
             //TODO:这里需要判断，查询人是否有移交权。
-            //            mBtnPrintLabelAndMoveAsset.setEnabled(false);
+            if (flag == 2) {
+                mBtnPrintLabelAndMoveAsset.setEnabled(true);
+            }
             mAssetPicture = (AssetPicture) bundle.getSerializable("picture");
             refreshTop();
             String para = bundle.getString("para");
