@@ -103,7 +103,7 @@ public class SingleAssetTransferActivity extends ParentWithNaviActivity {
                 if (mAssetInfoList.size() > 0) {
                     //轮查状态是否可以进行移交
                     for (AssetInfo ass : mAssetInfoList) {
-                        if (ass.getStatus() == 2 || ass.getStatus() == 3|| ass.getStatus()==5) {
+                        if (ass.getStatus() == 2 || ass.getStatus() == 3 || ass.getStatus() == 5) {
                             toast("丢失、待报废、已报废资产不能进行移交！");
                             return;
                         }
@@ -114,10 +114,12 @@ public class SingleAssetTransferActivity extends ParentWithNaviActivity {
                         } else {
                             if (flag == 1) {//新登记资产为添加
                                 AssetsUtil.insertBmobLibrary(this, updateAllAssets(mAssetInfoList));
-                                clearView();
+//                                clearView();
+                                finish();
                             } else {//原有资产移交为变更
                                 AssetsUtil.updateBmobLibrary(this, updateAllAssets(mAssetInfoList));
-                                clearView();
+//                                clearView();
+                                finish();
                             }
                         }
 
@@ -220,9 +222,9 @@ public class SingleAssetTransferActivity extends ParentWithNaviActivity {
      * 初始化界面
      */
     private void clearView() {
-        newDepartment=null;
-        newLocation=null;
-        mNewManager=null;
+        newDepartment = null;
+        newLocation = null;
+        mNewManager = null;
         tvSingleAssetNewLocation.setText("");
         tvSingleAssetNewDepartment.setText("");
         tvSingleAssetNewManager.setText("");

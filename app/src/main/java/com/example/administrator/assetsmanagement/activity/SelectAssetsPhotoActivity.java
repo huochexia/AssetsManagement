@@ -122,14 +122,6 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
                 super.onScrollStateChanged(recyclerView, newState);
                 currentScrollState = newState;
 
-//                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-//                int visibleItemCount = layoutManager.getChildCount();
-//                int totalItemCount = layoutManager.getItemCount();
-//                if ((visibleItemCount > 0 && currentScrollState== RecyclerView.SCROLL_STATE_IDLE &&
-//                        (lastVisibleItemPosition) >= totalItemCount - 1) ) {
-//                    mAdapter.changeState(1);
-//                    getPictureList("category", category, handler);
-//                }
                 if (currentScrollState == RecyclerView.SCROLL_STATE_IDLE && isSlideToBottom(recyclerView)) {
                     mAdapter.changeState(1);
                     getPictureList("category", category, handler);
@@ -186,7 +178,6 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
         BmobQuery<AssetPicture> query = new BmobQuery<>();
         query.addWhereEqualTo(para, value);
         query.order("assetName");
-
         query.setSkip(page * 15);
         query.setLimit(15);
         query.findObjects(new FindListener<AssetPicture>() {

@@ -168,6 +168,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
         initEvent();
         mEtRegisterAssetsQuantity.setText("");
         mEtRegisterAssetsDate.setText(TimeUtils.getFormatToday(TimeUtils.FORMAT_DATE));
+        mEtRegisterAssetsName.setEnabled(true);
     }
 
 
@@ -373,6 +374,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                     Bundle bundle = data.getBundleExtra("assetpicture");
                     AssetPicture image1 = (AssetPicture) bundle.getSerializable("imageFile");
                     mEtRegisterAssetsName.setText(image1.getAssetName());
+                    mEtRegisterAssetsName.setEnabled(false);
                     asset.setPicture(image1);
                     hasPhoto = true;
                     Glide.with(this).load(image1.getImageUrl()).into(mIvRegisterPicture);
@@ -583,6 +585,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             mTvAssetsItemPictureLib.setEnabled(true);
             mTvAssetsItemCamera.setEnabled(true);
             mEtRegisterAssetsName.setText("");
+            mEtRegisterAssetsName.setEnabled(true);
             mEtRegisterAssetsQuantity.setText("");
             etRegisterAssetsComment.setText("");
             mIvRegisterPicture.setImageResource(R.drawable.pictures_no);
