@@ -38,13 +38,14 @@ public class ManagerRecyclerViewAdapter extends RecyclerView.Adapter<ManagerRecy
     }
     @Override
     public ManagerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.tree_item_checkbox, parent,false);
+        View view = mInflater.inflate(R.layout.person_item, parent,false);
         return new ManagerViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ManagerViewHolder holder, final int position) {
         holder.name.setText(mMangerList.get(position).getUsername());
+        holder.telephone.setText(mMangerList.get(position).getMobilePhoneNumber());
        holder.cb_select.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
@@ -80,11 +81,13 @@ public class ManagerRecyclerViewAdapter extends RecyclerView.Adapter<ManagerRecy
     class ManagerViewHolder extends RecyclerView.ViewHolder {
         CheckBox cb_select;
         TextView name;
+        TextView telephone;
 
         public ManagerViewHolder(View itemView) {
             super(itemView);
-            cb_select = (CheckBox) itemView.findViewById(R.id.cb_tree_item_checkbox_select);
-            name = (TextView) itemView.findViewById(R.id.tv_tree_item_checkbox_name);
+            cb_select = (CheckBox) itemView.findViewById(R.id.cb_person_checkbox_select);
+            name = (TextView) itemView.findViewById(R.id.tv_person_name);
+            telephone = (TextView) itemView.findViewById(R.id.tv_person_phone);
         }
     }
 }

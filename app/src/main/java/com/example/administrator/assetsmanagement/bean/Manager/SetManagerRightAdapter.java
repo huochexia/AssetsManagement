@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.administrator.assetsmanagement.Interface.SelectManagerClickListener;
@@ -35,13 +36,14 @@ public class SetManagerRightAdapter extends RecyclerView.Adapter<SetManagerRight
     }
     @Override
     public ManagerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.tree_item_checkbox, parent,false);
+        View view = mInflater.inflate(R.layout.person_item, parent,false);
         return new ManagerViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ManagerViewHolder holder, final int position) {
         holder.name.setText(mMangerList.get(position).getUsername());
+        holder.telephone.setText(mMangerList.get(position).getMobilePhoneNumber());
         holder.name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,11 +61,15 @@ public class SetManagerRightAdapter extends RecyclerView.Adapter<SetManagerRight
     class ManagerViewHolder extends RecyclerView.ViewHolder {
         CheckBox mCheckBox;
         TextView name;
+        TextView telephone;
+        LinearLayout person_content;
         public ManagerViewHolder(View itemView) {
             super(itemView);
-            name = (TextView) itemView.findViewById(R.id.tv_tree_item_checkbox_name);
-            mCheckBox = (CheckBox) itemView.findViewById(R.id.cb_tree_item_checkbox_select);
+            name = (TextView) itemView.findViewById(R.id.tv_person_name);
+            mCheckBox = (CheckBox) itemView.findViewById(R.id.cb_person_checkbox_select);
             mCheckBox.setVisibility(View.INVISIBLE);
+            telephone = (TextView) itemView.findViewById(R.id.tv_person_phone);
+            person_content = (LinearLayout) itemView.findViewById(R.id.ll_person_content);
         }
     }
 }
