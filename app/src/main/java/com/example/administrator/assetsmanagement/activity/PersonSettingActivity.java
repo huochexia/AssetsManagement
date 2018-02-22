@@ -106,7 +106,7 @@ public class PersonSettingActivity extends ParentWithNaviActivity {
      */
     private void startSelectDialog(final Role role, final Person person) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("选择人员权限");
+        builder.setTitle(person.getUsername()+"的权限");
         final boolean[] items = new boolean[]{false, false, false, false, false,false};
         //确定权限初始值
         if (role.getRights() != null) {
