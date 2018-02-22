@@ -61,12 +61,19 @@ public class AssetPictureActivity extends ParentWithNaviActivity {
         setContentView(R.layout.activity_asset_picture);
         ButterKnife.bind(this);
         Bundle bundle = getBundle();
-        AssetInfo assetInfo = (AssetInfo) bundle.getSerializable("asset");
-        title = assetInfo.getPicture().getAssetName();
-//        title = bundle.getString("title");
+        AssetPicture assetPicture = (AssetPicture) bundle.getSerializable("picture");
+        title = assetPicture.getAssetName();
         initNaviView();
-        AssetPicture photo = assetInfo.getPicture();
-        Glide.with(this).load(photo.getImageUrl()).placeholder(R.drawable.pictures_no).into(ivAssetPicture);
+        Glide.with(this).load(assetPicture.getImageUrl()).placeholder(R.drawable.pictures_no).into(ivAssetPicture);
+        //5秒后自动关闭
+        Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        };
+        handler.postDelayed(runnable, 5000);
     }
 
 

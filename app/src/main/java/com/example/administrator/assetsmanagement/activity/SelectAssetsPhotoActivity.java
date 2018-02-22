@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.example.administrator.assetsmanagement.Interface.PhotoLongClickListener;
 import com.example.administrator.assetsmanagement.Interface.PhotoSelectedListener;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
@@ -246,7 +247,15 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
                 }
 
             });
-
+            //图片长按事件
+            mAdapter.setLongClickListener(new PhotoLongClickListener() {
+                @Override
+                public void onLongClick(AssetPicture picture) {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("picture",picture);
+                    startActivity(AssetPictureActivity.class, bundle, false);
+                }
+            });
         }
     }
 

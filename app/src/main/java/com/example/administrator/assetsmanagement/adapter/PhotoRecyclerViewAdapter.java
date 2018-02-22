@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.administrator.assetsmanagement.Interface.PhotoLongClickListener;
 import com.example.administrator.assetsmanagement.Interface.PhotoSelectedListener;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
@@ -34,7 +35,7 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     LayoutInflater mInflater;
     PhotoSelectedListener listener;
     Map<Integer, Boolean> map;
-
+    PhotoLongClickListener longClickListener;
     //正在加载更多
     static final int LOADING_MORE = 1;
     //没有更多
@@ -128,10 +129,24 @@ public class PhotoRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
                 }
             });
+            newholder.assetPhoto.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    longClickListener.onLongClick(mPictureList.get(position));
+                    return false;
+                }
+            });
         }
 
     }
 
+    /**
+     * 长按照片事件
+     * @param longClickListener
+     */
+    public void setLongClickListener(PhotoLongClickListener longClickListener) {
+        this.longClickListener= longClickListener;
+    }
     /**
      * 改变脚布局的状态的方法,在activity根据请求数据的状态来改变这个状态
      * @param footer_state
