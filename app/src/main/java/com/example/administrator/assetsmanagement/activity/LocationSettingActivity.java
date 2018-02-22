@@ -304,6 +304,7 @@ public class LocationSettingActivity extends ParentWithNaviActivity {
      * @param newNode
      */
     private void addNode(Location newNode, int level) {
+
         adapter.addData(mPosition, newNode, level);
         adapter.notifyDataSetChanged();
 
