@@ -43,7 +43,7 @@ public class AssetsListActivity extends ParentWithNaviActivity {
     //动态显示列表
     private String title;
     int condition;//查询条件
-    Serializable value;//查询内容
+    Serializable value;//查询内容，可能是位置、部门、类别等
     String para1;//参数名
     List<AssetInfo> mResultList;
     AssetRecyclerViewAdapter mAdapter;
@@ -156,7 +156,7 @@ public class AssetsListActivity extends ParentWithNaviActivity {
                                     return true;
                                 case 1:
                                     Bundle bundle1 = new Bundle();
-                                    bundle1.putInt("flag", 0);
+                                    bundle1.putInt("flag", 0);//仅是查询，可以打印但不能移交
                                     bundle1.putSerializable("picture", assetInfo.getPicture());
                                     bundle1.putSerializable("value",value);
                                     bundle1.putString("para",para1);

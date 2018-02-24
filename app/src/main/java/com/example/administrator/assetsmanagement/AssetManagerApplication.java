@@ -20,7 +20,7 @@ public class AssetManagerApplication extends Application {
         super.onCreate();
         context = getApplicationContext();
         //通过AppId连接Bmob云端
-        Bmob.initialize(this, "facbe328bdb28e7864f448ba3321339f");
+        Bmob.initialize(this, "380957d6de57719b6496a4f78dd09a60");
 
     }
     public static Context getContext(){

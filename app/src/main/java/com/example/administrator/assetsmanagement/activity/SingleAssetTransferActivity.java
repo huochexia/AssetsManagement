@@ -108,24 +108,29 @@ public class SingleAssetTransferActivity extends ParentWithNaviActivity {
                             return;
                         }
                     }
-                    if (mNewManager != null) {
-                        if (flag == 1 && (newLocation == null || newDepartment == null)) {
-                            toast("新登记资产必须分配位置和部门！");
-                        } else {
-                            if (flag == 1) {//新登记资产为添加
-                                AssetsUtil.insertBmobLibrary(this, updateAllAssets(mAssetInfoList));
-//                                clearView();
-                                finish();
-                            } else {//原有资产移交为变更
-                                AssetsUtil.updateBmobLibrary(this, updateAllAssets(mAssetInfoList));
-//                                clearView();
-                                finish();
-                            }
-                        }
-
-                    } else {
-                        toast("请选择接受人！");
+//                    if (mNewManager != null) {
+                    if (flag == 1 && (newLocation == null || newDepartment == null || mNewManager == null)) {
+                            toast("新登记资产必须分配位置、部门和管理员！");
+                        return;
                     }
+                    if (flag != 1 && newDepartment == null && newDepartment == null && mNewManager == null) {
+                        toast("请选择至少一个需要变更的属性值！");
+                        return;
+                    }
+                    if (flag == 1) {//新登记资产为添加
+                        AssetsUtil.insertBmobLibrary(this, updateAllAssets(mAssetInfoList));
+//                                clearView();
+                        finish();
+                    } else {//原有资产移交为变更
+                        AssetsUtil.updateBmobLibrary(this, updateAllAssets(mAssetInfoList));
+//                                clearView();
+                        finish();
+                    }
+
+
+//                    } else {
+//                        toast("请选择接受人！");
+//                    }
                 } else {
                     toast("没有选择资产！");
                 }

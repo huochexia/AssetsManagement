@@ -324,24 +324,26 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                             return;
                         }
                     }
-                    if (mNewManager != null) {
-                        if (flag == 1 && (mNewLocation == null || mNewDept == null)) {
-                            toast("新登记资产必须分配位置和部门！");
-                        } else {
-                            if (flag == 1) {//新登记资产为添加
-                                AssetsUtil.insertBmobLibrary(this, updateAllSelectedAssetInfo(assetsList, selectedAssets));
-                            } else {//原有资产移交为变更
-                                AssetsUtil.updateBmobLibrary(this, updateAllSelectedAssetInfo(assetsList, selectedAssets));
-                            }
-                            temp_list.clear();
-                            temp_list.addAll(AssetsUtil.GroupAfterMerge(AssetsUtil.deepCopy(assetsList)));
-                            adapter.initMap();
-                            adapter.notifyDataSetChanged();
-                        }
-                        initAssetsInfo();
-                    } else {
-                        toast("请选择接受人！");
+                    //新登记的必须要选择位置、部门和管理员。
+                    if (flag == 1 && (mNewLocation == null || mNewDept == null || mNewManager == null)) {
+                        toast("新登记资产必须分配位置、部门和管理员！");
+                        return;
                     }
+                    //已登记的旧资产可以任意变更某一个属性。不变更管理人，则可以不用进行接收操作
+                    if (flag != 1 && mNewManager == null && mNewDept == null && mNewLocation == null) {
+                        toast("请选择至少一个需要变更的属性值！");
+                        return;
+                    }
+                    if (flag == 1) {//新登记资产为添加
+                        AssetsUtil.insertBmobLibrary(this, updateAllSelectedAssetInfo(assetsList, selectedAssets));
+                    } else {//原有资产移交为变更
+                        AssetsUtil.updateBmobLibrary(this, updateAllSelectedAssetInfo(assetsList, selectedAssets));
+                    }
+                    temp_list.clear();
+                    temp_list.addAll(AssetsUtil.GroupAfterMerge(AssetsUtil.deepCopy(assetsList)));
+                    adapter.initMap();
+                    adapter.notifyDataSetChanged();
+                    initAssetsInfo();
                 } else {
                     toast("没有选择资产！");
                 }

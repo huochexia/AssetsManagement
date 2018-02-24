@@ -31,6 +31,7 @@ import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobUser;
 
 /**
+ * 资产接受，主要用于资产管理人员变换时，新的资产管理人需要进行资产接收，完成资产移交过程
  * Created by Administrator on 2017/12/17 0017.
  */
 

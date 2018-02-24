@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -169,6 +170,7 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
 
         }
     };
+    private int i=0;
 
 
     // 连接打印机成功时操作
@@ -321,6 +323,7 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
             api.drawText("固", 40, 6, 0, 0, 3);
         }
         // 结束绘图任务提交打印
+        Log.i("打印", (i++) + "");
         return api.commitJob();
     }
 
@@ -505,6 +508,7 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
                     } else {//否则只打印
                         for (AssetInfo asset : mSelectedList) {
                             printAssetLabel(asset);
+
                         }
                     }
                     refreshList();
