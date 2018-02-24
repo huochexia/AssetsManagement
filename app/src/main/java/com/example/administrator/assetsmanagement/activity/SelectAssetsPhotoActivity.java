@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -202,7 +203,8 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
                     }
 
                 } else {
-                    toast("查询出现异常，请稍后再试！");
+                    toast("没有查询到所需数据！");
+                    loadingPictureProgress.setVisibility(View.GONE);
                 }
 
             }
