@@ -13,6 +13,10 @@ import android.widget.TextView;
 import com.example.administrator.assetsmanagement.Interface.AssetSelectedListener;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
+import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department;
+import com.example.administrator.assetsmanagement.bean.DepartmentTree.DepartmentNodeHelper;
+import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
+import com.example.administrator.assetsmanagement.bean.LocationTree.LocationNodeHelper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +56,7 @@ public class MakingLabelsListAdapter extends RecyclerView.Adapter<MakingLabelsLi
 
     @Override
     public LabelViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.item_asset, parent, false);
+        View view = mInflater.inflate(R.layout.asset_detail_item, parent, false);
 
         return new LabelViewHolder(view);
     }
@@ -61,8 +65,13 @@ public class MakingLabelsListAdapter extends RecyclerView.Adapter<MakingLabelsLi
     public void onBindViewHolder(LabelViewHolder holder, final int position) {
         holder.mAssetNum.setText(mAssetInfoList.get(position).getAssetsNum());
         holder.mCheckBox.setVisibility(View.VISIBLE);
-        if (mAssetInfoList.get(position).getLocation() != null) {
-            holder.mAssetLocation.setText(mAssetInfoList.get(position).getLocation().getLocationName());
+        Location location=mAssetInfoList.get(position).getLocation();
+        if (location!=null) {
+            holder.mAssetLocation.setText(LocationNodeHelper.getSearchContentName(location));
+        }
+        Department department=mAssetInfoList.get(position).getDepartment();
+        if (department != null) {
+            holder.mAssetDepartment.setText(DepartmentNodeHelper.getSearchContentName(department));
         }
         holder.serial_number.setText((position + 1) + "");
         holder.mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -92,19 +101,18 @@ public class MakingLabelsListAdapter extends RecyclerView.Adapter<MakingLabelsLi
         TextView serial_number;
         TextView mAssetNum;
         TextView mAssetLocation;
-        LinearLayout mLayoutStatus;
+        TextView mAssetDepartment;
         public CheckBox mCheckBox;
 
         public LabelViewHolder(View itemView) {
             super(itemView);
             item = (LinearLayout) itemView.findViewById(R.id.ll_asset_item);
-            serial_number = (TextView) itemView.findViewById(R.id.tv_assets_item_serial);
-            mAssetNum = (TextView) itemView.findViewById(R.id.tv_assets_item_name);
-            mAssetLocation = (TextView) itemView.findViewById(R.id.tv_assets_item_quantity);
-            mLayoutStatus = (LinearLayout) itemView.findViewById(R.id.ll_asset_item_status);
-            mLayoutStatus.setVisibility(View.GONE);
+            serial_number = (TextView) itemView.findViewById(R.id.tv_asset_detail_serial);
+            mAssetNum = (TextView) itemView.findViewById(R.id.tv_asset_detail_name);
+            mAssetLocation = (TextView) itemView.findViewById(R.id.tv_asset_detail_location);
+            mAssetDepartment = (TextView) itemView.findViewById(R.id.tv_asset_detail_department);
 
-            mCheckBox = (CheckBox) itemView.findViewById(R.id.cb_assets_item);
+            mCheckBox = (CheckBox) itemView.findViewById(R.id.cb_asset_detail);
         }
     }
 

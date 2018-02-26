@@ -52,14 +52,7 @@ import cn.bmob.v3.listener.SaveListener;
  */
 
 public class MakingLabelActivity extends ParentWithNaviActivity {
-    @BindView(R.id.tv_item_header_name)
-    TextView mTvItemHeaderName;
-    @BindView(R.id.tv_item_header_quantity)
-    TextView mTvItemHeaderQuantity;
-    @BindView(R.id.ll_item_header_quantity)
-    LinearLayout mLlItemHeaderQuantity;
-    @BindView(R.id.ll_item_header_status)
-    LinearLayout mLlItemHeaderStatus;
+
     @BindView(R.id.rv_making_label)
     RecyclerView mRvMakingLabel;
 
@@ -418,10 +411,6 @@ public class MakingLabelActivity extends ParentWithNaviActivity {
         LinearLayoutManager ll = new LinearLayoutManager(this);
         mRvMakingLabel.setLayoutManager(ll);
 
-        //初始化界面列表头
-        mLlItemHeaderStatus.setVisibility(View.INVISIBLE);
-        mTvItemHeaderName.setText("资产编号");
-        mTvItemHeaderQuantity.setText("地点");
         mBtnPrintLabelAndMoveAsset.setEnabled(false);
         //初始化列表内容
         Bundle bundle = getBundle();

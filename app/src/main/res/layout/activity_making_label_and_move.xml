@@ -7,7 +7,7 @@
     <include layout="@layout/include_navi"/>
 
     <include layout="@layout/view_line_between"/>
-    <include layout="@layout/item_asset_header"/>
+
 
     <ProgressBar
         android:id="@+id/loading_progress"
