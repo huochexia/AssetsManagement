@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_5"
                 android:layout_marginLeft="10dp"
-                android:background="@drawable/btn_login_selector"
+                android:background="#3fb2b4"
                 android:text="名称(图）"
                 android:textColor="@color/base_color_text_white"
                 android:textSize="18sp"

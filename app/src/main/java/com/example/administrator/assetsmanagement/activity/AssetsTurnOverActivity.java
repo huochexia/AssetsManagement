@@ -160,22 +160,22 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
         }
     }
 
-    /**
-     * 重新进入时，刷新
-     */
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        //新登记的，在这里还没有存入数据库中，所以不用从重新加载查询。
-        if (flag != 1) {
-            if (oldLocation != null || mPicture != null) {
-                clearLists();
-                getSearchResultList();
-                loadingAssetProgress.setVisibility(View.VISIBLE);
-            }
-
-        }
-    }
+//    /**
+//     * 重新进入时，刷新
+//     */
+//    @Override
+//    protected void onRestart() {
+//        super.onRestart();
+//        //新登记的，在这里还没有存入数据库中，所以不用从重新加载查询。
+//        if (flag != 1) {
+//            if (oldLocation != null || mPicture != null) {
+////                clearLists();
+////                getSearchResultList();
+////                loadingAssetProgress.setVisibility(View.VISIBLE);
+//            }
+//
+//        }
+//    }
 
     /**
      * 创建适配器
@@ -376,7 +376,10 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                     if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
                         oldLocation = (Location) data.getSerializableExtra("node");
                         mTvSearchContent.setText(LocationNodeHelper.getSearchContentName(oldLocation));
+                        loadingAssetProgress.setVisibility(View.VISIBLE);
+                        getSearchResultList();
                     }
+
                     break;
                 case REQUEST_NAME:
                     if (resultCode == SelectAssetsPhotoActivity.RESULT_OK) {
@@ -384,8 +387,10 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                         Bundle bundle = data.getBundleExtra("assetpicture");
                         mPicture = (AssetPicture) bundle.getSerializable("imageFile");
                         mTvSearchContent.setText(mPicture.getAssetName());
-
+                        loadingAssetProgress.setVisibility(View.VISIBLE);
+                        getSearchResultList();
                     }
+
                     break;
                 case REQUEST_RECEIVE_LOCATION:
                     if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
@@ -520,16 +525,20 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
             d.setObjectId(mNewDept.getObjectId());
             asset.setDepartment(d);
         }
-        asset.setNewManager(mNewManager);
-        //如果资产状态为0或4,9时，移交确认后状态改为4；如果资产状态为1时，移交确认后改为6。
-        // 目前暂定为丢失、已报废、待报废（审批中）的资产不能进行移交，如果要移交的话，先
-        //变更为正常0，再进行移交，移交后，再调整为原状态。
-        if (asset.getStatus() == 0 || asset.getStatus() == 4 || asset.getStatus() == 9) {
-            asset.setStatus(4);
+        if (mNewManager != null) {
+            asset.setNewManager(mNewManager);
+            //如果资产没有改变新的管理者，则保留原状态，而不用改为待移交状态
+            //如果资产状态为0或4,9时，移交确认后状态改为4；如果资产状态为1时，移交确认后改为6。
+            // 目前暂定为丢失、已报废、待报废（审批中）的资产不能进行移交，如果要移交的话，先
+            //变更为正常0，再进行移交，移交后，再调整为原状态。
+            if (asset.getStatus() == 0 || asset.getStatus() == 4 || asset.getStatus() == 9) {
+                asset.setStatus(4);
+            }
+            if (asset.getStatus() == 1) {
+                asset.setStatus(6);
+            }
         }
-        if (asset.getStatus() == 1) {
-            asset.setStatus(6);
-        }
+
 
     }
 
