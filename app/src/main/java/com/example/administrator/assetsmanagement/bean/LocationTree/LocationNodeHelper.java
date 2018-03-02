@@ -175,33 +175,5 @@ public class LocationNodeHelper {
         return buffer.toString();
     }
 
-    /**
-     * 通过某一位置的父ID,递归查询数据库，得到某一地点的完整路径名称
-     * @param location
-     * @return
-     */
-    public static String getAllContentName(Location location, final StringBuffer buffer) {
-        BmobQuery<Location> query = new BmobQuery<>();
-        if (location.getParentId().equals("0")) {
-            return buffer.toString();
-        }else {
-            query.addQueryKeys("locationName");
-            query.addWhereEqualTo("id", location.getParentId());
-            query.findObjects(new FindListener<Location>() {
-                @Override
-                public void done(final List<Location> list, BmobException e) {
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            buffer.insert(0,list.get(0).getLocationName());
-                            getAllContentName(list.get(0),buffer);
-                        }
-                    }).start();
-                }
-            });
-
-        }
-        return buffer.toString();
-    }
 }

@@ -67,12 +67,11 @@ public class MakingLabelsListAdapter extends RecyclerView.Adapter<MakingLabelsLi
         holder.mCheckBox.setVisibility(View.VISIBLE);
         Location location=mAssetInfoList.get(position).getLocation();
         if (location!=null) {
-            StringBuffer buffer = new StringBuffer();
-            holder.mAssetLocation.setText(LocationNodeHelper.getAllContentName(location,buffer));
+            holder.mAssetLocation.setText(location.getLocationName());
         }
         Department department=mAssetInfoList.get(position).getDepartment();
         if (department != null) {
-            holder.mAssetDepartment.setText(DepartmentNodeHelper.getSearchContentName(department));
+            holder.mAssetDepartment.setText(department.getDepartmentName());
         }
         holder.serial_number.setText((position + 1) + "");
         holder.mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
