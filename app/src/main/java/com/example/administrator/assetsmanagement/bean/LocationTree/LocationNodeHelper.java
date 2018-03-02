@@ -186,10 +186,11 @@ public class LocationNodeHelper {
             return buffer.toString();
         }else {
             query.addQueryKeys("locationName");
-            query.addWhereEqualTo("parentId", location.getParentId());
+            query.addWhereEqualTo("id", location.getParentId());
             query.findObjects(new FindListener<Location>() {
                 @Override
                 public void done(final List<Location> list, BmobException e) {
+
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
