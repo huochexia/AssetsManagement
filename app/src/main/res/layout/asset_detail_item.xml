@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
+        android:baselineAligned="false">
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 tool:text="1"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 />
         </LinearLayout>
 
@@ -34,13 +34,13 @@
                 android:id="@+id/tv_asset_detail_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
                 tool:text="桌子"
                 android:textColor="#000000"
-                android:textSize="12sp"/>
+                android:textSize="16sp"/>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:baselineAligned="false">
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -49,7 +49,8 @@
                         android:id="@+id/tv_asset_detail_location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="11sp"
+                        android:textSize="14sp"
+                        android:textColor="#8b8b8b"
                         tool:text="A座-2层-201"/>
                 </LinearLayout>
                 <LinearLayout
@@ -60,7 +61,8 @@
                         android:id="@+id/tv_asset_detail_department"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="11sp"
+                        android:textSize="14sp"
+                        android:textColor="#8b8b8b"
                         tool:text="后勤部-会服"/>
                 </LinearLayout>
 
@@ -72,11 +74,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:layout_gravity="center">
+
             <CheckBox
                 android:id="@+id/cb_asset_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-              />
+                />
         </LinearLayout>
     </LinearLayout>
     <View
