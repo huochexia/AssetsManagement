@@ -14,10 +14,14 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
+
 /**
  * 
  *
- * @description 节点帮助类
+ * 节点帮助类
  */
 public class LocationNodeHelper {
     /**
@@ -42,8 +46,6 @@ public class LocationNodeHelper {
     /**
      * 过滤出所有可见的Node
      *
-     * @param nodes
-     * @return
      */
     public static List<Location> filterVisibleNode(List<Location> nodes) {
         List<Location> result = new ArrayList<>();
@@ -155,7 +157,7 @@ public class LocationNodeHelper {
         getAllParents(nodes,node.getParent());
     }
     /**
-     * 显示要查找的内容，传入的节点是201室，得到它的完整链内容。比如 A座-2楼-201室。
+     * 如果是通过形成树状列表后，选择某节点，可以通过这个方法得到它的完整链内容。比如 A座-2楼-201室。
      *
      * @param Location
      */
@@ -172,22 +174,32 @@ public class LocationNodeHelper {
         }
         return buffer.toString();
     }
+
     /**
-     * 获得查询对象的ID
-     *
-     * @param Location
+     * 通过某一位置的父ID,递归查询数据库，得到某一地点的完整路径名称
+     * @param location
      * @return
      */
-    public String getSearchContentId(Location Location) {
-        StringBuffer buffer = new StringBuffer();
-        List<Location> nodes = new ArrayList<>();
-        LocationNodeHelper.getAllParents(nodes, Location);
-        int i = nodes.size();
-        while (i > 0) {
-            i--;
-            buffer.append(nodes.get(i).getId());
-            if (i != 0)
-                buffer.append("-");
+    public static String getAllContentName(Location location, final StringBuffer buffer) {
+        BmobQuery<Location> query = new BmobQuery<>();
+        if (location.getParentId().equals("0")) {
+            return buffer.toString();
+        }else {
+            query.addQueryKeys("locationName");
+            query.addWhereEqualTo("parentId", location.getParentId());
+            query.findObjects(new FindListener<Location>() {
+                @Override
+                public void done(final List<Location> list, BmobException e) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            buffer.insert(0,list.get(0).getLocationName());
+                            getAllContentName(list.get(0),buffer);
+                        }
+                    }).start();
+                }
+            });
+
         }
         return buffer.toString();
     }
