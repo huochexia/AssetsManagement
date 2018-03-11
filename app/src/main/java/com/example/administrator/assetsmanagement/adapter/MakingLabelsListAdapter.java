@@ -62,6 +62,7 @@ public class MakingLabelsListAdapter extends RecyclerView.Adapter<MakingLabelsLi
     @Override
     public void onBindViewHolder(LabelViewHolder holder, final int position) {
         holder.mAssetNum.setText(mAssetInfoList.get(position).getAssetsNum());
+        holder.mAssetManager.setText(mAssetInfoList.get(position).getOldManager().getUsername());
         holder.mCheckBox.setVisibility(View.VISIBLE);
         Location location=mAssetInfoList.get(position).getLocation();
         if (location!=null) {
@@ -98,6 +99,7 @@ public class MakingLabelsListAdapter extends RecyclerView.Adapter<MakingLabelsLi
         LinearLayout item;
         TextView serial_number;
         TextView mAssetNum;
+        TextView mAssetManager;
         TextView mAssetLocation;
         TextView mAssetDepartment;
         public CheckBox mCheckBox;
@@ -107,6 +109,7 @@ public class MakingLabelsListAdapter extends RecyclerView.Adapter<MakingLabelsLi
             item = (LinearLayout) itemView.findViewById(R.id.ll_asset_item);
             serial_number = (TextView) itemView.findViewById(R.id.tv_asset_detail_serial);
             mAssetNum = (TextView) itemView.findViewById(R.id.tv_asset_detail_name);
+            mAssetManager = (TextView) itemView.findViewById(R.id.tv_asset_detail_manager);
             mAssetLocation = (TextView) itemView.findViewById(R.id.tv_asset_detail_location);
             mAssetDepartment = (TextView) itemView.findViewById(R.id.tv_asset_detail_department);
 
