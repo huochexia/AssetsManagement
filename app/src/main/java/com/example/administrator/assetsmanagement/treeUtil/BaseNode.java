@@ -175,9 +175,7 @@ public class BaseNode  extends BmobObject implements Serializable {
      * 是否父节点展开
      */
     public boolean isParentExpand() {
-        if (parent == null)
-            return false;
-        return parent.isExpand();
+        return parent != null && parent.isExpand();
     }
 
 }

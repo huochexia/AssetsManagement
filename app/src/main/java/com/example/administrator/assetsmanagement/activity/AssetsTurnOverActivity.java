@@ -386,7 +386,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
 
                         Bundle bundle = data.getBundleExtra("assetpicture");
                         mPicture = (AssetPicture) bundle.getSerializable("imageFile");
-                        mTvSearchContent.setText(mPicture.getAssetName());
+                        mTvSearchContent.setText(mPicture != null ? mPicture.getAssetName() : null);
                         loadingAssetProgress.setVisibility(View.VISIBLE);
                         getSearchResultList();
                     }
@@ -443,7 +443,7 @@ public class AssetsTurnOverActivity extends ParentWithNaviActivity {
                     //因为经过适配器处理后的列表是汇总后的，所以要保持原有列表用于修改管理员，这样
                     //就必须复制一份临时列表用于处理显示。
                     assetsList = (List<AssetInfo>) msg.getData().getSerializable("assets");
-                    if (assetsList.size() > 0) {
+                    if ((assetsList != null ? assetsList.size() : 0) > 0) {
                         mBtnTurnOverOk.setEnabled(true);
                     } else {
                         toast("查询结束，没有符合条件的数据！");

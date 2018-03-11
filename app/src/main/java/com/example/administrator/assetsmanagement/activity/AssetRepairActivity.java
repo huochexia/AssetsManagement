@@ -171,7 +171,7 @@ public class AssetRepairActivity extends ParentWithNaviActivity {
             switch (msg.what) {
                 case AssetsUtil.SEARCH_ONE_ASSET:
                     list = (List<AssetInfo>) msg.getData().getSerializable("assets");
-                    if (list.size() > 0 && list != null) {
+                    if ((list != null ? list.size() : 0) > 0 && list != null) {
                         asset = list.get(0);
                         //如果有资产且其状态为损坏时，修好按钮可用；只有正常状态下的资产可以报修，待移交、
                         //待报废等非正常状态下的资产不能报修

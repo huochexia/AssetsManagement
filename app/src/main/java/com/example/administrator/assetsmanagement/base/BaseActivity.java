@@ -84,8 +84,10 @@ public class BaseActivity extends AppCompatActivity {
     public void hideSoftInputView() {
         InputMethodManager manager = ((InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE));
         if (getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
-            if (getCurrentFocus() != null)
+            if (getCurrentFocus() != null) {
+                assert manager != null;
                 manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            }
         }
     }
     /**隐藏软键盘-一般是EditText.getWindowToken()，API5.0以下支持 。6.0不支持
@@ -94,6 +96,7 @@ public class BaseActivity extends AppCompatActivity {
     public void hideSoftInput(IBinder token) {
         if (token != null) {
             InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            assert im != null;
             im.hideSoftInputFromWindow(token,0);
         }
     }

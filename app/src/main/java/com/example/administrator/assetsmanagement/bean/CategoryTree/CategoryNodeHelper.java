@@ -153,7 +153,7 @@ public class CategoryNodeHelper {
      * @param AssetCategory
      */
     public static String getSearchContentName(AssetCategory AssetCategory) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         List<AssetCategory> nodes = new ArrayList<>();
         CategoryNodeHelper.getAllParents(nodes, AssetCategory);
         int i = nodes.size();
@@ -172,7 +172,7 @@ public class CategoryNodeHelper {
      * @return
      */
     public String getSearchContentId(AssetCategory AssetCategory) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         List<AssetCategory> nodes = new ArrayList<>();
         CategoryNodeHelper.getAllParents(nodes, AssetCategory);
         int i = nodes.size();

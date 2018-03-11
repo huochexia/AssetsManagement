@@ -126,6 +126,7 @@ public class AssetLoseActivity extends ParentWithNaviActivity {
             switch (msg.what) {
                 case 1:
                     list = (List<AssetInfo>) msg.getData().getSerializable("assets");
+                    assert list != null;
                     if (list.size() > 0) {
                         AssetInfo asset = list.get(0);
                         //如果有资产且其状态为丢失时，找回按钮可用；任何状态下的资产均可能发生丢失

@@ -2,7 +2,6 @@ package com.example.administrator.assetsmanagement.activity;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
@@ -10,15 +9,10 @@ import com.bumptech.glide.Glide;
 import com.example.administrator.assetsmanagement.Interface.ToolbarClickListener;
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.base.ParentWithNaviActivity;
-import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.AssetPicture;
-
-import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.DownloadFileListener;
 
 /**
  * 显示某个资产的照片
@@ -62,9 +56,9 @@ public class AssetPictureActivity extends ParentWithNaviActivity {
         ButterKnife.bind(this);
         Bundle bundle = getBundle();
         AssetPicture assetPicture = (AssetPicture) bundle.getSerializable("picture");
-        title = assetPicture.getAssetName();
+        title = assetPicture != null ? assetPicture.getAssetName() : null;
         initNaviView();
-        Glide.with(this).load(assetPicture.getImageUrl()).placeholder(R.drawable.pictures_no).into(ivAssetPicture);
+        Glide.with(this).load(assetPicture != null ? assetPicture.getImageUrl() : null).placeholder(R.drawable.pictures_no).into(ivAssetPicture);
         //5秒后自动关闭
         Handler handler = new Handler();
         Runnable runnable = new Runnable() {

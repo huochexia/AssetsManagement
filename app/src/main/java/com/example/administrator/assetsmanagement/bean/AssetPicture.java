@@ -5,7 +5,6 @@ import com.example.administrator.assetsmanagement.bean.CategoryTree.AssetCategor
 import java.io.Serializable;
 
 import cn.bmob.v3.BmobObject;
-import cn.bmob.v3.datatype.BmobFile;
 
 /**
  * 资产图片信息类：包括资产的图片、图片的编号,资产名称和所属类别编号，每种资产都应有其对应的图片

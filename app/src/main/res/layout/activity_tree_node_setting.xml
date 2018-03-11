@@ -12,6 +12,5 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_gravity="center"/>
-        />
     <include layout="@layout/tree_structrue_setting" />
 </LinearLayout>

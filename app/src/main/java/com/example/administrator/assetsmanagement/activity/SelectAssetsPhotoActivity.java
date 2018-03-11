@@ -7,7 +7,6 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -221,7 +220,7 @@ public class SelectAssetsPhotoActivity extends ParentWithNaviActivity {
                 case TAKE_PHOTO:
                     //增加新查询的数据
                     List<AssetPicture> pictureList = (List<AssetPicture>) msg.getData().getSerializable("photo");
-                    if (pictureList.size() > 0) {
+                    if ((pictureList != null ? pictureList.size() : 0) > 0) {
                         photoLists.addAll(pictureList);
                         //图片定位，将刚下载的图片定位到屏幕定部。（原理：刚下载下来的第一个图片位于全部图片
                         // 的页数乘15减1的位置。

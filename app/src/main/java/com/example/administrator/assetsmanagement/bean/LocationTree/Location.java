@@ -1,12 +1,6 @@
 package com.example.administrator.assetsmanagement.bean.LocationTree;
 
-import com.example.administrator.assetsmanagement.treeUtil.BaseNode;
-import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeIconCollape;
-import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeIconExpand;
-import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeId;
 import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeIsLast;
-import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeName;
-import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodePId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -173,9 +167,7 @@ public class Location extends BmobObject {
      * 是否父节点展开
      */
     public boolean isParentExpand() {
-        if (parent == null)
-            return false;
-        return parent.isExpand();
+        return parent != null && parent.isExpand();
     }
     /**
      * 构造方法

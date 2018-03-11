@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.example.administrator.assetsmanagement.Interface.AssetItemClickListener;
@@ -26,7 +25,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobUser;
 
@@ -116,7 +114,7 @@ public class AssetReceiverActivity extends ParentWithNaviActivity {
                     //因为经过适配器处理后的列表是汇总后的，所以要保持原有列表用于修改管理员，这样
                     //就必须复制一份临时列表用于处理显示。
                     mAssetInfoList = (List<AssetInfo>) msg.getData().getSerializable("assets");
-                    if (mAssetInfoList.size() > 0) {
+                    if ((mAssetInfoList != null ? mAssetInfoList.size() : 0) > 0) {
 //                        mBtnReceiverOk.setEnabled(true);
                     }else{
                         toast("没有要接收的资产！");

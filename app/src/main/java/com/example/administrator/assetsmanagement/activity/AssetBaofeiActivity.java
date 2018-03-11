@@ -130,7 +130,7 @@ public class AssetBaofeiActivity extends ParentWithNaviActivity {
             switch (msg.what) {
                 case 1:
                     list = (List<AssetInfo>) msg.getData().getSerializable("assets");
-                    if (list.size() > 0 && list != null) {
+                    if ((list != null ? list.size() : 0) > 0 && list != null) {
                         AssetInfo asset = list.get(0);
                         //如果有资产且其状态为待报废时，“重用”按钮可用；丢失状态和待移交状态下的资产均
                         // 不能进行待报废处理。

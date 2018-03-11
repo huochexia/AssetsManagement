@@ -132,7 +132,7 @@ public class AssetsListActivity extends ParentWithNaviActivity {
             switch (msg.what) {
                 case AssetsUtil.SEARCH_ONE_ASSET:
                     mResultList = (List<AssetInfo>) msg.getData().getSerializable("assets");
-                    if (mResultList.size() == 0) {
+                    if ((mResultList != null ? mResultList.size() : 0) == 0) {
                         toast("查询结束，没有符合条件的数据！");
                     }
                     mAdapter = new AssetRecyclerViewAdapter(AssetsListActivity.this,

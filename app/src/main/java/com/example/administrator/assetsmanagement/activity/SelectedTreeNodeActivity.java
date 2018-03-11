@@ -30,7 +30,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;

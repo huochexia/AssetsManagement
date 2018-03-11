@@ -154,7 +154,7 @@ public class DepartmentNodeHelper {
      * @param Department
      */
     public static String getSearchContentName(Department Department) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         List<Department> nodes = new ArrayList<>();
         DepartmentNodeHelper.getAllParents(nodes, Department);
         int i = nodes.size();
@@ -173,7 +173,7 @@ public class DepartmentNodeHelper {
      * @return
      */
     public String getSearchContentId(Department Department) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         List<Department> nodes = new ArrayList<>();
         DepartmentNodeHelper.getAllParents(nodes, Department);
         int i = nodes.size();

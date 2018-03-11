@@ -63,7 +63,7 @@ public class NodeHelper {
      */
     private static <T> List<BaseNode> convertDatas2Nodes(List<T> datas) throws IllegalAccessException {
         List<BaseNode> nodes = new ArrayList<>();
-        BaseNode node = null;
+        BaseNode node;
         for (T t : datas) {
             String id = "";
             String pId = "";
@@ -71,7 +71,6 @@ public class NodeHelper {
             int iconExpand = -1;
             int iconNoExpand = -1;
             Boolean isLast =false;
-            node = null;
             Class c = t.getClass();
             Field fields[] = c.getDeclaredFields();
             for (Field field : fields) {
@@ -210,7 +209,7 @@ public class NodeHelper {
      * @param baseNode
      */
     public static String getSearchContentName(BaseNode baseNode) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         List<BaseNode> nodes = new ArrayList<>();
         NodeHelper.getAllParents(nodes, baseNode);
         int i = nodes.size();
@@ -229,7 +228,7 @@ public class NodeHelper {
      * @return
      */
     public String getSearchContentId(BaseNode baseNode) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         List<BaseNode> nodes = new ArrayList<>();
         NodeHelper.getAllParents(nodes, baseNode);
         int i = nodes.size();

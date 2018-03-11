@@ -184,8 +184,8 @@ public class SingleAssetInfoActivity extends ParentWithNaviActivity {
             switch (msg.what) {
                 case AssetsUtil.SEARCH_ONE_ASSET:
                     final List<AssetInfo> asset = (List<AssetInfo>) msg.getData().getSerializable("assets");
-                    if (asset.size() > 0) {
-                        mAssetInfo = asset.get(0);
+                    if ((asset != null ? asset.size() : 0) > 0) {
+                        mAssetInfo = asset != null ? asset.get(0) : null;
                         Glide.with(SingleAssetInfoActivity.this)
                                 .load(mAssetInfo.getPicture().getImageUrl()).into(mIvSingleAssetImage);
                         mTvScanAssetManager.setText(mAssetInfo.getOldManager().getUsername());

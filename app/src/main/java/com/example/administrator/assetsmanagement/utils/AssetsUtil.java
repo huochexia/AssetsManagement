@@ -125,7 +125,7 @@ public class AssetsUtil {
      */
     public static <T> List<T> deepCopy(List<T> src) {
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-        ObjectOutputStream out = null;
+        ObjectOutputStream out;
         try {
             out = new ObjectOutputStream(byteOut);
             out.writeObject(src);
@@ -142,7 +142,7 @@ public class AssetsUtil {
         @SuppressWarnings("unchecked")
         List<T> dest = null;
         try {
-            dest = (List<T>) in.readObject();
+            dest = (List<T>) (in != null ? in.readObject() : null);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

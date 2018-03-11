@@ -14,9 +14,7 @@ import com.example.administrator.assetsmanagement.Interface.AssetSelectedListene
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.bean.AssetInfo;
 import com.example.administrator.assetsmanagement.bean.DepartmentTree.Department;
-import com.example.administrator.assetsmanagement.bean.DepartmentTree.DepartmentNodeHelper;
 import com.example.administrator.assetsmanagement.bean.LocationTree.Location;
-import com.example.administrator.assetsmanagement.bean.LocationTree.LocationNodeHelper;
 
 import java.util.HashMap;
 import java.util.List;

@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -340,7 +341,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case 222:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -373,11 +374,11 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
                 if (data != null) {
                     Bundle bundle = data.getBundleExtra("assetpicture");
                     AssetPicture image1 = (AssetPicture) bundle.getSerializable("imageFile");
-                    mEtRegisterAssetsName.setText(image1.getAssetName());
+                    mEtRegisterAssetsName.setText(image1 != null ? image1.getAssetName() : null);
                     mEtRegisterAssetsName.setEnabled(false);
                     asset.setPicture(image1);
                     hasPhoto = true;
-                    Glide.with(this).load(image1.getImageUrl()).into(mIvRegisterPicture);
+                    Glide.with(this).load(image1 != null ? image1.getImageUrl() : null).into(mIvRegisterPicture);
                 }
                 break;
             case TAKE_PHOTO:
@@ -600,7 +601,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
      * @return
      */
     private String getNodeAllPathName(AssetCategory node) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         List<AssetCategory> nodes = new ArrayList<>();
         CategoryNodeHelper.getAllParents(nodes, node);
         int i = nodes.size();

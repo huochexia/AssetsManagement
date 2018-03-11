@@ -5,14 +5,12 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.example.administrator.assetsmanagement.R;
 import com.example.administrator.assetsmanagement.activity.MyAssetListActivity;
 import com.example.administrator.assetsmanagement.activity.UpdateMyInfo;
 import com.example.administrator.assetsmanagement.base.BaseFragment;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;

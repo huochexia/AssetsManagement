@@ -51,7 +51,7 @@ public class FlowRadioGroup extends RadioGroup {
         final int childCount = getChildCount();
         int maxWidth = r - l;
         int x = 0;
-        int y = 0;
+        int y;
         int row = 0;
         for (int i = 0; i < childCount; i++) {
             final View child = this.getChildAt(i);

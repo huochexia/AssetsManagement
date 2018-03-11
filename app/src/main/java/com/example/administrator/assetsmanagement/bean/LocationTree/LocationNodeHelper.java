@@ -3,20 +3,8 @@ package com.example.administrator.assetsmanagement.bean.LocationTree;
 
 import android.support.annotation.NonNull;
 
-import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeIconCollape;
-import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeIconExpand;
-import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeId;
-import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeIsLast;
-import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodeName;
-import com.example.administrator.assetsmanagement.treeUtil.annotation.TreeNodePId;
-
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
 
 /**
  * 
@@ -162,7 +150,7 @@ public class LocationNodeHelper {
      * @param Location
      */
     public static String getSearchContentName(Location Location) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         List<Location> nodes = new ArrayList<>();
         LocationNodeHelper.getAllParents(nodes, Location);
         int i = nodes.size();

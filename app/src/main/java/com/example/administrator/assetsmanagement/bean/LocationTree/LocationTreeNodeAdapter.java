@@ -5,9 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.example.administrator.assetsmanagement.Interface.OnTreeNodeClickListener;
-import com.example.administrator.assetsmanagement.treeUtil.NodeHelper;
-
 import java.util.ArrayList;
 import java.util.List;
 
