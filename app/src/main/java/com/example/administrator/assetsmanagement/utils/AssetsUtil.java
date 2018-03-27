@@ -420,7 +420,7 @@ public class AssetsUtil {
         for (int i = 0; i < m; i++) {
             final int finalI = i + 1;
             int fromIndex = 50 * i;
-            int toIndex = fromIndex + 49;
+            int toIndex = fromIndex + 50;
             new BmobBatch().updateBatch(objects.subList(fromIndex, toIndex)).doBatch(new QueryListListener<BatchResult>() {
                 @Override
                 public void done(List<BatchResult> list, BmobException e) {
@@ -436,7 +436,7 @@ public class AssetsUtil {
         }
         //余数量批量更新
         if (y > 0) {
-            new BmobBatch().updateBatch(objects.subList(50 * m - 1, size - 1)).doBatch(new QueryListListener<BatchResult>() {
+            new BmobBatch().updateBatch(objects.subList(50 * m , size - 1)).doBatch(new QueryListListener<BatchResult>() {
                 @Override
                 public void done(List<BatchResult> list, BmobException e) {
                     if (e == null) {
@@ -502,7 +502,7 @@ public class AssetsUtil {
         for (int i = 0; i < m; i++) {
             final int finalI = i + 1;
             int fromIndex = 50 * i;
-            int toIndex = fromIndex + 49;
+            int toIndex = fromIndex + 50;
             new BmobBatch().insertBatch(objects.subList(fromIndex, toIndex)).doBatch(new QueryListListener<BatchResult>() {
                 @Override
                 public void done(List<BatchResult> list, BmobException e) {
@@ -517,7 +517,7 @@ public class AssetsUtil {
         }
         //余数量批量更新
         if (y > 0) {
-            new BmobBatch().insertBatch(objects.subList(50 * m - 1, size - 1)).doBatch(new QueryListListener<BatchResult>() {
+            new BmobBatch().insertBatch(objects.subList(50 * m, size - 1)).doBatch(new QueryListListener<BatchResult>() {
                 @Override
                 public void done(List<BatchResult> list, BmobException e) {
                     if (e == null) {
