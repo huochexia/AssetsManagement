@@ -123,6 +123,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
     private Uri imageUri;
     private List<AssetInfo> mAssetInfos = new ArrayList<>();//用于存放登记的资产
     private boolean hasPhoto = false;//判断是否添加图片
+    private AssetCategory mCategory;
 
     @Override
     public String title() {
@@ -302,13 +303,14 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
             case R.id.btn_register_add_next:
                 setAllWidget(false);
                 mAssetInfos.clear();
+                mCategory=null;
                 mIsFixedAssets.setChecked(true);
                 break;
             case R.id.tv_assets_item_picture_lib:
-                if (asset.getCategory() != null) {
+                if (mCategory != null) {
                     Intent intentPhoto = new Intent(this, SelectAssetsPhotoActivity.class);
-                    intentPhoto.putExtra("category", asset.getCategory());
-                    intentPhoto.putExtra("category_name", mTvRegisterCategory.getText());
+                    intentPhoto.putExtra("category", mCategory);
+                    intentPhoto.putExtra("category_name", mCategory.getCategoryName());
                     intentPhoto.putExtra("isRegister", true);
                     startActivityForResult(intentPhoto, CHOOSET_PHOTO);
                 } else {
@@ -362,7 +364,7 @@ public class RegisterAssetsActivity extends ParentWithNaviActivity {
 
             case REGISTER_CATEGORY:
                 if (resultCode == SelectedTreeNodeActivity.SEARCH_RESULT_OK) {
-                    AssetCategory mCategory = (AssetCategory) data.getSerializableExtra("node");
+                    mCategory = (AssetCategory) data.getSerializableExtra("node");
                     mTvRegisterCategory.setText(getNodeAllPathName(mCategory));
                     AssetCategory ac = new AssetCategory();
                     ac.setObjectId(mCategory.getObjectId());
